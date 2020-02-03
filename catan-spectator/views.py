@@ -148,6 +148,12 @@ class BoardFrame(tkinter.Frame):
         self._board_canvas.delete(tkinter.ALL)
         self.draw(self._board)
 
+        self._cur_player = self.game.get_cur_player()
+        if self._cur_player.name.startswith("droid"):
+            logging.debug("Awaiting move from a droid")
+        else:
+            logging.debug("Awaiting move from a human")
+
     def _draw_terrain(self, board):
         logging.debug('Drawing terrain (resource tiles)')
         centers = {}
@@ -666,6 +672,8 @@ class GameToolbarFrame(tkinter.Frame):
         frame_play_dev.pack(fill=tkinter.X)
         frame_end_turn.pack(fill=tkinter.X)
         frame_end_game.pack(side=tkinter.BOTTOM, fill=tkinter.BOTH)
+
+        logging.debug('toolbar built.')
 
     def set_game(self, game):
         self.game = game
