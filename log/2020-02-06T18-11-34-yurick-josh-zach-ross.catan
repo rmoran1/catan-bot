@@ -1,0 +1,15 @@
+catanlog v0.10.0
+timestamp: 2020-02-06 18:11:34
+players: 4
+name: yurick, color: green, seat: 1
+name: josh, color: blue, seat: 2
+name: zach, color: orange, seat: 3
+name: ross, color: red, seat: 4
+terrain: wood brick sheep wheat sheep wood ore brick wheat wood ore desert sheep wood ore wheat sheep wheat brick
+numbers: 5 2 6 3 8 10 9 12 11 4 8 None 10 9 4 5 6 3 11
+ports: 3:1(1 NW) wood(2 W) brick(4 W) 3:1(5 SW) 3:1(6 SE) sheep(8 SE) 3:1(9 E) ore(10 NE) wheat(12 NE)
+...CATAN!
+green wins
+green buys dev card
+green buys dev card
+green wins
