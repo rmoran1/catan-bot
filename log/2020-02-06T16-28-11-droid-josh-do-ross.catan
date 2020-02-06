@@ -1,0 +1,12 @@
+catanlog v0.10.0
+timestamp: 2020-02-06 16:28:11
+players: 4
+name: droid, color: green, seat: 1
+name: josh, color: blue, seat: 2
+name: do, color: orange, seat: 3
+name: ross, color: red, seat: 4
+terrain: sheep brick sheep ore sheep brick wheat wood wood wheat brick sheep wheat wood ore wood desert wheat ore
+numbers: 5 2 6 3 8 10 9 12 11 4 8 10 9 4 5 6 None 3 11
+ports: 3:1(1 NW) wood(2 W) brick(4 W) 3:1(5 SW) 3:1(6 SE) sheep(8 SE) 3:1(9 E) ore(10 NE) wheat(12 NE)
+...CATAN!
+green buys settlement, builds at (10 SW)

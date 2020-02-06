@@ -1,0 +1,23 @@
+catanlog v0.10.0
+timestamp: 2020-02-06 17:23:31
+players: 4
+name: yurick, color: green, seat: 1
+name: droid, color: blue, seat: 2
+name: zach, color: orange, seat: 3
+name: ross, color: red, seat: 4
+terrain: ore sheep sheep brick brick wheat wheat desert wheat wood wood wood ore wheat brick ore sheep wood sheep
+numbers: 5 2 6 3 8 10 9 None 12 11 4 8 10 9 4 5 6 3 11
+ports: 3:1(1 NW) wood(2 W) brick(4 W) 3:1(5 SW) 3:1(6 SE) sheep(8 SE) 3:1(9 E) ore(10 NE) wheat(12 NE)
+...CATAN!
+green buys settlement, builds at (1 NE)
+green buys road, builds at (1 E)
+green ends turn after 8s
+blue buys road, builds at (1 W)
+blue ends turn after 0s
+orange buys settlement, builds at (1 S)
+orange buys road, builds at (1 SE)
+orange ends turn after 19s
+red buys settlement, builds at (1 NW)
+red buys road, builds at (1 NW)
+red ends turn after 3s
+red wins

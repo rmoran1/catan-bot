@@ -12,6 +12,7 @@ from catan.game import Player
 from catan.pieces import PieceType, Piece
 import tkinterutils
 import views_trading
+from droid_behavior import droid_move
 
 can_do = {
     True: tkinter.NORMAL,
@@ -90,12 +91,17 @@ class BoardFrame(tkinter.Frame):
         logging.debug('Piece clicked with tag={}'.format(tag))
         if piece_type == PieceType.road:
             self.game.place_road(self._coord_from_road_tag(tag))
+            print("Clicked to place a road with tag {}".format(tag))
         elif piece_type == PieceType.settlement:
             self.game.place_settlement(self._coord_from_settlement_tag(tag))
+            print("Clicked to place a settlement with tag {}".format(tag))
         elif piece_type == PieceType.city:
             self.game.place_city(self._coord_from_city_tag(tag))
+            print("Clicked to place a city")
         elif piece_type == PieceType.robber:
             self.game.move_robber(hexgrid.tile_id_from_coord(self._coord_from_robber_tag(tag)))
+            print("Clicked to move a robber")
+
         self.redraw()
 
     def port_click(self, port, event):
@@ -151,6 +157,7 @@ class BoardFrame(tkinter.Frame):
         self._cur_player = self.game.get_cur_player()
         if self._cur_player.name.startswith("droid"):
             logging.debug("Awaiting move from a droid")
+            droid_move(self, self._board)
         else:
             logging.debug("Awaiting move from a human")
 
