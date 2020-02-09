@@ -162,7 +162,7 @@ class BoardFrame(tkinter.Frame):
             logging.debug("Awaiting move from a human")
 
     def _draw_terrain(self, board):
-        logging.debug('Drawing terrain (resource tiles)')
+        #logging.debug('Drawing terrain (resource tiles)')
         centers = {}
         last = None
         for tile in board.tiles:
@@ -198,7 +198,7 @@ class BoardFrame(tkinter.Frame):
         self._board_canvas.create_polygon(*points, fill=fill, tags=tags)
 
     def _draw_numbers(self, board, terrain_centers):
-        logging.debug('Drawing numbers')
+        #logging.debug('Drawing numbers')
         for tile_id, (x, y) in terrain_centers.items():
             tile = board.tiles[tile_id - 1]
             self._draw_number(x, y, tile.number, tile)
@@ -206,8 +206,8 @@ class BoardFrame(tkinter.Frame):
     def _draw_ports(self, board, terrain_centers, ports=None, ghost=False):
         if ports is None:
             ports = board.ports
-        logging.debug('Drawing ports')
-        logging.debug('ports={}'.format(ports))
+        #logging.debug('Drawing ports')
+        #logging.debug('ports={}'.format(ports))
         port_centers = []
         for port in ports:
             tile_x, tile_y = terrain_centers[port.tile_id]
@@ -259,7 +259,7 @@ class BoardFrame(tkinter.Frame):
 
         for coord, road in roads:
             self._draw_piece(coord, road, terrain_centers)
-        logging.debug('Roads drawn: {}'.format(len(roads)))
+        #logging.debug('Roads drawn: {}'.format(len(roads)))
 
         for coord, settlement in settlements:
             self._draw_piece(coord, settlement, terrain_centers)
@@ -271,18 +271,18 @@ class BoardFrame(tkinter.Frame):
         self._draw_piece(coord, robber, terrain_centers)
 
     def _draw_piece_shadows(self, piece_type, board, terrain_centers):
-        logging.debug('Drawing piece shadows of type={}'.format(piece_type.value))
+        #logging.debug('Drawing piece shadows of type={}'.format(piece_type.value))
         piece = Piece(piece_type, self.game.get_cur_player())
         if piece_type == PieceType.road:
             edges = hexgrid.legal_edge_coords()
             count = 0
             for edge in edges:
                 if (hexgrid.EDGE, edge) in board.pieces:
-                    logging.debug('Not drawing shadow road at coord={}'.format(edge))
+                    #logging.debug('Not drawing shadow road at coord={}'.format(edge))
                     continue
                 count += 1
                 self._draw_piece(edge, piece, terrain_centers, ghost=True)
-            logging.debug('Road shadows drawn: {}'.format(count))
+            #logging.debug('Road shadows drawn: {}'.format(count))
         elif piece_type == PieceType.settlement:
             nodes = hexgrid.legal_node_coords()
             for node in nodes:
