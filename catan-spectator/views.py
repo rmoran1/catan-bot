@@ -49,7 +49,7 @@ class LogFrame(tkinter.Frame):
         self.log.configure(height=max(LOG_MIN_HEIGHT,min(LOG_MAX_HEIGHT,len(logs))))
         self.log.insert(tkinter.END, logs)
 
-        logging.debug('Redrew latest={} lines of game log'.format(len(logs.split('\n'))))
+        #logging.debug('Redrew latest={} lines of game log'.format(len(logs.split('\n'))))
         self.log.see(tkinter.END) # scroll to end
 
 
@@ -80,13 +80,16 @@ class BoardFrame(tkinter.Frame):
         self.redraw()
 
     def droid_piece_click(self, piece_type, coordinate):
-
+        droid_name = self.game.get_cur_player()
         if piece_type == PieceType.road:
             self.game.place_road(coordinate)
+            print(droid_name, 'placed road at coordinate', coordinate)
         elif piece_type == PieceType.settlement:
             self.game.place_settlement(coordinate)
+            print(droid_name, 'placed settlement at coordinate', coordinate)
         elif piece_type == PieceType.city:
             self.game.place_city(coordinate)
+            print(droid_name, 'placed settlement at coordinate', coordinate)
         elif piece_type == PieceType.robber:
             self.game.move_robber(hexgrid.tile_id_from_coord(self._coord_from_robber_tag(tag)))
 
@@ -110,19 +113,19 @@ class BoardFrame(tkinter.Frame):
                 tag = t
                 break
 
-        logging.debug('Piece clicked with tag={}'.format(tag))
+        #logging.debug('Piece clicked with tag={}'.format(tag))
         if piece_type == PieceType.road:
             self.game.place_road(self._coord_from_road_tag(tag))
-            print("Clicked to place a road with tag {}".format(tag))
+            #print("Clicked to place a road with tag {}".format(tag))
         elif piece_type == PieceType.settlement:
             self.game.place_settlement(self._coord_from_settlement_tag(tag))
-            print("Clicked to place a settlement with tag {}".format(tag))
+            #print("Clicked to place a settlement with tag {}".format(tag))
         elif piece_type == PieceType.city:
             self.game.place_city(self._coord_from_city_tag(tag))
-            print("Clicked to place a city")
+            #print("Clicked to place a city")
         elif piece_type == PieceType.robber:
             self.game.move_robber(hexgrid.tile_id_from_coord(self._coord_from_robber_tag(tag)))
-            print("Clicked to move a robber")
+            #print("Clicked to move a robber")
 
         self.redraw()
 
@@ -137,7 +140,7 @@ class BoardFrame(tkinter.Frame):
         if not self._board.state.modifiable():
             return
 
-        logging.debug('port={} clicked'.format(port))
+        #logging.debug('port={} clicked'.format(port))
         tags = self._board_canvas.gettags(event.widget.find_closest(event.x, event.y))
         tag = tags[0]
         if 'port' not in tag:
@@ -654,7 +657,7 @@ class StartGamePlayerOrderFrame(tkinter.Frame):
         self.master = master
         self.game = game
 
-        defaults = ('yurick green', 'josh blue', 'zach orange', 'ross red')
+        defaults = ('yurick green', 'droid blue', 'zach orange', 'ross red')
         self.player_entries_vars = [(tkinter.Entry(self), tkinter.StringVar()) for i in range(len(defaults))]
         for (entry, var), default in zip(self.player_entries_vars, defaults):
             var.set(default)
@@ -702,7 +705,7 @@ class GameToolbarFrame(tkinter.Frame):
         frame_end_turn.pack(fill=tkinter.X)
         frame_end_game.pack(side=tkinter.BOTTOM, fill=tkinter.BOTH)
 
-        logging.debug('toolbar built.')
+        #logging.debug('toolbar built.')
 
     def set_game(self, game):
         self.game = game

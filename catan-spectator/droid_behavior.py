@@ -7,8 +7,7 @@ _edge_directions = ['NW', 'NE', 'E', 'SE', 'SW', 'W']
 
 def droid_move(board_frame, board):
 	
-	p = input()
-	print(board_frame.game.state)
+	#print(board_frame.game.state)
 
 	if board_frame.game.state.is_in_pregame():
 
