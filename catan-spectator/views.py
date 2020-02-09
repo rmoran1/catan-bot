@@ -657,7 +657,7 @@ class StartGamePlayerOrderFrame(tkinter.Frame):
         self.master = master
         self.game = game
 
-        defaults = ('yurick green', 'josh blue', 'zach orange', 'ross red')
+        defaults = ('yurick green', 'droid blue', 'zach orange', 'ross red')
         self.player_entries_vars = [(tkinter.Entry(self), tkinter.StringVar()) for i in range(len(defaults))]
         for (entry, var), default in zip(self.player_entries_vars, defaults):
             var.set(default)
