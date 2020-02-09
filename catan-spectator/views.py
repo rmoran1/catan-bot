@@ -89,7 +89,7 @@ class BoardFrame(tkinter.Frame):
             print(droid_name, 'placed settlement at coordinate', coordinate)
         elif piece_type == PieceType.city:
             self.game.place_city(coordinate)
-            print(droid_name, 'placed settlement at coordinate', coordinate)
+            print(droid_name, 'placed city at coordinate', coordinate)
         elif piece_type == PieceType.robber:
             self.game.move_robber(hexgrid.tile_id_from_coord(self._coord_from_robber_tag(tag)))
 
@@ -657,7 +657,7 @@ class StartGamePlayerOrderFrame(tkinter.Frame):
         self.master = master
         self.game = game
 
-        defaults = ('yurick green', 'droid blue', 'zach orange', 'ross red')
+        defaults = ('yurick green', 'josh blue', 'zach orange', 'ross red')
         self.player_entries_vars = [(tkinter.Entry(self), tkinter.StringVar()) for i in range(len(defaults))]
         for (entry, var), default in zip(self.player_entries_vars, defaults):
             var.set(default)
