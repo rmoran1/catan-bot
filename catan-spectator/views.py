@@ -79,7 +79,29 @@ class BoardFrame(tkinter.Frame):
             self._board.cycle_hex_number(self._tile_id_from_tag(tag))
         self.redraw()
 
+    def droid_piece_click(self, piece_type, coordinate):
+
+        if piece_type == PieceType.road:
+            self.game.place_road(coordinate)
+        elif piece_type == PieceType.settlement:
+            self.game.place_settlement(coordinate)
+        elif piece_type == PieceType.city:
+            self.game.place_city(coordinate)
+        elif piece_type == PieceType.robber:
+            self.game.move_robber(hexgrid.tile_id_from_coord(self._coord_from_robber_tag(tag)))
+
+        self.redraw()
+
+        self._cur_player = self.game.get_cur_player()
+        if self._cur_player.name.startswith("droid"):
+            logging.debug("Awaiting move from a droid")
+            droid_move(self, self._board)
+        else:
+            logging.debug("Awaiting move from a human")
+
+
     def piece_click(self, piece_type, event):
+
         tags = self._board_canvas.gettags(event.widget.find_closest(event.x, event.y))
         # avoid processing tile clicks
         tag = None
@@ -103,6 +125,13 @@ class BoardFrame(tkinter.Frame):
             print("Clicked to move a robber")
 
         self.redraw()
+
+        self._cur_player = self.game.get_cur_player()
+        if self._cur_player.name.startswith("droid"):
+            logging.debug("Awaiting move from a droid")
+            droid_move(self, self._board)
+        else:
+            logging.debug("Awaiting move from a human")
 
     def port_click(self, port, event):
         if not self._board.state.modifiable():
@@ -153,13 +182,6 @@ class BoardFrame(tkinter.Frame):
     def redraw(self):
         self._board_canvas.delete(tkinter.ALL)
         self.draw(self._board)
-
-        self._cur_player = self.game.get_cur_player()
-        if self._cur_player.name.startswith("droid"):
-            logging.debug("Awaiting move from a droid")
-            droid_move(self, self._board)
-        else:
-            logging.debug("Awaiting move from a human")
 
     def _draw_terrain(self, board):
         #logging.debug('Drawing terrain (resource tiles)')
