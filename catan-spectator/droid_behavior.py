@@ -58,7 +58,7 @@ def best_settlement_coord(board):
 
 def best_road_coord(board):
 
-    for (typ, coord), piece in board.pieces.items():
+    for (typ, coord), piece in reversed(list(board.pieces.items())):
 
         print("Type: {}    Coord: {}     Owner: {}".format(typ, coord, piece.owner))
         if typ != hexgrid.NODE:
