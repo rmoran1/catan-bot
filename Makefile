@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 
 install:
-	pip install -r catan-spectator/requirements.txt
+	pip3 install -r catan-spectator/requirements.txt
 
 test:
 	@sed -i 's/yurick/patrick/' catan-spectator/views.py
