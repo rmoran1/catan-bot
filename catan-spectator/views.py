@@ -86,6 +86,9 @@ class BoardFrame(tkinter.Frame):
             print(droid_name, 'placed road at coordinate', coordinate)
         elif piece_type == PieceType.settlement:
             self.game.place_settlement(coordinate)
+            if self.game._cur_turn > 3 and self.game.state.is_in_pregame():
+                for tile_num in self.game.board.scores[coordinate]['tiles_touching']:
+                    self.game.hands[self.game._cur_player].append(self.game.board.tiles[tile_num-1].terrain)
             print(droid_name, 'placed settlement at coordinate', coordinate)
         elif piece_type == PieceType.city:
             self.game.place_city(coordinate)
@@ -104,7 +107,6 @@ class BoardFrame(tkinter.Frame):
 
 
     def piece_click(self, piece_type, event):
-
         tags = self._board_canvas.gettags(event.widget.find_closest(event.x, event.y))
         # avoid processing tile clicks
         tag = None
@@ -118,7 +120,15 @@ class BoardFrame(tkinter.Frame):
             self.game.place_road(self._coord_from_road_tag(tag))
             #print("Clicked to place a road with tag {}".format(tag))
         elif piece_type == PieceType.settlement:
-            self.game.place_settlement(self._coord_from_settlement_tag(tag))
+            coord = self._coord_from_settlement_tag(tag)
+            self.game.place_settlement(coord)
+            if self.game._cur_turn == 0:
+                self.game.hands = {self.game.players[0]: [], self.game.players[1]: [], self.game.players[2]: [], self.game.players[3]: []}
+            if self.game._cur_turn > 3 and self.game.state.is_in_pregame():
+                for tile_num in self.game.board.scores[coord]['tiles_touching']:
+                    if self.game.board.tiles[tile_num-1].terrain != Terrain.desert:
+                        self.game.hands[self.game._cur_player].append(self.game.board.tiles[tile_num-1].terrain)
+            
             #print("Clicked to place a settlement with tag {}".format(tag))
         elif piece_type == PieceType.city:
             self.game.place_city(self._coord_from_city_tag(tag))
@@ -126,7 +136,7 @@ class BoardFrame(tkinter.Frame):
         elif piece_type == PieceType.robber:
             self.game.move_robber(hexgrid.tile_id_from_coord(self._coord_from_robber_tag(tag)))
             #print("Clicked to move a robber")
-
+        print(self.game.hands)
         self.redraw()
 
         self._cur_player = self.game.get_cur_player()

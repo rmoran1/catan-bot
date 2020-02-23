@@ -12,6 +12,7 @@ def droid_move(board_frame, board):
 
         if board_frame.game.state.can_place_settlement():
             board_frame.droid_piece_click(PieceType.settlement, best_settlement_coord(board))
+            #ADD CARDS TO HAND
         elif board_frame.game.state.can_place_road():
             board_frame.droid_piece_click(PieceType.road, best_road_coord(board))
 
@@ -32,7 +33,7 @@ def score_nodes(board):
 
             if board.tiles[tile_id - 1].number.value is None:
                 # This is the robber tile
-                scores[coord] = {'score': 0, 'tiles_touching': {tile_id: cdir}}
+                scores[coord]['tiles_touching'][tile_id] = cdir
                 continue
 
             if board.tiles[tile_id - 1].number.value > 7:
@@ -40,6 +41,8 @@ def score_nodes(board):
             else:
                 scores[coord]['score'] += board.tiles[tile_id - 1].number.value - 1
             scores[coord]['tiles_touching'][tile_id] = cdir
+
+    board.scores = scores
     return scores
 
 
