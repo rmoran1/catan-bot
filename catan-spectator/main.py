@@ -2,6 +2,8 @@ import tkinter
 import pprint
 import logging
 import argparse
+import sys
+sys.path.insert(1, 'catan-py')
 from catan.board import Board
 from catan.game import Game
 
