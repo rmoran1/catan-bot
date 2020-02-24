@@ -114,6 +114,7 @@ def is_settlement_taken(board, node_coord, sorted_node_scores):
 def best_win_condition(board):
 
     resources = {} #which tiles a player has access to
+    #implement ports in future
     for (type, piece_coord), piece in reversed(list(board.pieces.items())):
         if (piece.owner not in resources):
             resources[piece.owner] = {}
@@ -123,17 +124,16 @@ def best_win_condition(board):
         for cdir in _node_directions:   #check all six nodes next to the tile, calculate which player has which resources
             coord = hexgrid.from_location(hexgrid.NODE, tile_id, direction=cdir)
             for (type, piece_coord), piece in reversed(list(board.pieces.items())):
-                if(piece_coord == coord and board.tiles[tile_id - 1].number.value is not None and type == 1):
+                if(piece_coord == coord and board.tiles[tile_id - 1].number.value is not None and (type == 1 or type == 2)):
                     if board.tiles[tile_id - 1].terrain not in resources[piece.owner]:
                         resources[piece.owner][board.tiles[tile_id - 1].terrain.value] = 0
 
                     if board.tiles[tile_id - 1].number.value > 7:
-                        resources[piece.owner][board.tiles[tile_id - 1].terrain.value] += 13 - board.tiles[tile_id - 1].number.value
+                        resources[piece.owner][board.tiles[tile_id - 1].terrain.value] += (13 - board.tiles[tile_id - 1].number.value) * type
                     if board.tiles[tile_id - 1].number.value < 7:
-                        resources[piece.owner][board.tiles[tile_id - 1].terrain.value] += board.tiles[tile_id - 1].number.value - 1
+                        resources[piece.owner][board.tiles[tile_id - 1].terrain.value] += (board.tiles[tile_id - 1].number.value - 1) * type
 
 
-    print("HERE LOL")
     for player in resources:
         #settlement:
         print(resources[player])
@@ -145,6 +145,8 @@ def best_win_condition(board):
         city = (resources[player]['ore']*3 + resources[player]['wheat']*2) / 5
         devc = (resources[player]['ore'] + resources[player]['wheat'] + resources[player]['sheep']) / 3
 
+        #What to do with this
+        #try to buy each option in order of highest to lowest
         print("~~~Best option for player {}: settlement {} road {} city {} devc {}~~~".format(player,sett,road,city,devc))
 
     return
