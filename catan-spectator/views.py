@@ -808,50 +808,6 @@ class RollFrame(tkinter.Frame):
 
         self.roll = tkinter.Button(self, text='Roll Dice', command=self.on_dice_roll)
         self.roll.pack(fill=tkinter.X, expand=True)
-
-        '''self.smallnumbers = tkinter.Frame (self)
-        self.smallnumbers.pack (side='left')
-        self.mediumnumbers = tkinter.Frame (self)
-        self.mediumnumbers.pack (side='left', fill=tkinter.Y)
-        self.largenumbers = tkinter.Frame (self,)
-        self.largenumbers.pack (side='left')
-
-        self.two = tkinter.Button (self.smallnumbers, command=lambda:self.on_roll(2), text= '2')
-        self.two.grid (row=1, column=1, sticky=tkinter.NSEW)
-        self.three = tkinter.Button (self.smallnumbers, command=lambda:self.on_roll(3), text= '3')
-        self.three.grid (row=1, column=2, sticky=tkinter.NSEW)
-        self.four = tkinter.Button (self.smallnumbers, command=lambda:self.on_roll(4), text= '4')
-        self.four.grid (row=2, column=1, sticky=tkinter.NSEW)
-        self.five = tkinter.Button (self.smallnumbers, command=lambda:self.on_roll(5), text= '5')
-        self.five.grid (row=2, column=2, sticky=tkinter.NSEW)
-
-        self.six = tkinter.Button (self.mediumnumbers, command=lambda:self.on_roll(6), text= '6')
-        self.six.pack (side='left', expand=True)
-        self.seven = tkinter.Button (self.mediumnumbers, command=lambda:self.on_roll(7), text= '7')
-        self.seven.pack (side='left', expand=True)
-        self.eight = tkinter.Button (self.mediumnumbers, command=lambda:self.on_roll(8), text= '8')
-        self.eight.pack (side='left', expand=True)
-        self.nine = tkinter.Button (self.largenumbers, command=lambda:self.on_roll(9), text= '9')
-        self.nine.grid (row=1, column =1)
-        self.ten = tkinter.Button (self.largenumbers, command=lambda:self.on_roll(10), text= '10')
-        self.ten.grid (row=1, column=2)
-        self.eleven = tkinter.Button (self.largenumbers, command=lambda:self.on_roll(11), text='11')
-        self.eleven.grid (row=2, column =1)
-        self.twelve = tkinter.Button (self.largenumbers, command=lambda:self.on_roll(12), text='12')
-        self.twelve.grid (row=2, column=2)
-
-        self.bind_all('2', self.roll_event_HO(2))
-        self.bind_all('3', self.roll_event_HO(3))
-        self.bind_all('4', self.roll_event_HO(4))
-        self.bind_all('5', self.roll_event_HO(5))
-        self.bind_all('6', self.roll_event_HO(6))
-        self.bind_all('7', self.roll_event_HO(7))
-        self.bind_all('8', self.roll_event_HO(8))
-        self.bind_all('9', self.roll_event_HO(9))
-        self.bind_all('0', self.roll_event_HO(10))
-        self.bind_all('-', self.roll_event_HO(11))
-        self.bind_all('=', self.roll_event_HO(12))'''
-
         self.set_states()
 
     def on_dice_roll(self):
@@ -880,19 +836,7 @@ class RollFrame(tkinter.Frame):
         self.set_states()
 
     def set_states(self):
-        '''self.two.configure(state=can_do[self.game.state.can_roll()])
-        self.three.configure(state=can_do[self.game.state.can_roll()])
-        self.four.configure(state=can_do[self.game.state.can_roll()])
-        self.five.configure(state=can_do[self.game.state.can_roll()])
-        self.six.configure(state=can_do[self.game.state.can_roll()])
-        self.seven.configure(state=can_do[self.game.state.can_roll()])
-        self.eight.configure(state=can_do[self.game.state.can_roll()])
-        self.nine.configure(state=can_do[self.game.state.can_roll()])
-        self.ten.configure(state=can_do[self.game.state.can_roll()])
-        self.eleven.configure(state=can_do[self.game.state.can_roll()])
-        self.twelve.configure(state=can_do[self.game.state.can_roll()])'''
         self.roll.configure(state=can_do[self.game.state.can_roll()])
-
 
     def on_roll(self, roll):
         self.game.roll(roll)

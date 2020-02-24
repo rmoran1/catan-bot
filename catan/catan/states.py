@@ -60,7 +60,6 @@ import logging
 import hexgrid
 import catan.pieces
 
-
 class GameState(object):
     """
     class GameState is the base game state. All game states inherit from GameState.
@@ -257,7 +256,15 @@ class GameStateInGame(GameState):
 
         :return Boolean
         """
-        return self.has_rolled()
+        if not self.has_rolled():
+            return False
+        hand = self.game.hands[self.game.get_cur_player()]
+        if catan.board.Terrain.brick in hand and 
+            catan.board.Terrain.sheep in hand and 
+            catan.board.Terrain.ore in hand and 
+            catan.board.Terrain.wood in hand:
+            return True
+        return False
 
     def can_buy_city(self):
         """
