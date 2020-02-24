@@ -267,25 +267,24 @@ class Game(object):
         self.catanlog.log_roll(self.get_cur_player(), roll)
         self.last_roll = roll
         self.last_player_to_roll = self.get_cur_player()
+        print()
         print(self.get_cur_player(), 'rolled a', roll)
         if int(roll) == 7:
             self.set_state(catan.states.GameStateMoveRobber(self))
         else:
-            robber_found = -1
-            for tile_id in range(1, 19):
-                tile = self.board.tiles[tile_id + robber_found]
-                print('checking tile', tile_id)
+            for tile_id in range(1, 20):
+                tile = self.board.tiles[tile_id - 1]
                 if tile.number == catan.board.HexNumber.none:
-                    robber_found = 0
+                    continue
+                if tile_id == self.robber_tile:
                     continue
                 if tile.number != catan.board.HexNumber.from_digit_or_none(roll):
                     continue
-                print('found matching tile!')
                 for cdir in ['NW', 'N', 'NE', 'SE', 'S', 'SW']:
-                    coord = hexgrid.from_location(hexgrid.NODE, tile_id + 1 + robber_found, direction=cdir)
+                    coord = hexgrid.from_location(hexgrid.NODE, tile_id, direction=cdir)
                     if (hexgrid.NODE, coord) in self.board.pieces:
                         self.hands[self.board.pieces[(hexgrid.NODE, coord)].owner].append(tile.terrain)
-                        print('gave', self.board.pieces[(hexgrid.NODE, coord)], 'a', tile.terrain)
+                        print('gave', self.board.pieces[(hexgrid.NODE, coord)].owner, 'a', tile.terrain)
 
             self.set_state(catan.states.GameStateDuringTurnAfterRoll(self))
         print(self.hands)

@@ -1,5 +1,5 @@
 MUST:
-- implement dice rolls
+- implement robber
 - implement buying settlement/road/city/dev card as it relates to a player's hand
     - at least the droid's hand, player's hand would be nice
 - implement largest army & longest road
