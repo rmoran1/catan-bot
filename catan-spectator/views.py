@@ -750,12 +750,11 @@ class HandsFrame(tkinter.Frame):
 
         i = 0
         for player, resources in self.game.hands.items():
-            tkinter.Label(self, text=player, font=("Helvetica", 11, "bold")).pack(anchor=tkinter.W)
+            tkinter.Label(self, text=player, font=("Helvetica", 9, "bold")).pack(anchor=tkinter.W)
             tkinter.Label(self, textvariable=self.player_hands[i], font=("Helvetica", 8)).pack(anchor=tkinter.W)      
             i += 1
 
     def notify(self, observable):
-        print("Updating")
         i = 0
         for player, resources in self.game.hands.items():
             res_str = "{}".format(resources)
