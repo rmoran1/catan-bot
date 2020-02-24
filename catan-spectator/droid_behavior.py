@@ -12,7 +12,6 @@ def droid_move(board_frame, board):
 
         if board_frame.game.state.can_place_settlement():
             board_frame.droid_piece_click(PieceType.settlement, best_settlement_coord(board))
-            #ADD CARDS TO HAND
         elif board_frame.game.state.can_place_road():
             board_frame.droid_piece_click(PieceType.road, best_road_coord(board))
 
