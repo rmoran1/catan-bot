@@ -248,7 +248,12 @@ class GameStateInGame(GameState):
 
         :return Boolean
         """
-        return self.has_rolled()
+        if not self.has_rolled():
+            return False
+        hand = self.game.hands[self.game.get_cur_player()]
+        if catan.board.Terrain.brick in hand and catan.board.Terrain.wood in hand:
+            return True
+        return False
 
     def can_buy_settlement(self):
         """
@@ -259,10 +264,10 @@ class GameStateInGame(GameState):
         if not self.has_rolled():
             return False
         hand = self.game.hands[self.game.get_cur_player()]
-        if catan.board.Terrain.brick in hand and 
+        if (catan.board.Terrain.brick in hand and 
             catan.board.Terrain.sheep in hand and 
-            catan.board.Terrain.ore in hand and 
-            catan.board.Terrain.wood in hand:
+            catan.board.Terrain.wheat in hand and 
+            catan.board.Terrain.wood in hand):
             return True
         return False
 
@@ -272,7 +277,13 @@ class GameStateInGame(GameState):
 
         :return Boolean
         """
-        return self.has_rolled()
+        if not self.has_rolled():
+            return False
+        hand = self.game.hands[self.game.get_cur_player()]
+        if (hand.count(catan.board.Terrain.wheat) >= 2 and
+            hand.count(catan.board.Terrain.ore) >= 3):
+            return True
+        return False
 
     def can_place_road(self):
         """
@@ -304,7 +315,14 @@ class GameStateInGame(GameState):
 
         :return Boolean
         """
-        return self.has_rolled()
+        if not self.has_rolled():
+            return False
+        hand = self.game.hands[self.game.get_cur_player()]
+        if (catan.board.Terrain.wheat in hand and
+            catan.board.Terrain.ore in hand and
+            catan.board.Terrain.sheep in hand):
+            return True
+        return False
 
     def can_trade(self):
         """

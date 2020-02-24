@@ -353,6 +353,9 @@ class Game(object):
     @undoredo.undoable
     def buy_dev_card(self):
         self.catanlog.log_buys_dev_card(self.get_cur_player())
+        self.hands[self.get_cur_player()].remove(Terrain.wheat)
+        self.hands[self.get_cur_player()].remove(Terrain.sheep)
+        self.hands[self.get_cur_player()].remove(Terrain.ore)
         self.notify_observers()
 
     @undoredo.undoable

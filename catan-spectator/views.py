@@ -84,15 +84,29 @@ class BoardFrame(tkinter.Frame):
         droid_name = self.game.get_cur_player()
         if piece_type == PieceType.road:
             self.game.place_road(coordinate)
+            if not self.game.state.is_in_pregame():
+                self.game.hands[self.game.get_cur_player()].remove(Terrain.brick)
+                self.game.hands[self.game.get_cur_player()].remove(Terrain.wood)
             print(droid_name, 'placed road at coordinate', coordinate)
         elif piece_type == PieceType.settlement:
             self.game.place_settlement(coordinate)
+            if not self.game.state.is_in_pregame():
+                self.game.hands[self.game.get_cur_player()].remove(Terrain.brick)
+                self.game.hands[self.game.get_cur_player()].remove(Terrain.wood)
+                self.game.hands[self.game.get_cur_player()].remove(Terrain.wheat)
+                self.game.hands[self.game.get_cur_player()].remove(Terrain.sheep)
             if self.game._cur_turn > 3 and self.game.state.is_in_pregame():
                 for tile_num in self.game.board.scores[coordinate]['tiles_touching']:
-                    self.game.hands[self.game._cur_player].append(self.game.board.tiles[tile_num-1].terrain)
+                    if self.game.board.tiles[tile_num-1].terrain != Terrain.desert:
+                        self.game.hands[self.game._cur_player].append(self.game.board.tiles[tile_num-1].terrain)
             print(droid_name, 'placed settlement at coordinate', coordinate)
         elif piece_type == PieceType.city:
             self.game.place_city(coordinate)
+            self.game.hands[self.game.get_cur_player()].remove(Terrain.wheat)
+            self.game.hands[self.game.get_cur_player()].remove(Terrain.wheat)
+            self.game.hands[self.game.get_cur_player()].remove(Terrain.ore)
+            self.game.hands[self.game.get_cur_player()].remove(Terrain.ore)
+            self.game.hands[self.game.get_cur_player()].remove(Terrain.ore)
             print(droid_name, 'placed city at coordinate', coordinate)
         elif piece_type == PieceType.robber:
             self.game.move_robber(hexgrid.tile_id_from_coord(self._coord_from_robber_tag(tag)))
@@ -119,13 +133,17 @@ class BoardFrame(tkinter.Frame):
         #logging.debug('Piece clicked with tag={}'.format(tag))
         if piece_type == PieceType.road:
             self.game.place_road(self._coord_from_road_tag(tag))
-            
-            #print("Clicked to place a road with tag {}".format(tag))
+            if not self.game.state.is_in_pregame():
+                self.game.hands[self.game.get_cur_player()].remove(Terrain.brick)
+                self.game.hands[self.game.get_cur_player()].remove(Terrain.wood)
         elif piece_type == PieceType.settlement:
             coord = self._coord_from_settlement_tag(tag)
             self.game.place_settlement(coord)
-            # if self.game._cur_turn == 0:
-            #     self.game.hands = {self.game.players[0]: [], self.game.players[1]: [], self.game.players[2]: [], self.game.players[3]: []}
+            if not self.game.state.is_in_pregame():
+                self.game.hands[self.game.get_cur_player()].remove(Terrain.brick)
+                self.game.hands[self.game.get_cur_player()].remove(Terrain.wood)
+                self.game.hands[self.game.get_cur_player()].remove(Terrain.wheat)
+                self.game.hands[self.game.get_cur_player()].remove(Terrain.sheep)
             if self.game._cur_turn > 3 and self.game.state.is_in_pregame():
                 for tile_num in self.game.board.scores[coord]['tiles_touching']:
                     if self.game.board.tiles[tile_num-1].terrain != Terrain.desert:
@@ -134,6 +152,11 @@ class BoardFrame(tkinter.Frame):
             #print("Clicked to place a settlement with tag {}".format(tag))
         elif piece_type == PieceType.city:
             self.game.place_city(self._coord_from_city_tag(tag))
+            self.game.hands[self.game.get_cur_player()].remove(Terrain.wheat)
+            self.game.hands[self.game.get_cur_player()].remove(Terrain.wheat)
+            self.game.hands[self.game.get_cur_player()].remove(Terrain.ore)
+            self.game.hands[self.game.get_cur_player()].remove(Terrain.ore)
+            self.game.hands[self.game.get_cur_player()].remove(Terrain.ore)
             #print("Clicked to place a city")
         elif piece_type == PieceType.robber:
             self.game.move_robber(hexgrid.tile_id_from_coord(self._coord_from_robber_tag(tag)))
