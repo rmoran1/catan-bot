@@ -7,7 +7,7 @@ _edge_directions = ['NW', 'NE', 'E', 'SE', 'SW', 'W']
 
 
 def droid_move(board_frame, board):
-    
+
     if board_frame.game.state.is_in_pregame():
 
         if board_frame.game.state.can_place_settlement():
@@ -15,14 +15,17 @@ def droid_move(board_frame, board):
             #ADD CARDS TO HAND
         elif board_frame.game.state.can_place_road():
             board_frame.droid_piece_click(PieceType.road, best_road_coord(board))
+            best_win_condition(board)
 
+    else:
+        best_win_condition(board)
     board_frame.redraw()
 
 
 def score_nodes(board):
 
     scores = {}
-    
+
     #loop through tiles to get a "score" for each node based on adjacent tiles
     for tile_id in range(1, 20):  # tiles go from 1-19
 
@@ -38,7 +41,7 @@ def score_nodes(board):
 
             if board.tiles[tile_id - 1].number.value > 7:
                 scores[coord]['score'] += 13 - board.tiles[tile_id - 1].number.value
-            else:
+            if board.tiles[tile_id - 1].number.value < 7:
                 scores[coord]['score'] += board.tiles[tile_id - 1].number.value - 1
             scores[coord]['tiles_touching'][tile_id] = cdir
 
@@ -51,7 +54,7 @@ def best_settlement_coord(board):
     node_scores = score_nodes(board)
     sorted_node_scores = sorted(node_scores, key=lambda x: node_scores[x]['score'], reverse=True)
 
-    for coord in sorted_node_scores: 
+    for coord in sorted_node_scores:
 
         if is_settlement_taken(board, coord, node_scores):
             continue
@@ -108,10 +111,42 @@ def is_settlement_taken(board, node_coord, sorted_node_scores):
 
     return False
 
+def best_win_condition(board):
+
+    resources = {} #which tiles a player has access to
+    #implement ports in future
+    for (type, piece_coord), piece in reversed(list(board.pieces.items())):
+        if (piece.owner not in resources):
+            resources[piece.owner] = {}
+
+    for tile_id in range(1, 20):  # tiles go from 1-19
+
+        for cdir in _node_directions:   #check all six nodes next to the tile, calculate which player has which resources
+            coord = hexgrid.from_location(hexgrid.NODE, tile_id, direction=cdir)
+            for (type, piece_coord), piece in reversed(list(board.pieces.items())):
+                if(piece_coord == coord and board.tiles[tile_id - 1].number.value is not None and (type == 1 or type == 2)):
+                    if board.tiles[tile_id - 1].terrain not in resources[piece.owner]:
+                        resources[piece.owner][board.tiles[tile_id - 1].terrain.value] = 0
+
+                    if board.tiles[tile_id - 1].number.value > 7:
+                        resources[piece.owner][board.tiles[tile_id - 1].terrain.value] += (13 - board.tiles[tile_id - 1].number.value) * type
+                    if board.tiles[tile_id - 1].number.value < 7:
+                        resources[piece.owner][board.tiles[tile_id - 1].terrain.value] += (board.tiles[tile_id - 1].number.value - 1) * type
 
 
+    for player in resources:
+        #settlement:
+        print(resources[player])
+        for r in ['sheep','wheat','ore','wood','brick']:
+            if r not in resources[player]:
+                resources[player][r] = 0
+        sett = (resources[player]['sheep'] + resources[player]['wood'] + resources[player]['brick'] + resources[player]['wheat']) / 4
+        road = (resources[player]['wood'] + resources[player]['brick']) / 2
+        city = (resources[player]['ore']*3 + resources[player]['wheat']*2) / 5
+        devc = (resources[player]['ore'] + resources[player]['wheat'] + resources[player]['sheep']) / 3
 
+        #What to do with this
+        #try to buy each option in order of highest to lowest
+        print("~~~Best option for player {}: settlement {} road {} city {} devc {}~~~".format(player,sett,road,city,devc))
 
-
-
-
+    return
