@@ -1,5 +1,6 @@
 import copy
 import logging
+import random
 
 import hexgrid
 import catanlog
@@ -353,9 +354,12 @@ class Game(object):
     @undoredo.undoable
     def buy_dev_card(self):
         self.catanlog.log_buys_dev_card(self.get_cur_player())
-        self.hands[self.get_cur_player()].remove(Terrain.wheat)
-        self.hands[self.get_cur_player()].remove(Terrain.sheep)
-        self.hands[self.get_cur_player()].remove(Terrain.ore)
+        self.hands[self.get_cur_player()].remove(catan.board.Terrain.wheat)
+        self.hands[self.get_cur_player()].remove(catan.board.Terrain.sheep)
+        self.hands[self.get_cur_player()].remove(catan.board.Terrain.ore)
+        self.dev_hands[self.get_cur_player()].append(random.choice(self.dev_deck))
+        self.dev_deck.remove(self.dev_hands[self.get_cur_player()][-1])
+        print('Dev cards:', self.dev_hands)
         self.notify_observers()
 
     @undoredo.undoable

@@ -1,14 +1,22 @@
 MUST:
 - implement robber
-- implement buying settlement/road/city/dev card as it relates to a player's hand
-    - at least the droid's hand, player's hand would be nice
+- implement hand loss w/ 7 roll
+- implement development cards
 - implement largest army & longest road
 - high level strategy for the droid
+    - automatically taking actions
 - make placing settlement smarter
     - include ports
     - think about obtaining all resources
+    - be smarter about building first road
+- implement port trading (both 3:1 and 2:1)
+- implement player trading
 
 WOULD BE NICE:
-- show hands (or maybe just the current player's hand?) on the side of the board
+- only show possible road/settlement placements
+- update display of hands immediately after purchase, not only on turn change
+- fix undo / remove it
+    - right now, undoing does not change cards in hand
+- fix weird placement bug (sometimes, clicking a road/settlement in initial phase throws a TypeError, but it works when clicking it again)
 
 
