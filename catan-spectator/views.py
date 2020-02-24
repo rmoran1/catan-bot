@@ -70,6 +70,12 @@ class BoardFrame(tkinter.Frame):
         self._center_to_edge = math.cos(math.radians(30)) * self._tile_radius
 
     def tile_click(self, event):
+        if self._cur_player.name.startswith("droid"):
+            logging.debug("Awaiting move from a droid")
+            droid_move(self, self._board)
+        else:
+            logging.debug("Awaiting move from a human")
+
         if not self._board.state.modifiable():
             return
 
@@ -119,7 +125,7 @@ class BoardFrame(tkinter.Frame):
         #logging.debug('Piece clicked with tag={}'.format(tag))
         if piece_type == PieceType.road:
             self.game.place_road(self._coord_from_road_tag(tag))
-            
+
             #print("Clicked to place a road with tag {}".format(tag))
         elif piece_type == PieceType.settlement:
             coord = self._coord_from_settlement_tag(tag)
@@ -130,7 +136,7 @@ class BoardFrame(tkinter.Frame):
                 for tile_num in self.game.board.scores[coord]['tiles_touching']:
                     if self.game.board.tiles[tile_num-1].terrain != Terrain.desert:
                         self.game.hands[self.game._cur_player].append(self.game.board.tiles[tile_num-1].terrain)
-            
+
             #print("Clicked to place a settlement with tag {}".format(tag))
         elif piece_type == PieceType.city:
             self.game.place_city(self._coord_from_city_tag(tag))
@@ -751,7 +757,7 @@ class HandsFrame(tkinter.Frame):
         i = 0
         for player, resources in self.game.hands.items():
             tkinter.Label(self, text=player, font=("Helvetica", 9, "bold")).pack(anchor=tkinter.W)
-            tkinter.Label(self, textvariable=self.player_hands[i], font=("Helvetica", 8)).pack(anchor=tkinter.W)      
+            tkinter.Label(self, textvariable=self.player_hands[i], font=("Helvetica", 8)).pack(anchor=tkinter.W)
             i += 1
 
     def notify(self, observable):
@@ -760,7 +766,7 @@ class HandsFrame(tkinter.Frame):
             res_str = "{}".format(resources)
             self.player_hands[i].set(res_str)
             i += 1
-            
+
 
 
 class UndoRedoFrame(tkinter.Frame):
@@ -863,7 +869,7 @@ class RollFrame(tkinter.Frame):
                 8, 8, 8, 8, 8,
                 9, 9, 9, 9,
                 10, 10, 10,
-                11, 11, 
+                11, 11,
                 12
                 ]
         self.game.roll(random.choice(nums))
@@ -1201,4 +1207,3 @@ class TkinterOptionWrapper:
     def __iter__(self):
         for opt in sorted(self._opts.values()):
             yield opt
-

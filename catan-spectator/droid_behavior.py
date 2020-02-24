@@ -15,10 +15,12 @@ def droid_move(board_frame, board):
             #ADD CARDS TO HAND
         elif board_frame.game.state.can_place_road():
             board_frame.droid_piece_click(PieceType.road, best_road_coord(board))
-            best_win_condition(board)
 
-    else:
-        best_win_condition(board)
+    if board_frame.game.state.is_in_game():
+        options = best_win_condition(board,board_frame)
+        print("Here are options")
+        print(options)
+
     board_frame.redraw()
 
 
@@ -111,7 +113,7 @@ def is_settlement_taken(board, node_coord, sorted_node_scores):
 
     return False
 
-def best_win_condition(board):
+def best_win_condition(board,board_frame):
 
     resources = {} #which tiles a player has access to
     #implement ports in future
@@ -134,19 +136,19 @@ def best_win_condition(board):
                         resources[piece.owner][board.tiles[tile_id - 1].terrain.value] += (board.tiles[tile_id - 1].number.value - 1) * type
 
 
-    for player in resources:
-        #settlement:
-        print(resources[player])
-        for r in ['sheep','wheat','ore','wood','brick']:
-            if r not in resources[player]:
-                resources[player][r] = 0
-        sett = (resources[player]['sheep'] + resources[player]['wood'] + resources[player]['brick'] + resources[player]['wheat']) / 4
-        road = (resources[player]['wood'] + resources[player]['brick']) / 2
-        city = (resources[player]['ore']*3 + resources[player]['wheat']*2) / 5
-        devc = (resources[player]['ore'] + resources[player]['wheat'] + resources[player]['sheep']) / 3
+    curr = resources[board_frame.game._cur_player]
 
-        #What to do with this
-        #try to buy each option in order of highest to lowest
-        print("~~~Best option for player {}: settlement {} road {} city {} devc {}~~~".format(player,sett,road,city,devc))
+    for r in ['sheep','wheat','ore','wood','brick']:
+        if r not in curr:
+            curr[r] = 0
 
-    return
+    sett = (curr['sheep'] + curr['wood'] + curr['brick'] + curr['wheat']) / 4
+    road = (curr['wood'] + curr['brick']) / 2
+    city = (curr['ore']*3 + curr['wheat']*2) / 5
+    devc = (curr['ore'] + curr['wheat'] + curr['sheep']) / 3
+
+    #What to do with this
+    #try to buy each option in order of highest to lowest
+    print("~~~Best option for player {}: settlement {} road {} city {} devc {}~~~".format(board_frame.game._cur_player,sett,road,city,devc))
+
+    return [sett,road,city,devc]
