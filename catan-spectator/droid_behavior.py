@@ -119,17 +119,56 @@ def is_settlement_taken(board, node_coord, sorted_node_scores):
 
     return False
 
+<<<<<<< HEAD
 def best_win_condition(board,board_frame):
+=======
 
-    resources = {} #which tiles a player has access to
-    #implement ports in future
+# Returns a dictionary with piece types and their coordinates. Example output with two players:
+# {
+#     "green (player1)": {
+#         "settlement": [127, 180],
+#         "road": [87, 42, 23],
+#         "city": [22]
+#     },
+#     "red (player2)": {
+#         "settlement": [105, 100],
+#         "road": [33]
+#     }
+# }
+
+def get_user_pieces(board):
+
+    user_pieces = {}
+    for (piece_type, piece_coord), piece_obj in board.pieces.items():
+
+        if piece_obj.owner is None:
+            continue
+
+        if piece_obj.owner not in user_pieces:
+            user_pieces[piece_obj.owner] = {}
+
+        if piece_obj.type.value not in user_pieces[piece_obj.owner]:
+            user_pieces[piece_obj.owner][piece_obj.type.value] = []
+
+        user_pieces[piece_obj.owner][piece_obj.type.value].append(piece_coord)
+
+    return user_pieces
+
+
+def best_win_condition(board):
+>>>>>>> 32405ca2efa586a06b92ecd25c39addbed8e350b
+
+    resources = {} # Which tiles a player has access to
+
+    # TODO(anyone): Implement ports
+
     for (type, piece_coord), piece in reversed(list(board.pieces.items())):
         if (piece.owner not in resources):
             resources[piece.owner] = {}
 
     for tile_id in range(1, 20):  # tiles go from 1-19
 
-        for cdir in _node_directions:   #check all six nodes next to the tile, calculate which player has which resources
+        for cdir in _node_directions:   # check all six nodes next to the tile, calculate which player has which resources
             coord = hexgrid.from_location(hexgrid.NODE, tile_id, direction=cdir)
             for (type, piece_coord), piece in reversed(list(board.pieces.items())):
                 if(piece_coord == coord and board.tiles[tile_id - 1].number.value is not None and (type == 1 or type == 2)):

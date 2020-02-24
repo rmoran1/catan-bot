@@ -136,7 +136,7 @@ class BoardFrame(tkinter.Frame):
         #logging.debug('Piece clicked with tag={}'.format(tag))
         if piece_type == PieceType.road:
             self.game.place_road(self._coord_from_road_tag(tag))
-            if not self.game.state.is_in_pregame():
+            if self.game._cur_turn > 7 and self.game.state.can_end_turn():
                 self.game.hands[self.game.get_cur_player()].remove(Terrain.brick)
                 self.game.hands[self.game.get_cur_player()].remove(Terrain.wood)
         elif piece_type == PieceType.settlement:
