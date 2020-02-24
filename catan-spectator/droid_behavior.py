@@ -22,19 +22,19 @@ def droid_move(board_frame, board):
         options = best_win_condition(board_frame)
         i = options.index(max(options))  # settlement, road, city, dev_card
 
-        if board_frame.game.state.can_buy_settlement and i == 0:
+        if board_frame.game.state.can_buy_settlement() and i == 0:
             board_frame.droid_piece_click(
                 PieceType.settlement, best_settlement_coord(board))
 
-        if board_frame.game.state.can_buy_road and i == 1:
+        if board_frame.game.state.can_buy_road() and i == 1:
             board_frame.droid_piece_click(
                 PieceType.road, best_road_coord(board))
 
-        if board_frame.game.state.can_buy_city and i == 2:
+        if board_frame.game.state.can_buy_city() and i == 2:
             board_frame.droid_piece_click(
                 PieceType.city, best_settlement_coord(board))
 
-        # if board_frame.game.state.can_buy_dev_card and i == 3:
+        # if board_frame.game.state.can_buy_dev_card() and i == 3:
         #   board_frame.droid_piece_click(PieceType.dev_card, best_settlement_coord(board))
 
     # examples of future states to be implemented

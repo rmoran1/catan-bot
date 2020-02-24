@@ -339,7 +339,8 @@ class GameStateInGame(GameState):
 
         :return Boolean
         """
-        return self.game.dev_card_state.can_play_dev_card()
+        return (self.game.dev_card_state.can_play_dev_card() and 
+            'Knight' in self.game.dev_hands[self.game.get_cur_player()])
 
     def can_play_monopoly(self):
         """
@@ -347,7 +348,8 @@ class GameStateInGame(GameState):
 
         :return Boolean
         """
-        return self.has_rolled() and self.game.dev_card_state.can_play_dev_card()
+        return (self.has_rolled() and self.game.dev_card_state.can_play_dev_card()
+            and 'Monopoly' in self.game.dev_hands[self.game.get_cur_player()])
 
     def can_play_year_of_plenty(self):
         """
@@ -355,7 +357,8 @@ class GameStateInGame(GameState):
 
         :return Boolean
         """
-        return self.has_rolled() and self.game.dev_card_state.can_play_dev_card()
+        return (self.has_rolled() and self.game.dev_card_state.can_play_dev_card()
+            and 'Year of Plenty' in self.game.dev_hands[self.game.get_cur_player()])
 
     def can_play_road_builder(self):
         """
@@ -363,7 +366,8 @@ class GameStateInGame(GameState):
 
         :return Boolean
         """
-        return self.has_rolled() and self.game.dev_card_state.can_play_dev_card()
+        return (self.has_rolled() and self.game.dev_card_state.can_play_dev_card()
+            and'Road Builder' in self.game.dev_hands[self.game.get_cur_player()])
 
     def can_play_victory_point(self):
         """
@@ -371,7 +375,7 @@ class GameStateInGame(GameState):
 
         :return Boolean
         """
-        return True
+        return 'Victory Point' in self.game.dev_hands[self.game.get_cur_player()]
 
     def can_end_turn(self):
         """

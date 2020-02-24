@@ -832,6 +832,15 @@ class HandsFrame(tkinter.Frame):
 
         if self.game._cur_turn == 0:
             self.game.hands = {self.game.players[0]: [], self.game.players[1]: [], self.game.players[2]: [], self.game.players[3]: []}
+            self.game.dev_hands = {self.game.players[0]: [], self.game.players[1]: [], self.game.players[2]: [], self.game.players[3]: []}
+            self.game.dev_deck = ['Knight', 'Knight', 'Knight', 'Knight', 'Knight',
+                'Knight', 'Knight', 'Knight', 'Knight', 'Knight',
+                'Knight', 'Knight', 'Knight', 'Knight',
+                'Road Builder', 'Road Builder',
+                'Monopoly', 'Monopoly',
+                'Year of Plenty', 'Year of Plenty',
+                'Victory Point', 'Victory Point', 'Victory Point', 'Victory Point', 'Victory Point'
+                    ]
 
         self.player_hands = [tkinter.StringVar() for i in range(4)]
 
