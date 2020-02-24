@@ -894,6 +894,10 @@ class RollFrame(tkinter.Frame):
 
         self.roll = tkinter.Button(self, text='Roll Dice', command=self.on_dice_roll)
         self.roll.pack(fill=tkinter.X, expand=True)
+
+        self.last_roll_text = tkinter.StringVar()
+        self.last_roll_text.set("Last Roll: 0")
+        self.last_roll = tkinter.Label(self, textvariable=self.last_roll_text, font=("Helvetica", 9, "bold")).pack(anchor=tkinter.W)
         self.set_states()
 
     def on_dice_roll(self):
@@ -909,7 +913,9 @@ class RollFrame(tkinter.Frame):
                 11, 11,
                 12
                 ]
-        self.game.roll(random.choice(nums))
+        roll_val = random.choice(nums)
+        self.game.roll(roll_val)
+        self.last_roll_text.set("Last Roll: {}".format(roll_val))
         self.set_states()
 
     def roll_event_HO(self, roll):
@@ -927,6 +933,7 @@ class RollFrame(tkinter.Frame):
     def on_roll(self, roll):
         self.game.roll(roll)
         self.set_states()
+
 
 
 class RobberFrame(tkinter.Frame):
