@@ -16,7 +16,7 @@ def droid_move(board_frame, board):
         elif board_frame.game.state.can_place_road():
             board_frame.droid_piece_click(PieceType.road, best_road_coord(board))
 
-    if board_frame.game.state.is_in_game() and board_frame.game.state.has_rolled:
+    elif board_frame.game.state.is_in_game():
         options = best_win_condition(board,board_frame)
         i = options.index(max(options)) #settlement, road, city, dev_card
 
@@ -31,6 +31,9 @@ def droid_move(board_frame, board):
 
         #if board_frame.game.state.can_buy_dev_card and i == 3:
         #   board_frame.droid_piece_click(PieceType.dev_card, best_settlement_coord(board))
+
+    #examples of future states to be implemented
+    #if board_frame.game.state.can_play_knight():
 
     board_frame.redraw()
 
@@ -145,7 +148,7 @@ def get_user_pieces(board):
 
 def best_win_condition(board,board_frame):
     #BASIC HIGH LEVEL STRATEGY
-    
+
     resources = {} # Which tiles a player has access to
 
     # TODO(anyone): Implement ports
@@ -184,4 +187,5 @@ def best_win_condition(board,board_frame):
     #try to buy each option in order of highest to lowest
     print("~~~Best options for player {}: settlement {} road {} city {} devc {}~~~".format(board_frame.game._cur_player,sett,road,city,devc))
 
+    return [0,1,0,0]
     return [sett,road,city,devc]
