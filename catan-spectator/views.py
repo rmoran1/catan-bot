@@ -70,11 +70,8 @@ class BoardFrame(tkinter.Frame):
         self._center_to_edge = math.cos(math.radians(30)) * self._tile_radius
 
     def tile_click(self, event):
-        if self._cur_player.name.startswith("droid"):
-            logging.debug("Awaiting move from a droid")
-            droid_move(self, self._board)
-        else:
-            logging.debug("Awaiting move from a human")
+        print("clicked a tile")
+        droid_move(self, self._board)
 
         if not self._board.state.modifiable():
             return

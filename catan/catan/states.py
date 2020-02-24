@@ -59,6 +59,7 @@ If the method does not look like can_do_xyz(), it will be logged.
 import logging
 import hexgrid
 import catan.pieces
+from droid_behavior import droid_move
 
 class GameState(object):
     """
@@ -264,9 +265,9 @@ class GameStateInGame(GameState):
         if not self.has_rolled():
             return False
         hand = self.game.hands[self.game.get_cur_player()]
-        if (catan.board.Terrain.brick in hand and 
-            catan.board.Terrain.sheep in hand and 
-            catan.board.Terrain.wheat in hand and 
+        if (catan.board.Terrain.brick in hand and
+            catan.board.Terrain.sheep in hand and
+            catan.board.Terrain.wheat in hand and
             catan.board.Terrain.wood in hand):
             return True
         return False
