@@ -70,8 +70,6 @@ class BoardFrame(tkinter.Frame):
         self._center_to_edge = math.cos(math.radians(30)) * self._tile_radius
 
     def tile_click(self, event):
-        print("clicked a tile")
-        droid_move(self, self._board)
 
         if not self._board.state.modifiable():
             return
@@ -176,6 +174,8 @@ class BoardFrame(tkinter.Frame):
 
     def port_click(self, port, event):
         if not self._board.state.modifiable():
+            print("auto droid move")
+            droid_move(self, self._board)
             return
 
         #logging.debug('port={} clicked'.format(port))

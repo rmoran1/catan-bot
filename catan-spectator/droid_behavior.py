@@ -8,6 +8,7 @@ _edge_directions = ['NW', 'NE', 'E', 'SE', 'SW', 'W']
 
 def droid_move(board_frame, board):
 
+    #BASIC CONTROL MECHANISM
     if board_frame.game.state.is_in_pregame():
 
         if board_frame.game.state.can_place_settlement():
@@ -15,15 +16,19 @@ def droid_move(board_frame, board):
         elif board_frame.game.state.can_place_road():
             board_frame.droid_piece_click(PieceType.road, best_road_coord(board))
 
-    if board_frame.game.state.is_in_game():
+    if board_frame.game.state.is_in_game() and board_frame.game.state.has_rolled:
         options = best_win_condition(board,board_frame)
-        i = options.index(max(options))
+        i = options.index(max(options)) #settlement, road, city, dev_card
+
         if board_frame.game.state.can_buy_settlement and i == 0:
             board_frame.droid_piece_click(PieceType.settlement, best_settlement_coord(board))
+
         if board_frame.game.state.can_buy_road and i == 1:
             board_frame.droid_piece_click(PieceType.road, best_road_coord(board))
+
         if board_frame.game.state.can_buy_city and i == 2:
             board_frame.droid_piece_click(PieceType.city, best_settlement_coord(board))
+
         #if board_frame.game.state.can_buy_dev_card and i == 3:
         #   board_frame.droid_piece_click(PieceType.dev_card, best_settlement_coord(board))
 
@@ -119,23 +124,6 @@ def is_settlement_taken(board, node_coord, sorted_node_scores):
 
     return False
 
-<<<<<<< HEAD
-def best_win_condition(board,board_frame):
-=======
-
-# Returns a dictionary with piece types and their coordinates. Example output with two players:
-# {
-#     "green (player1)": {
-#         "settlement": [127, 180],
-#         "road": [87, 42, 23],
-#         "city": [22]
-#     },
-#     "red (player2)": {
-#         "settlement": [105, 100],
-#         "road": [33]
-#     }
-# }
-
 def get_user_pieces(board):
 
     user_pieces = {}
@@ -155,9 +143,9 @@ def get_user_pieces(board):
     return user_pieces
 
 
-def best_win_condition(board):
->>>>>>> 32405ca2efa586a06b92ecd25c39addbed8e350b
-
+def best_win_condition(board,board_frame):
+    #BASIC HIGH LEVEL STRATEGY
+    
     resources = {} # Which tiles a player has access to
 
     # TODO(anyone): Implement ports
@@ -194,6 +182,6 @@ def best_win_condition(board):
 
     #What to do with this
     #try to buy each option in order of highest to lowest
-    print("~~~Best option for player {}: settlement {} road {} city {} devc {}~~~".format(board_frame.game._cur_player,sett,road,city,devc))
+    print("~~~Best options for player {}: settlement {} road {} city {} devc {}~~~".format(board_frame.game._cur_player,sett,road,city,devc))
 
     return [sett,road,city,devc]
