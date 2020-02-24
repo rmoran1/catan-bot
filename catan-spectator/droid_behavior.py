@@ -201,4 +201,4 @@ def best_win_condition(board_frame):
     print("~~~ Best option for {}: settlement {} road {} city {} devc {} ~~~".format(
         player, sett, road, city, devc))
 
-    return
+    return [sett,road,city,devc]
