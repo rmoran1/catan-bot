@@ -3,6 +3,7 @@ import tkinter
 from tkinter import messagebox
 import math
 import collections
+import random
 import functools
 import catanlog
 import hexgrid
@@ -118,6 +119,7 @@ class BoardFrame(tkinter.Frame):
         #logging.debug('Piece clicked with tag={}'.format(tag))
         if piece_type == PieceType.road:
             self.game.place_road(self._coord_from_road_tag(tag))
+            
             #print("Clicked to place a road with tag {}".format(tag))
         elif piece_type == PieceType.settlement:
             coord = self._coord_from_settlement_tag(tag)
@@ -667,7 +669,7 @@ class StartGamePlayerOrderFrame(tkinter.Frame):
         self.master = master
         self.game = game
 
-        defaults = ('yurick green', 'droid blue', 'zach orange', 'ross red')
+        defaults = ('yurick green', 'droid blue', 'droid2 orange', 'droid3 red')
         self.player_entries_vars = [(tkinter.Entry(self), tkinter.StringVar()) for i in range(len(defaults))]
         for (entry, var), default in zip(self.player_entries_vars, defaults):
             var.set(default)
@@ -774,7 +776,10 @@ class RollFrame(tkinter.Frame):
         self.game = game
         self.game.observers.add(self)
 
-        self.smallnumbers = tkinter.Frame (self)
+        self.roll = tkinter.Button(self, text='Roll Dice', command=self.on_dice_roll)
+        self.roll.pack(fill=tkinter.X, expand=True)
+
+        '''self.smallnumbers = tkinter.Frame (self)
         self.smallnumbers.pack (side='left')
         self.mediumnumbers = tkinter.Frame (self)
         self.mediumnumbers.pack (side='left', fill=tkinter.Y)
@@ -815,8 +820,24 @@ class RollFrame(tkinter.Frame):
         self.bind_all('9', self.roll_event_HO(9))
         self.bind_all('0', self.roll_event_HO(10))
         self.bind_all('-', self.roll_event_HO(11))
-        self.bind_all('=', self.roll_event_HO(12))
+        self.bind_all('=', self.roll_event_HO(12))'''
 
+        self.set_states()
+
+    def on_dice_roll(self):
+        nums = [2,
+                3, 3,
+                4, 4, 4,
+                5, 5, 5, 5,
+                6, 6, 6, 6, 6,
+                7, 7, 7, 7, 7, 7,
+                8, 8, 8, 8, 8,
+                9, 9, 9, 9,
+                10, 10, 10,
+                11, 11, 
+                12
+                ]
+        self.game.roll(random.choice(nums))
         self.set_states()
 
     def roll_event_HO(self, roll):
@@ -829,7 +850,7 @@ class RollFrame(tkinter.Frame):
         self.set_states()
 
     def set_states(self):
-        self.two.configure(state=can_do[self.game.state.can_roll()])
+        '''self.two.configure(state=can_do[self.game.state.can_roll()])
         self.three.configure(state=can_do[self.game.state.can_roll()])
         self.four.configure(state=can_do[self.game.state.can_roll()])
         self.five.configure(state=can_do[self.game.state.can_roll()])
@@ -839,7 +860,8 @@ class RollFrame(tkinter.Frame):
         self.nine.configure(state=can_do[self.game.state.can_roll()])
         self.ten.configure(state=can_do[self.game.state.can_roll()])
         self.eleven.configure(state=can_do[self.game.state.can_roll()])
-        self.twelve.configure(state=can_do[self.game.state.can_roll()])
+        self.twelve.configure(state=can_do[self.game.state.can_roll()])'''
+        self.roll.configure(state=can_do[self.game.state.can_roll()])
 
 
     def on_roll(self, roll):
