@@ -124,8 +124,8 @@ class BoardFrame(tkinter.Frame):
         elif piece_type == PieceType.settlement:
             coord = self._coord_from_settlement_tag(tag)
             self.game.place_settlement(coord)
-            if self.game._cur_turn == 0:
-                self.game.hands = {self.game.players[0]: [], self.game.players[1]: [], self.game.players[2]: [], self.game.players[3]: []}
+            # if self.game._cur_turn == 0:
+            #     self.game.hands = {self.game.players[0]: [], self.game.players[1]: [], self.game.players[2]: [], self.game.players[3]: []}
             if self.game._cur_turn > 3 and self.game.state.is_in_pregame():
                 for tile_num in self.game.board.scores[coord]['tiles_touching']:
                     if self.game.board.tiles[tile_num-1].terrain != Terrain.desert:
@@ -699,6 +699,7 @@ class GameToolbarFrame(tkinter.Frame):
 
         label_cur_player_name = tkinter.Label(self, textvariable=self._cur_player_name, anchor=tkinter.W)
         frame_roll = RollFrame(self, self.game)
+        frame_hands = HandsFrame(self, self.game)
         frame_undo = UndoRedoFrame(self, self.game)
         frame_robber = RobberFrame(self, self.game)
         frame_build = BuildFrame(self, self.game)
@@ -709,6 +710,7 @@ class GameToolbarFrame(tkinter.Frame):
 
         label_cur_player_name.pack(fill=tkinter.X)
         frame_roll.pack(fill=tkinter.X)
+        frame_hands.pack(fill=tkinter.X)
         frame_undo.pack(fill=tkinter.X)
         frame_robber.pack(fill=tkinter.X)
         frame_build.pack(fill=tkinter.X)
@@ -732,6 +734,34 @@ class GameToolbarFrame(tkinter.Frame):
             self._cur_player.color,
             self._cur_player.name
         ))
+
+class HandsFrame(tkinter.Frame):
+
+    def __init__(self, master, game, *args, **kwargs):
+        super(HandsFrame, self).__init__(master)
+        self.master = master
+        self.game = game
+        self.game.observers.add(self)
+
+        if self.game._cur_turn == 0:
+            self.game.hands = {self.game.players[0]: [], self.game.players[1]: [], self.game.players[2]: [], self.game.players[3]: []}
+
+        self.player_hands = [tkinter.StringVar() for i in range(4)]
+
+        i = 0
+        for player, resources in self.game.hands.items():
+            tkinter.Label(self, text=player, font=("Helvetica", 11, "bold")).pack(anchor=tkinter.W)
+            tkinter.Label(self, textvariable=self.player_hands[i], font=("Helvetica", 8)).pack(anchor=tkinter.W)      
+            i += 1
+
+    def notify(self, observable):
+        print("Updating")
+        i = 0
+        for player, resources in self.game.hands.items():
+            res_str = "{}".format(resources)
+            self.player_hands[i].set(res_str)
+            i += 1
+            
 
 
 class UndoRedoFrame(tkinter.Frame):
