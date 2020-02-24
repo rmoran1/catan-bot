@@ -621,6 +621,67 @@ class BoardFrame(tkinter.Frame):
         PortType.none: '', # transparent
     }
 
+    # Returns all information for each user. Example output with two players:
+    # {
+    #     "green (player1)": {
+    #         "settlement": [127, 180],
+    #         "road": [87, 42, 23],
+    #         "city": [22],
+    #         "resources": {
+    #             "sheep": 3,
+    #             "wood": 2,
+    #         }
+    #     },
+    #     "red (player2)": {
+    #         "settlement": [105, 100],
+    #         "road": [33],
+    #         "resources": {
+    #             "brick": 1,
+    #         }
+    #     }
+    # }
+    def get_all_user_materials(self):
+
+        user_materials = {}
+        for (_, piece_coord), piece_obj in self._board.pieces.items():
+
+            piece_owner = piece_obj.owner
+            piece_type = piece_obj.type.value
+
+            if piece_owner is None:
+                continue
+
+            if piece_owner not in user_materials:
+                user_materials[piece_owner] = {}
+
+            if piece_type not in user_materials[piece_owner]:
+                user_materials[piece_owner][piece_type] = []
+
+            # Add pieces to user dictionary
+            user_materials[piece_owner][
+                piece_type].append(piece_coord)
+
+        for player, list_of_terrains in self.game.hands.items():
+
+            if player not in user_materials:
+                user_materials[player] = {}
+
+            if "resources" not in user_materials[player]:
+                user_materials[player]["resources"] = {}
+
+            user_materials[player]["resources"][
+                "sheep"] = list_of_terrains.count(Terrain.sheep)
+            user_materials[player]["resources"][
+                "wheat"] = list_of_terrains.count(Terrain.wheat)
+            user_materials[player]["resources"][
+                "ore"] = list_of_terrains.count(Terrain.ore)
+            user_materials[player]["resources"][
+                "brick"] = list_of_terrains.count(Terrain.brick)
+            user_materials[player]["resources"][
+                "wood"] = list_of_terrains.count(Terrain.wood)
+
+        return user_materials
+
 
 class SetupGameToolbarFrame(tkinter.Frame):
 
