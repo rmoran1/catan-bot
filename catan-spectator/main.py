@@ -52,6 +52,9 @@ class CatanSpectator(tkinter.Frame):
             self._toolbar_frame = views.GameToolbarFrame(self, self.game)
             self._toolbar_frame.grid(row=0, column=1, rowspan=2, sticky=tkinter.N)
 
+            self._toolbar_players = views.PlayerToolbarFrame(self, self.game)
+            self._toolbar_players.grid(row=0, column=2, rowspan=2, sticky=tkinter.N)
+
     def setup_options(self):
         return self._setup_game_toolbar_frame.options.copy()
 

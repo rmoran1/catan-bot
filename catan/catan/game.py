@@ -10,7 +10,6 @@ import catan.states
 import catan.board
 import catan.pieces
 
-
 class Game(object):
     """
     class Game represents a single game of catan. It has players, a board, and a log.
@@ -435,6 +434,62 @@ class Game(object):
                 Player(3, 'zach', 'orange'),
                 Player(4, 'ross', 'red')]
 
+    # Returns all information for each user. Example output with two players:
+    # {
+    #     "green (player1)": {
+    #         "settlement": [127, 180],
+    #         "road": [87, 42, 23],
+    #         "city": [22],
+    #         "resources": {
+    #             "sheep": 3,
+    #             "wood": 2,
+    #         }
+    #     },
+    #     "red (player2)": {
+    #         "settlement": [105, 100],
+    #         "road": [33],
+    #         "resources": {
+    #             "brick": 1,
+    #         }
+    #     }
+    # }
+    def get_all_user_materials(self):
+
+        user_materials = {}
+        for player in self.players:
+            user_materials[player] = {}
+            user_materials[player]["resources"] = "None"
+            user_materials[player]["longest_road"] = 0
+            user_materials[player]["knights"] = 0
+            user_materials[player]["dev_cards"] = "None"
+            user_materials[player]["victory_points"] = 0
+
+        
+        for (_, piece_coord), piece_obj in self.board.pieces.items():
+
+            piece_owner = piece_obj.owner
+            piece_type = piece_obj.type.value
+
+            if piece_owner is None:
+                continue
+
+            if piece_type not in user_materials[piece_owner]:
+                user_materials[piece_owner][piece_type] = []
+
+            # Add pieces to user dictionary
+            user_materials[piece_owner][
+                piece_type].append(piece_coord)
+
+        # Count resources that each player has.
+        for player in self.players:
+
+            user_materials[player]["resources"] = self.hands[player]
+            user_materials[player]["dev_cards"] = self.dev_hands[player]
+            user_materials[player]["longest_road"] = "TBC"
+            user_materials[player]["knights"] = "TBC"
+            user_materials[player]["victory_points"] = "TBC"
+
+        return user_materials
 
 class Player(object):
     """class Player represents a single player on the game board.
@@ -465,4 +520,3 @@ class Player(object):
 
     def __hash__(self):
         return sum(bytes(str(self), encoding='utf8'))
-

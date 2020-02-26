@@ -36,8 +36,10 @@ class LogFrame(tkinter.Frame):
         self.game = game
         self.game.observers.add(self)
 
-        self.log = tkinter.Text(self, width=85, height=LOG_MIN_HEIGHT, state=tkinter.NORMAL)
-        self.log.insert(tkinter.END, '{} {}'.format(catanlog.__name__, catanlog.__version__))
+        self.log = tkinter.Text(
+            self, width=85, height=LOG_MIN_HEIGHT, state=tkinter.NORMAL)
+        self.log.insert(tkinter.END, '{} {}'.format(
+            catanlog.__name__, catanlog.__version__))
         self.log.see(tkinter.END)
         self.log.pack(expand=tkinter.YES, fill=tkinter.BOTH)
 
@@ -47,11 +49,12 @@ class LogFrame(tkinter.Frame):
     def redraw(self):
         self.log.delete(1.0, tkinter.END)
         logs = self.game.catanlog.dump()
-        self.log.configure(height=max(LOG_MIN_HEIGHT,min(LOG_MAX_HEIGHT,len(logs))))
+        self.log.configure(height=max(
+            LOG_MIN_HEIGHT, min(LOG_MAX_HEIGHT, len(logs))))
         self.log.insert(tkinter.END, logs)
 
         #logging.debug('Redrew latest={} lines of game log'.format(len(logs.split('\n'))))
-        self.log.see(tkinter.END) # scroll to end
+        self.log.see(tkinter.END)  # scroll to end
 
 
 class BoardFrame(tkinter.Frame):
@@ -63,7 +66,8 @@ class BoardFrame(tkinter.Frame):
 
         self._board = game.board
 
-        board_canvas = tkinter.Canvas(self, width=CANVAS_WIDTH, height=CANVAS_HEIGHT, background='Royal Blue')
+        board_canvas = tkinter.Canvas(
+            self, width=CANVAS_WIDTH, height=CANVAS_HEIGHT, background='Royal Blue')
         board_canvas.pack(expand=tkinter.YES, fill=tkinter.BOTH)
 
         self._board_canvas = board_canvas
@@ -74,7 +78,8 @@ class BoardFrame(tkinter.Frame):
         if not self._board.state.modifiable():
             return
 
-        tag = self._board_canvas.gettags(event.widget.find_closest(event.x, event.y))[0]
+        tag = self._board_canvas.gettags(
+            event.widget.find_closest(event.x, event.y))[0]
         if self.master.setup_options()['hex_resource_selection']:
             self._board.cycle_hex_type(self._tile_id_from_tag(tag))
         if self.master.setup_options()['hex_number_selection']:
@@ -86,20 +91,27 @@ class BoardFrame(tkinter.Frame):
         if piece_type == PieceType.road:
             self.game.place_road(coordinate)
             if not self.game.state.is_in_pregame():
-                self.game.hands[self.game.get_cur_player()].remove(Terrain.brick)
-                self.game.hands[self.game.get_cur_player()].remove(Terrain.wood)
+                self.game.hands[self.game.get_cur_player()].remove(
+                    Terrain.brick)
+                self.game.hands[self.game.get_cur_player()].remove(
+                    Terrain.wood)
             print(droid_name, 'placed road at coordinate', coordinate)
         elif piece_type == PieceType.settlement:
             self.game.place_settlement(coordinate)
             if not self.game.state.is_in_pregame():
-                self.game.hands[self.game.get_cur_player()].remove(Terrain.brick)
-                self.game.hands[self.game.get_cur_player()].remove(Terrain.wood)
-                self.game.hands[self.game.get_cur_player()].remove(Terrain.wheat)
-                self.game.hands[self.game.get_cur_player()].remove(Terrain.sheep)
+                self.game.hands[self.game.get_cur_player()].remove(
+                    Terrain.brick)
+                self.game.hands[self.game.get_cur_player()].remove(
+                    Terrain.wood)
+                self.game.hands[self.game.get_cur_player()].remove(
+                    Terrain.wheat)
+                self.game.hands[self.game.get_cur_player()].remove(
+                    Terrain.sheep)
             if self.game._cur_turn > 3 and self.game.state.is_in_pregame():
                 for tile_num in self.game.board.scores[coordinate]['tiles_touching']:
                     if self.game.board.tiles[tile_num-1].terrain != Terrain.desert:
-                        self.game.hands[self.game._cur_player].append(self.game.board.tiles[tile_num-1].terrain)
+                        self.game.hands[self.game._cur_player].append(
+                            self.game.board.tiles[tile_num-1].terrain)
             print(droid_name, 'placed settlement at coordinate', coordinate)
         elif piece_type == PieceType.city:
             self.game.place_city(coordinate)
@@ -110,7 +122,8 @@ class BoardFrame(tkinter.Frame):
             self.game.hands[self.game.get_cur_player()].remove(Terrain.ore)
             print(droid_name, 'placed city at coordinate', coordinate)
         elif piece_type == PieceType.robber:
-            self.game.move_robber(hexgrid.tile_id_from_coord(self._coord_from_robber_tag(tag)))
+            self.game.move_robber(hexgrid.tile_id_from_coord(
+                self._coord_from_robber_tag(tag)))
 
         self.redraw()
 
@@ -121,9 +134,9 @@ class BoardFrame(tkinter.Frame):
         else:
             logging.debug("Awaiting move from a human")
 
-
     def piece_click(self, piece_type, event):
-        tags = self._board_canvas.gettags(event.widget.find_closest(event.x, event.y))
+        tags = self._board_canvas.gettags(
+            event.widget.find_closest(event.x, event.y))
         # avoid processing tile clicks
         tag = None
         for t in tags:
@@ -135,20 +148,27 @@ class BoardFrame(tkinter.Frame):
         if piece_type == PieceType.road:
             self.game.place_road(self._coord_from_road_tag(tag))
             if self.game._cur_turn > 7 and self.game.state.can_end_turn():
-                self.game.hands[self.game.get_cur_player()].remove(Terrain.brick)
-                self.game.hands[self.game.get_cur_player()].remove(Terrain.wood)
+                self.game.hands[self.game.get_cur_player()].remove(
+                    Terrain.brick)
+                self.game.hands[self.game.get_cur_player()].remove(
+                    Terrain.wood)
         elif piece_type == PieceType.settlement:
             coord = self._coord_from_settlement_tag(tag)
             self.game.place_settlement(coord)
             if not self.game.state.is_in_pregame():
-                self.game.hands[self.game.get_cur_player()].remove(Terrain.brick)
-                self.game.hands[self.game.get_cur_player()].remove(Terrain.wood)
-                self.game.hands[self.game.get_cur_player()].remove(Terrain.wheat)
-                self.game.hands[self.game.get_cur_player()].remove(Terrain.sheep)
+                self.game.hands[self.game.get_cur_player()].remove(
+                    Terrain.brick)
+                self.game.hands[self.game.get_cur_player()].remove(
+                    Terrain.wood)
+                self.game.hands[self.game.get_cur_player()].remove(
+                    Terrain.wheat)
+                self.game.hands[self.game.get_cur_player()].remove(
+                    Terrain.sheep)
             if self.game._cur_turn > 3 and self.game.state.is_in_pregame():
                 for tile_num in self.game.board.scores[coord]['tiles_touching']:
                     if self.game.board.tiles[tile_num-1].terrain != Terrain.desert:
-                        self.game.hands[self.game._cur_player].append(self.game.board.tiles[tile_num-1].terrain)
+                        self.game.hands[self.game._cur_player].append(
+                            self.game.board.tiles[tile_num-1].terrain)
 
             #print("Clicked to place a settlement with tag {}".format(tag))
         elif piece_type == PieceType.city:
@@ -160,7 +180,8 @@ class BoardFrame(tkinter.Frame):
             self.game.hands[self.game.get_cur_player()].remove(Terrain.ore)
             #print("Clicked to place a city")
         elif piece_type == PieceType.robber:
-            self.game.move_robber(hexgrid.tile_id_from_coord(self._coord_from_robber_tag(tag)))
+            self.game.move_robber(hexgrid.tile_id_from_coord(
+                self._coord_from_robber_tag(tag)))
             #print("Clicked to move a robber")
         print(self.game.hands)
         self.redraw()
@@ -179,10 +200,12 @@ class BoardFrame(tkinter.Frame):
             return
 
         #logging.debug('port={} clicked'.format(port))
-        tags = self._board_canvas.gettags(event.widget.find_closest(event.x, event.y))
+        tags = self._board_canvas.gettags(
+            event.widget.find_closest(event.x, event.y))
         tag = tags[0]
         if 'port' not in tag:
-            logging.warning('Port click handler running on non-port tag={}, returning early.'.format(tag))
+            logging.warning(
+                'Port click handler running on non-port tag={}, returning early.'.format(tag))
             return
         tile_id, direction = self._tile_and_direction_from_port_tag(tag)
         self._board.cycle_port_type(tile_id, direction)
@@ -209,7 +232,8 @@ class BoardFrame(tkinter.Frame):
         if self.game.state.can_place_road():
             self._draw_piece_shadows(PieceType.road, board, terrain_centers)
         if self.game.state.can_place_settlement():
-            self._draw_piece_shadows(PieceType.settlement, board, terrain_centers)
+            self._draw_piece_shadows(
+                PieceType.settlement, board, terrain_centers)
         if self.game.state.can_place_city():
             self._draw_piece_shadows(PieceType.city, board, terrain_centers)
         if self.game.state.can_move_robber():
@@ -249,12 +273,14 @@ class BoardFrame(tkinter.Frame):
         for tile_id, (x, y) in centers.items():
             tile = board.tiles[tile_id - 1]
             self._draw_tile(x, y, tile.terrain, tile)
-            self._board_canvas.tag_bind(self._tile_tag(tile), '<ButtonPress-1>', func=self.tile_click)
+            self._board_canvas.tag_bind(self._tile_tag(
+                tile), '<ButtonPress-1>', func=self.tile_click)
 
         return dict(centers)
 
     def _draw_tile(self, x, y, terrain, tile):
-        self._draw_hexagon(self._tile_radius, offset=(x, y), fill=self._colors[terrain], tags=self._tile_tag(tile))
+        self._draw_hexagon(self._tile_radius, offset=(
+            x, y), fill=self._colors[terrain], tags=self._tile_tag(tile))
 
     def _draw_hexagon(self, radius, offset=(0, 0), rotate=30, fill='black', tags=None):
         points = self._hex_points(radius, offset, rotate)
@@ -270,7 +296,7 @@ class BoardFrame(tkinter.Frame):
         if ports is None:
             ports = board.ports
         #logging.debug('Drawing ports')
-        #logging.debug('ports={}'.format(ports))
+        # logging.debug('ports={}'.format(ports))
         port_centers = []
         for port in ports:
             tile_x, tile_y = terrain_centers[port.tile_id]
@@ -290,7 +316,6 @@ class BoardFrame(tkinter.Frame):
         coastal_coords = hexgrid.coastal_coords()
         ports = list(map(lambda cc: board.get_port_at(*cc), coastal_coords))
         self._draw_ports(board, terrain_centers, ports=ports, ghost=True)
-
 
     def _draw_port(self, x, y, angle, port, ghost=False):
         """
@@ -313,7 +338,8 @@ class BoardFrame(tkinter.Frame):
         self._board_canvas.create_polygon(*points,
                                           **opts)
         if port.type != PortType.none:
-            self._board_canvas.create_text(x, y, text=port.type.value, font=self._hex_font)
+            self._board_canvas.create_text(
+                x, y, text=port.type.value, font=self._hex_font)
         self._board_canvas.tag_bind(self._port_tag(port), '<ButtonPress-1>',
                                     functools.partial(self.port_click, port))
 
@@ -361,7 +387,8 @@ class BoardFrame(tkinter.Frame):
                 if hexgrid.tile_id_from_coord(coord) != self.game.robber_tile:
                     self._draw_piece(coord, piece, terrain_centers, ghost=True)
         else:
-            logging.warning('Attempted to draw piece shadows for nonexistent type={}'.format(piece_type))
+            logging.warning(
+                'Attempted to draw piece shadows for nonexistent type={}'.format(piece_type))
 
     def _draw_piece(self, coord, piece, terrain_centers, ghost=False):
         x, y, angle = self._get_piece_center(coord, piece, terrain_centers)
@@ -379,7 +406,8 @@ class BoardFrame(tkinter.Frame):
             self._draw_robber(x, y, coord, piece, ghost=ghost)
             tag = self._robber_tag(coord)
         else:
-            logging.warning('Attempted to draw piece of unknown type={}'.format(piece.type))
+            logging.warning(
+                'Attempted to draw piece of unknown type={}'.format(piece.type))
 
         if ghost:
             self._board_canvas.tag_bind(tag, '<ButtonPress-1>',
@@ -405,7 +433,7 @@ class BoardFrame(tkinter.Frame):
         opts['outline'] = color
         opts['fill'] = color
         if 'ghost' in kwargs and kwargs['ghost'] == True:
-            opts['fill'] = '' # transparent
+            opts['fill'] = ''  # transparent
             opts['activefill'] = color
         del kwargs['ghost']
         opts.update(kwargs)
@@ -432,10 +460,10 @@ class BoardFrame(tkinter.Frame):
         opts = self._piece_tkinter_opts(coord, piece, ghost=ghost)
         length = self._tile_radius * 0.7
         height = self._tile_padding * 2.5
-        points = [x - length/2, y - height/2] # left top
-        points += [x + length/2, y - height/2] # right top
-        points += [x + length/2, y + height/2] # right bottom
-        points += [x - length/2, y + height/2] # left bottom
+        points = [x - length/2, y - height/2]  # left top
+        points += [x + length/2, y - height/2]  # right top
+        points += [x + length/2, y + height/2]  # right bottom
+        points += [x - length/2, y + height/2]  # left bottom
         points = tkinterutils.rotate_2poly(angle, points, (x, y))
         # logging.debug('Drawing road={} at coord={}, angle={} with opts={}'.format(
         #     piece, coord, angle, opts
@@ -448,11 +476,11 @@ class BoardFrame(tkinter.Frame):
         width = 18
         height = 14
         point_height = 8
-        points = [x - width/2, y - height/2] # left top
-        points += [x, y - height/2 - point_height] # middle point
-        points += [x + width/2, y - height/2] # right top
-        points += [x + width/2, y + height/2] # right bottom
-        points += [x - width/2, y + height/2] # left bottom
+        points = [x - width/2, y - height/2]  # left top
+        points += [x, y - height/2 - point_height]  # middle point
+        points += [x + width/2, y - height/2]  # right top
+        points += [x + width/2, y + height/2]  # right bottom
+        points += [x - width/2, y + height/2]  # left bottom
         self._board_canvas.create_polygon(*points,
                                           **opts)
 
@@ -485,10 +513,12 @@ class BoardFrame(tkinter.Frame):
                 cities.append((coord, piece))
             elif piece.type == PieceType.robber:
                 if robber is not None:
-                    logging.critical('More than one robber found on board, there can only be one robber')
+                    logging.critical(
+                        'More than one robber found on board, there can only be one robber')
                 robber = (coord, piece)
         if robber is None:
-            logging.critical('No robber found on the board, this is probably wrong')
+            logging.critical(
+                'No robber found on the board, this is probably wrong')
         return roads, settlements, cities, robber
 
     def _get_piece_center(self, piece_coord, piece, terrain_centers):
@@ -502,7 +532,8 @@ class BoardFrame(tkinter.Frame):
             # these pieces are on edges
             tile_id = hexgrid.nearest_tile_to_edge(piece_coord)
             tile_coord = hexgrid.tile_id_to_coord(tile_id)
-            direction = hexgrid.tile_edge_offset_to_direction(piece_coord - tile_coord)
+            direction = hexgrid.tile_edge_offset_to_direction(
+                piece_coord - tile_coord)
             terrain_x, terrain_y = terrain_centers[tile_id]
             angle = 60*self._edge_angle_order.index(direction)
             dx = math.cos(math.radians(angle)) * self.distance_tile_to_edge()
@@ -512,7 +543,8 @@ class BoardFrame(tkinter.Frame):
             # these pieces are on nodes
             tile_id = hexgrid.nearest_tile_to_node(piece_coord)
             tile_coord = hexgrid.tile_id_to_coord(tile_id)
-            direction = hexgrid.tile_node_offset_to_direction(piece_coord - tile_coord)
+            direction = hexgrid.tile_node_offset_to_direction(
+                piece_coord - tile_coord)
             terrain_x, terrain_y = terrain_centers[tile_id]
             angle = 30 + 60*self._node_angle_order.index(direction)
             dx = math.cos(math.radians(angle)) * self._tile_radius
@@ -545,8 +577,10 @@ class BoardFrame(tkinter.Frame):
             return
         # logging.debug('Drawing number={}, HexNumber={}'.format(number.value, number))
         color = 'red' if number.value in (6, 8) else 'black'
-        self._board_canvas.create_oval(tkinterutils.circle_bbox(15, (x, y)), fill='white', tags=self._tile_tag(tile))
-        self._board_canvas.create_text(x, y, text=str(number.value), font=self._hex_font, fill=color, tags=self._tile_tag(tile))
+        self._board_canvas.create_oval(tkinterutils.circle_bbox(
+            15, (x, y)), fill='white', tags=self._tile_tag(tile))
+        self._board_canvas.create_text(x, y, text=str(
+            number.value), font=self._hex_font, fill=color, tags=self._tile_tag(tile))
 
     def _hex_points(self, radius, offset, rotate):
         offx, offy = offset
@@ -598,13 +632,13 @@ class BoardFrame(tkinter.Frame):
         direction = tag[len('port_##_'):]
         return tile_id, direction
 
-    _tile_radius  = 50
+    _tile_radius = 50
     _tile_padding = 3
     _board_center = (300, 300)
-    _tile_angle_order = ('E', 'SE', 'SW', 'W', 'NW', 'NE') # 0 + 60*index
-    _edge_angle_order = ('E', 'SE', 'SW', 'W', 'NW', 'NE') # 0 + 60*index
-    _node_angle_order = ('SE', 'S', 'SW', 'NW', 'N', 'NE') # 30 + 60*index
-    _hex_font     = (('Helvetica'), 18)
+    _tile_angle_order = ('E', 'SE', 'SW', 'W', 'NW', 'NE')  # 0 + 60*index
+    _edge_angle_order = ('E', 'SE', 'SW', 'W', 'NW', 'NE')  # 0 + 60*index
+    _node_angle_order = ('SE', 'S', 'SW', 'NW', 'N', 'NE')  # 30 + 60*index
+    _hex_font = (('Helvetica'), 18)
     _colors = {
         Terrain.wood: '#12782D',
         Terrain.brick: '#D14728',
@@ -618,69 +652,8 @@ class BoardFrame(tkinter.Frame):
         PortType.sheep: '#AEFA66',
         PortType.ore: '#8A8A8A',
         PortType.any3: 'white',
-        PortType.none: '', # transparent
+        PortType.none: '',  # transparent
     }
-
-    # Returns all information for each user. Example output with two players:
-    # {
-    #     "green (player1)": {
-    #         "settlement": [127, 180],
-    #         "road": [87, 42, 23],
-    #         "city": [22],
-    #         "resources": {
-    #             "sheep": 3,
-    #             "wood": 2,
-    #         }
-    #     },
-    #     "red (player2)": {
-    #         "settlement": [105, 100],
-    #         "road": [33],
-    #         "resources": {
-    #             "brick": 1,
-    #         }
-    #     }
-    # }
-    def get_all_user_materials(self):
-
-        user_materials = {}
-        for (_, piece_coord), piece_obj in self._board.pieces.items():
-
-            piece_owner = piece_obj.owner
-            piece_type = piece_obj.type.value
-
-            if piece_owner is None:
-                continue
-
-            if piece_owner not in user_materials:
-                user_materials[piece_owner] = {}
-
-            if piece_type not in user_materials[piece_owner]:
-                user_materials[piece_owner][piece_type] = []
-
-            # Add pieces to user dictionary
-            user_materials[piece_owner][
-                piece_type].append(piece_coord)
-
-        for player, list_of_terrains in self.game.hands.items():
-
-            if player not in user_materials:
-                user_materials[player] = {}
-
-            if "resources" not in user_materials[player]:
-                user_materials[player]["resources"] = {}
-
-            user_materials[player]["resources"][
-                "sheep"] = list_of_terrains.count(Terrain.sheep)
-            user_materials[player]["resources"][
-                "wheat"] = list_of_terrains.count(Terrain.wheat)
-            user_materials[player]["resources"][
-                "ore"] = list_of_terrains.count(Terrain.ore)
-            user_materials[player]["resources"][
-                "brick"] = list_of_terrains.count(Terrain.brick)
-            user_materials[player]["resources"][
-                "wood"] = list_of_terrains.count(Terrain.wood)
-
-        return user_materials
 
 
 class SetupGameToolbarFrame(tkinter.Frame):
@@ -696,23 +669,30 @@ class SetupGameToolbarFrame(tkinter.Frame):
             'hex_number_selection': False
         })
 
-        tkinter.Label(self, text="Players", anchor=tkinter.W).pack(side=tkinter.TOP, fill=tkinter.X)
+        tkinter.Label(self, text="Players", anchor=tkinter.W).pack(
+            side=tkinter.TOP, fill=tkinter.X)
 
         self.start_game_player_order = StartGamePlayerOrderFrame(self, game)
         self.start_game_player_order.pack()
 
-        tkinter.Label(self, text="Board", anchor=tkinter.W).pack(side=tkinter.TOP, fill=tkinter.X)
+        tkinter.Label(self, text="Board", anchor=tkinter.W).pack(
+            side=tkinter.TOP, fill=tkinter.X)
         for option in TkinterOptionWrapper(self.options):
             option.callback()
             tkinter.Checkbutton(self, text=option.text, justify=tkinter.LEFT, command=option.callback, var=option.var) \
                 .pack(side=tkinter.TOP, fill=tkinter.X)
-        tkinter.Button(self, text="Reset Board", command=self.on_reset_board, anchor=tkinter.W).pack(side=tkinter.TOP, fill=tkinter.X)
-        tkinter.Button(self, text="Reset Pieces", command=self.on_reset_pieces, anchor=tkinter.W).pack(side=tkinter.TOP, fill=tkinter.X)
-        tkinter.Button(self, text="Move Robber", command=self.on_move_robber, anchor=tkinter.W).pack(side=tkinter.TOP, fill=tkinter.X)
-        tkinter.Button(self, text="Rotate Ports", command=self.on_rotate_ports, anchor=tkinter.W).pack(side=tkinter.TOP, fill=tkinter.X)
+        tkinter.Button(self, text="Reset Board", command=self.on_reset_board,
+                       anchor=tkinter.W).pack(side=tkinter.TOP, fill=tkinter.X)
+        tkinter.Button(self, text="Reset Pieces", command=self.on_reset_pieces,
+                       anchor=tkinter.W).pack(side=tkinter.TOP, fill=tkinter.X)
+        tkinter.Button(self, text="Move Robber", command=self.on_move_robber,
+                       anchor=tkinter.W).pack(side=tkinter.TOP, fill=tkinter.X)
+        tkinter.Button(self, text="Rotate Ports", command=self.on_rotate_ports,
+                       anchor=tkinter.W).pack(side=tkinter.TOP, fill=tkinter.X)
 
         tkinter.Label(self, text="---").pack(side=tkinter.TOP)
-        btn_start_game = tkinter.Button(self, text='Start Game', command=self.on_start_game)
+        btn_start_game = tkinter.Button(
+            self, text='Start Game', command=self.on_start_game)
         btn_start_game.pack(side=tkinter.TOP, fill=tkinter.X)
 
     def on_reset_board(self):
@@ -741,7 +721,7 @@ class SetupGameToolbarFrame(tkinter.Frame):
         players = list()
         for (spinner, var), (entry, evar) in zip(self.start_game_player_order.player_order_vars,
                                                  self.start_game_player_order.player_entries_vars):
-            p = Player(int(var.get()),get_name(evar), get_color(evar ))
+            p = Player(int(var.get()), get_name(evar), get_color(evar))
             players.append(p)
 
         players.sort(key=lambda p: p.seat)
@@ -756,16 +736,19 @@ class StartGamePlayerOrderFrame(tkinter.Frame):
         self.master = master
         self.game = game
 
-        defaults = ('yurick green', 'droid blue', 'droid2 orange', 'droid3 red')
-        self.player_entries_vars = [(tkinter.Entry(self), tkinter.StringVar()) for i in range(len(defaults))]
+        defaults = ('yurick green', 'droid blue',
+                    'droid2 orange', 'droid3 red')
+        self.player_entries_vars = [
+            (tkinter.Entry(self), tkinter.StringVar()) for i in range(len(defaults))]
         for (entry, var), default in zip(self.player_entries_vars, defaults):
             var.set(default)
             entry.config(textvariable=var)
             entry.grid(row=defaults.index(default), column=1)
 
-        values = ['1','2','3','4']
-        self.player_order_vars = [(tkinter.Spinbox(self, values=values), tkinter.StringVar()) for i in range(len(values))]
-        for (entry, var),val in zip(self.player_order_vars, values):
+        values = ['1', '2', '3', '4']
+        self.player_order_vars = [(tkinter.Spinbox(
+            self, values=values), tkinter.StringVar()) for i in range(len(values))]
+        for (entry, var), val in zip(self.player_order_vars, values):
             var.set(val)
             entry.config(textvariable=var)
             entry.grid(row=int(val)-1, column=2)
@@ -784,9 +767,9 @@ class GameToolbarFrame(tkinter.Frame):
         self._cur_player_name = tkinter.StringVar()
         self.set_cur_player_name()
 
-        label_cur_player_name = tkinter.Label(self, textvariable=self._cur_player_name, anchor=tkinter.W)
+        label_cur_player_name = tkinter.Label(
+            self, textvariable=self._cur_player_name, anchor=tkinter.W)
         frame_roll = RollFrame(self, self.game)
-        frame_hands = HandsFrame(self, self.game)
         frame_undo = UndoRedoFrame(self, self.game)
         frame_robber = RobberFrame(self, self.game)
         frame_build = BuildFrame(self, self.game)
@@ -797,7 +780,6 @@ class GameToolbarFrame(tkinter.Frame):
 
         label_cur_player_name.pack(fill=tkinter.X)
         frame_roll.pack(fill=tkinter.X)
-        frame_hands.pack(fill=tkinter.X)
         frame_undo.pack(fill=tkinter.X)
         frame_robber.pack(fill=tkinter.X)
         frame_build.pack(fill=tkinter.X)
@@ -822,6 +804,27 @@ class GameToolbarFrame(tkinter.Frame):
             self._cur_player.name
         ))
 
+
+class PlayerToolbarFrame(tkinter.Frame):
+
+    def __init__(self, master, game, *args, **kwargs):
+        super(PlayerToolbarFrame, self).__init__()
+        self.master = master
+        self.game = game
+
+        self.game.observers.add(self)
+        tkinter.Label(self, textvariable="Player Information",
+                      anchor=tkinter.W).pack(fill=tkinter.X)
+        frame_hands = HandsFrame(self, self.game)
+        frame_hands.pack(fill=tkinter.X)
+
+    def set_game(self, game):
+        self.game = game
+
+    def notify(self, observable):
+        print("Creating player information toolbar")
+
+
 class HandsFrame(tkinter.Frame):
 
     def __init__(self, master, game, *args, **kwargs):
@@ -831,32 +834,75 @@ class HandsFrame(tkinter.Frame):
         self.game.observers.add(self)
 
         if self.game._cur_turn == 0:
-            self.game.hands = {self.game.players[0]: [], self.game.players[1]: [], self.game.players[2]: [], self.game.players[3]: []}
-            self.game.dev_hands = {self.game.players[0]: [], self.game.players[1]: [], self.game.players[2]: [], self.game.players[3]: []}
+            self.game.hands = {self.game.players[0]: [], self.game.players[1]: [
+            ], self.game.players[2]: [], self.game.players[3]: []}
+            self.game.dev_hands = {self.game.players[0]: [], self.game.players[1]: [
+            ], self.game.players[2]: [], self.game.players[3]: []}
             self.game.dev_deck = ['Knight', 'Knight', 'Knight', 'Knight', 'Knight',
-                'Knight', 'Knight', 'Knight', 'Knight', 'Knight',
-                'Knight', 'Knight', 'Knight', 'Knight',
-                'Road Builder', 'Road Builder',
-                'Monopoly', 'Monopoly',
-                'Year of Plenty', 'Year of Plenty',
-                'Victory Point', 'Victory Point', 'Victory Point', 'Victory Point', 'Victory Point'
-                    ]
+                                  'Knight', 'Knight', 'Knight', 'Knight', 'Knight',
+                                  'Knight', 'Knight', 'Knight', 'Knight',
+                                  'Road Builder', 'Road Builder',
+                                  'Monopoly', 'Monopoly',
+                                  'Year of Plenty', 'Year of Plenty',
+                                  'Victory Point', 'Victory Point', 'Victory Point', 'Victory Point', 'Victory Point'
+                                  ]
 
-        self.player_hands = [tkinter.StringVar() for i in range(4)]
+        self.player_resources = [tkinter.StringVar() for i in range(4)]
+        self.player_victory_points = [tkinter.StringVar() for i in range(4)]
+        self.player_knights = [tkinter.StringVar() for i in range(4)]
+        self.player_dev_cards = [tkinter.StringVar() for i in range(4)]
+        self.player_longest_road = [tkinter.StringVar() for i in range(4)]
 
-        i = 0
-        for player, resources in self.game.hands.items():
-            tkinter.Label(self, text=player, font=("Helvetica", 9, "bold")).pack(anchor=tkinter.W)
-            tkinter.Label(self, textvariable=self.player_hands[i], font=("Helvetica", 8)).pack(anchor=tkinter.W)
-            i += 1
+        for i, player in enumerate(game.players):
+            tkinter.Label(self, text=player, font=(
+                "Helvetica", 12, "bold")).pack(anchor=tkinter.W)
+
+            tkinter.Label(self, text="Resources", font=(
+                "Helvetica", 8, "bold")).pack(anchor=tkinter.W)
+            tkinter.Label(self, textvariable=self.player_resources[i], font=(
+                "Helvetica", 8)).pack(anchor=tkinter.W)
+
+            tkinter.Label(self, text="Dev Cards", font=(
+                "Helvetica", 8, "bold")).pack(anchor=tkinter.W)
+            tkinter.Label(self, textvariable=self.player_dev_cards[i], font=(
+                "Helvetica", 8)).pack(anchor=tkinter.W)
+
+            tkinter.Label(self, text="Victory Points", font=(
+                "Helvetica", 8, "bold")).pack(anchor=tkinter.W)
+            tkinter.Label(self, textvariable=self.player_victory_points[i], font=(
+                "Helvetica", 8)).pack(anchor=tkinter.W)
+
+            tkinter.Label(self, text="Knights", font=(
+                "Helvetica", 8, "bold")).pack(anchor=tkinter.W)
+            tkinter.Label(self, textvariable=self.player_knights[i], font=(
+                "Helvetica", 8)).pack(anchor=tkinter.W)
+
+            tkinter.Label(self, text="Longest Road", font=(
+                "Helvetica", 8, "bold")).pack(anchor=tkinter.W)
+            tkinter.Label(self, textvariable=self.player_longest_road[i], font=(
+                "Helvetica", 8)).pack(anchor=tkinter.W)
 
     def notify(self, observable):
-        i = 0
-        for player, resources in self.game.hands.items():
-            res_str = "{}".format(resources)
-            self.player_hands[i].set(res_str)
-            i += 1
 
+        player_info = self.game.get_all_user_materials()
+
+        i = 0
+        for player, player_materials in player_info.items():
+
+            resources = "{}".format(player_materials["resources"])
+            victory_points = "{}".format(player_materials["victory_points"])
+            knights = "{}".format(player_materials["knights"])
+            dev_cards = "{}".format(player_materials["dev_cards"])
+            longest_road = "{}".format(player_materials["longest_road"])
+
+            self.player_resources[i].set("Sheep: {}, Wood: {}, Wheat: {}, Brick: {}, Ore: {}".format(player_materials["resources"].count(Terrain.sheep), player_materials["resources"].count(
+                Terrain.wood), player_materials["resources"].count(Terrain.wheat), player_materials["resources"].count(Terrain.brick), player_materials["resources"].count(Terrain.ore)))
+            self.player_victory_points[i].set(victory_points)
+            self.player_knights[i].set(knights)
+            self.player_dev_cards[i].set(dev_cards)
+            self.player_longest_road[i].set(longest_road)
+
+            i += 1
 
 
 class UndoRedoFrame(tkinter.Frame):
@@ -901,12 +947,14 @@ class RollFrame(tkinter.Frame):
         self.game = game
         self.game.observers.add(self)
 
-        self.roll = tkinter.Button(self, text='Roll Dice', command=self.on_dice_roll)
+        self.roll = tkinter.Button(
+            self, text='Roll Dice', command=self.on_dice_roll)
         self.roll.pack(fill=tkinter.X, expand=True)
 
         self.last_roll_text = tkinter.StringVar()
         self.last_roll_text.set("Last Roll: 0")
-        self.last_roll = tkinter.Label(self, textvariable=self.last_roll_text, font=("Helvetica", 9, "bold")).pack(anchor=tkinter.W)
+        self.last_roll = tkinter.Label(self, textvariable=self.last_roll_text, font=(
+            "Helvetica", 9, "bold")).pack(anchor=tkinter.W)
         self.set_states()
 
     def on_dice_roll(self):
@@ -944,7 +992,6 @@ class RollFrame(tkinter.Frame):
         self.set_states()
 
 
-
 class RobberFrame(tkinter.Frame):
 
     def __init__(self, master, game):
@@ -958,8 +1005,10 @@ class RobberFrame(tkinter.Frame):
         self.steal_frame = tkinter.Frame(self)
         self.player_strs = [str(player) for player in self.game.players]
         self.player_str = tkinter.StringVar()
-        self.player_picker = tkinter.OptionMenu(self.steal_frame, self.player_str, self.player_str.get(), *self.player_strs) # reassigned in set_states
-        self.steal = tkinter.Button(self.steal_frame, text="Steal", state=tkinter.DISABLED, command=self.on_steal)
+        self.player_picker = tkinter.OptionMenu(self.steal_frame, self.player_str, self.player_str.get(
+        ), *self.player_strs)  # reassigned in set_states
+        self.steal = tkinter.Button(
+            self.steal_frame, text="Steal", state=tkinter.DISABLED, command=self.on_steal)
 
         self.player_picker.pack(side=tkinter.LEFT, fill=tkinter.X, expand=True)
         self.steal.pack(side=tkinter.RIGHT, fill=tkinter.X, expand=True)
@@ -973,7 +1022,8 @@ class RobberFrame(tkinter.Frame):
         self.set_states()
 
     def set_states(self):
-        stealable_strs = [str(player) for player in self.game.stealable_players()]
+        stealable_strs = [str(player)
+                          for player in self.game.stealable_players()]
         if stealable_strs:
             self.player_str.set(stealable_strs[0])
         else:
@@ -995,7 +1045,8 @@ class RobberFrame(tkinter.Frame):
         for player in self.game.players:
             if victim_str == str(player):
                 victim = player
-        logging.debug('in view, stealing from victim={} (victim_str={})'.format(victim, victim_str))
+        logging.debug(
+            'in view, stealing from victim={} (victim_str={})'.format(victim, victim_str))
         self.game.steal(victim)
 
     def _other_player_strs(self):
@@ -1012,10 +1063,14 @@ class BuildFrame(tkinter.Frame):
         self.game.observers.add(self)
 
         self.label = tkinter.Label(self, text="Build", anchor=tkinter.W)
-        self.road = tkinter.Button(self, text="Road", command=self.on_buy_road, anchor=tkinter.W)
-        self.settlement = tkinter.Button(self, text="Settlement", command=self.on_buy_settlement, anchor=tkinter.E)
-        self.city = tkinter.Button(self, text="City", command=self.on_buy_city, anchor=tkinter.W)
-        self.dev_card = tkinter.Button(self, text="Dev Card", command=self.on_buy_dev_card, anchor=tkinter.E)
+        self.road = tkinter.Button(
+            self, text="Road", command=self.on_buy_road, anchor=tkinter.W)
+        self.settlement = tkinter.Button(
+            self, text="Settlement", command=self.on_buy_settlement, anchor=tkinter.E)
+        self.city = tkinter.Button(
+            self, text="City", command=self.on_buy_city, anchor=tkinter.W)
+        self.dev_card = tkinter.Button(
+            self, text="Dev Card", command=self.on_buy_dev_card, anchor=tkinter.E)
 
         self.bind_all('r', lambda e: self.on_buy_road())
         self.bind_all('s', lambda e: self.on_buy_settlement())
@@ -1035,9 +1090,11 @@ class BuildFrame(tkinter.Frame):
 
     def set_states(self):
         self.road.configure(state=can_do[self.game.state.can_buy_road()])
-        self.settlement.configure(state=can_do[self.game.state.can_buy_settlement()])
+        self.settlement.configure(
+            state=can_do[self.game.state.can_buy_settlement()])
         self.city.configure(state=can_do[self.game.state.can_buy_city()])
-        self.dev_card.configure(state=can_do[self.game.state.can_buy_dev_card()])
+        self.dev_card.configure(
+            state=can_do[self.game.state.can_buy_dev_card()])
 
     def on_buy_road(self):
         # actual road purchase and catanlog happens in the piece onclick in BoardFrame
@@ -1063,22 +1120,29 @@ class PlayDevCardFrame(tkinter.Frame):
         self.game = game
         self.game.observers.add(self)
 
-        self.label = tkinter.Label(self, text="Play Dev Card", anchor=tkinter.W)
-        self.knight = tkinter.Button(self, text="Knight", command=self.on_knight)
-        self.road_builder = tkinter.Button(self, text="Road Builder", command=self.on_road_builder)
-        self.victory_point = tkinter.Button(self, text="Victory Point", command=self.on_victory_point)
+        self.label = tkinter.Label(
+            self, text="Play Dev Card", anchor=tkinter.W)
+        self.knight = tkinter.Button(
+            self, text="Knight", command=self.on_knight)
+        self.road_builder = tkinter.Button(
+            self, text="Road Builder", command=self.on_road_builder)
+        self.victory_point = tkinter.Button(
+            self, text="Victory Point", command=self.on_victory_point)
 
         self.bind_all('k', lambda e: self.on_knight())
 
         self.monopoly_frame = tkinter.Frame(self)
-        self.monopoly = tkinter.Button(self.monopoly_frame, text="Monopoly", command=self.on_monopoly)
+        self.monopoly = tkinter.Button(
+            self.monopoly_frame, text="Monopoly", command=self.on_monopoly)
         option_list = list(t.value for t in Terrain if t != Terrain.desert)
         self.monopoly_choice = tkinter.StringVar()
         self.monopoly_choice.set(option_list[0])
-        self.monopoly_picker = tkinter.OptionMenu(self.monopoly_frame, self.monopoly_choice, *option_list)
+        self.monopoly_picker = tkinter.OptionMenu(
+            self.monopoly_frame, self.monopoly_choice, *option_list)
 
         self.year_of_plenty_frame = tkinter.Frame(self)
-        self.year_of_plenty = tkinter.Button(self.year_of_plenty_frame, text="Year of Plenty", command=self.on_year_of_plenty)
+        self.year_of_plenty = tkinter.Button(
+            self.year_of_plenty_frame, text="Year of Plenty", command=self.on_year_of_plenty)
         option_list = list(t.value for t in Terrain if t != Terrain.desert)
         self.year_of_plenty_choice1 = tkinter.StringVar()
         self.year_of_plenty_choice2 = tkinter.StringVar()
@@ -1093,12 +1157,16 @@ class PlayDevCardFrame(tkinter.Frame):
 
         self.set_states()
 
-        self.monopoly_picker.pack(side=tkinter.LEFT, fill=tkinter.X, expand=True)
+        self.monopoly_picker.pack(
+            side=tkinter.LEFT, fill=tkinter.X, expand=True)
         self.monopoly.pack(side=tkinter.RIGHT, fill=tkinter.X, expand=True)
 
-        self.year_of_plenty_picker1.pack(side=tkinter.LEFT, fill=tkinter.X, expand=True)
-        self.year_of_plenty_picker2.pack(side=tkinter.LEFT, fill=tkinter.X, expand=True)
-        self.year_of_plenty.pack(side=tkinter.RIGHT, fill=tkinter.X, expand=True)
+        self.year_of_plenty_picker1.pack(
+            side=tkinter.LEFT, fill=tkinter.X, expand=True)
+        self.year_of_plenty_picker2.pack(
+            side=tkinter.LEFT, fill=tkinter.X, expand=True)
+        self.year_of_plenty.pack(
+            side=tkinter.RIGHT, fill=tkinter.X, expand=True)
 
         self.label.pack(fill=tkinter.X)
         self.knight.pack(fill=tkinter.X, expand=True)
@@ -1112,20 +1180,28 @@ class PlayDevCardFrame(tkinter.Frame):
 
     def set_states(self):
         self.knight.configure(state=can_do[self.game.state.can_play_knight()])
-        self.monopoly.configure(state=can_do[self.game.state.can_play_monopoly()])
-        self.monopoly_picker.configure(state=can_do[self.game.state.can_play_monopoly()])
-        self.year_of_plenty.configure(state=can_do[self.game.state.can_play_year_of_plenty()])
-        self.year_of_plenty_picker1.configure(state=can_do[self.game.state.can_play_year_of_plenty()])
-        self.year_of_plenty_picker2.configure(state=can_do[self.game.state.can_play_year_of_plenty()])
-        self.road_builder.configure(state=can_do[self.game.state.can_play_road_builder()])
-        self.victory_point.configure(state=can_do[self.game.state.can_play_victory_point()])
+        self.monopoly.configure(
+            state=can_do[self.game.state.can_play_monopoly()])
+        self.monopoly_picker.configure(
+            state=can_do[self.game.state.can_play_monopoly()])
+        self.year_of_plenty.configure(
+            state=can_do[self.game.state.can_play_year_of_plenty()])
+        self.year_of_plenty_picker1.configure(
+            state=can_do[self.game.state.can_play_year_of_plenty()])
+        self.year_of_plenty_picker2.configure(
+            state=can_do[self.game.state.can_play_year_of_plenty()])
+        self.road_builder.configure(
+            state=can_do[self.game.state.can_play_road_builder()])
+        self.victory_point.configure(
+            state=can_do[self.game.state.can_play_victory_point()])
 
     def on_knight(self):
         logging.debug('play dev card: knight clicked')
         self.game.play_knight()
 
     def on_monopoly(self):
-        logging.debug('play dev card: monopoly clicked, resource={}'.format(self.monopoly_choice.get()))
+        logging.debug('play dev card: monopoly clicked, resource={}'.format(
+            self.monopoly_choice.get()))
         self.game.play_monopoly(Terrain(self.monopoly_choice.get()))
 
     def on_year_of_plenty(self):
@@ -1138,7 +1214,8 @@ class PlayDevCardFrame(tkinter.Frame):
 
     def on_road_builder(self):
         logging.debug('play dev card: road builder clicked')
-        self.game.set_state(states.GameStatePlacingRoadBuilderPieces(self.game))
+        self.game.set_state(
+            states.GameStatePlacingRoadBuilderPieces(self.game))
 
     def on_victory_point(self):
         logging.debug('play dev card: victory point clicked')
@@ -1154,7 +1231,8 @@ class EndTurnFrame(tkinter.Frame):
         self.game.observers.add(self)
 
         self.label = tkinter.Label(self, text='--')
-        self.end_turn = tkinter.Button(self, text='End Turn', state=tkinter.DISABLED, command=self.on_end_turn)
+        self.end_turn = tkinter.Button(
+            self, text='End Turn', state=tkinter.DISABLED, command=self.on_end_turn)
 
         self.bind_all('<space>', self.on_end_turn)
 
@@ -1184,7 +1262,8 @@ class EndGameFrame(tkinter.Frame):
         self.master = master
         self.game = game
 
-        self.end_game = tkinter.Button(self, text='End Game', state=tkinter.NORMAL, command=self.on_end_game)
+        self.end_game = tkinter.Button(
+            self, text='End Game', state=tkinter.NORMAL, command=self.on_end_game)
         self.end_game.pack(side=tkinter.TOP, fill=tkinter.X)
 
     def on_end_game(self):
@@ -1237,7 +1316,8 @@ class TkinterOptionWrapper:
             var = tkinter.BooleanVar()
             var.set(value)
             cb = functools.partial(cb_template, name, var)
-            self._opts[name] = self.Option(self._descriptions.get(name) or name, var, cb)
+            self._opts[name] = self.Option(
+                self._descriptions.get(name) or name, var, cb)
 
     def __getattr__(self, name):
         attr = self.__dict__.get(name)
