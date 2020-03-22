@@ -822,7 +822,7 @@ class PlayerToolbarFrame(tkinter.Frame):
         self.game = game
 
     def notify(self, observable):
-        print("Creating player information toolbar")
+        pass
 
 
 class HandsFrame(tkinter.Frame):

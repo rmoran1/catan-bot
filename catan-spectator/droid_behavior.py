@@ -19,26 +19,38 @@ def droid_move(board_frame, board):
                 PieceType.road, best_road_coord(board))
 
     elif board_frame.game.state.is_in_game():
-        options = best_win_condition(board_frame)
-        i = options.index(max(options))  # settlement, road, city, dev_card
 
-        if board_frame.game.state.can_buy_settlement() and i == 0:
-            board_frame.droid_piece_click(
-                PieceType.settlement, best_settlement_coord(board))
+        next_moves = best_win_condition(board_frame)
 
-        if board_frame.game.state.can_buy_road() and i == 1:
-            board_frame.droid_piece_click(
-                PieceType.road, best_road_coord(board))
+        for approach_type in next_moves:
 
-        if board_frame.game.state.can_buy_city() and i == 2:
-            board_frame.droid_piece_click(
-                PieceType.city, best_settlement_coord(board))
+            if approach_type == "sett":
 
-        # if board_frame.game.state.can_buy_dev_card() and i == 3:
-        #   board_frame.droid_piece_click(PieceType.dev_card, best_settlement_coord(board))
+                if board_frame.game.state.can_buy_settlement():
+                    board_frame.droid_piece_click(PieceType.settlement, best_settlement_coord(board))
+                    break
 
-    # examples of future states to be implemented
-    # if board_frame.game.state.can_play_knight():
+            if approach_type == "road":
+
+                if board_frame.game.state.can_buy_road():
+                    board_frame.droid_piece_click(PieceType.road, best_road_coord(board))
+                    break
+
+            if approach_type == "city":
+
+                if board_frame.game.state.can_buy_city():
+                    board_frame.droid_piece_click(PieceType.city, best_settlement_coord(board))
+                    break
+
+            if approach_type == "devc":
+
+                if board_frame.game.state.can_buy_dev_card() and i == 3:
+                    board_frame.droid_piece_click(PieceType.dev_card, best_settlement_coord(board))
+                    break
+
+
+            # examples of future states to be implemented
+            # if board_frame.game.state.can_play_knight():
 
     board_frame.redraw()
 
@@ -91,8 +103,6 @@ def best_road_coord(board):
 
     for (typ, coord), piece in reversed(list(board.pieces.items())):
 
-        print("Type: {}    Coord: {}     Owner: {}".format(
-            typ, coord, piece.owner))
         if typ != hexgrid.NODE:
             continue
 
@@ -189,16 +199,48 @@ def best_win_condition(board_frame):
 
     sett = (user_materials[player]["resources"]['sheep'] + user_materials[player]["resources"]['wood'] +
             user_materials[player]["resources"]['brick'] + user_materials[player]["resources"]['wheat']) / 4
+
     road = (user_materials[player]["resources"]['wood'] +
             user_materials[player]["resources"]['brick']) / 2
+
     city = (user_materials[player]["resources"]['ore'] * 3 +
             user_materials[player]["resources"]['wheat'] * 2) / 5
+
     devc = (user_materials[player]["resources"]['ore'] + user_materials[player]
             ["resources"]['wheat'] + user_materials[player]["resources"]['sheep']) / 3
 
-    # What to do with this
-    # try to buy each option in order of highest to lowest
-    print("~~~ Best option for {}: settlement {} road {} city {} devc {} ~~~".format(
-        player, sett, road, city, devc))
 
-    return [sett,road,city,devc]
+    # TODO(bouch): Update the player's factors here (they start at 1)
+    # You might have to scan the hexgrid to see what exactly you want to prioritize.
+    # I guess if you see how far your settlements are from other peoples, then 
+    # you might want to increase the road factor to take advantage of the space? Just an idea.
+    # The numbers I put below are just to demonstrate what you should do.
+
+    user_materials[player]["factors"]["sett"] += 0.5
+    user_materials[player]["factors"]["road"] += -0.4
+    user_materials[player]["factors"]["city"] += 0.7
+    user_materials[player]["factors"]["devc"] += 0.5
+
+    factored_sett = sett * user_materials[player]["factors"]["sett"]
+    factored_road = road * user_materials[player]["factors"]["road"]
+    factored_city = city * user_materials[player]["factors"]["city"]
+    factored_devc = devc * user_materials[player]["factors"]["devc"]
+
+    # TODO(everybody): Should we pass instead of make a move here?
+    PASSING_CONDITION = False
+    if PASSING_CONDITION is True:
+        return None
+
+    print("~~~ Best option for {}: settlement {} road {} city {} devc {} ~~~".format(
+        player, factored_sett, factored_road, factored_city, factored_devc))
+
+    next_moves = {
+        "sett": factored_sett,
+        "road": factored_road,
+        "city": factored_city,
+        "devc": factored_devc
+    }
+
+    ordered_next_moves = {k: v for k, v in sorted(next_moves.items(), key=lambda item: item[1])}
+
+    return ordered_next_moves.keys()

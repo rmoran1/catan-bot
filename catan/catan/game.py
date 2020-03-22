@@ -287,7 +287,7 @@ class Game(object):
                         print('gave', self.board.pieces[(hexgrid.NODE, coord)].owner, 'a', tile.terrain)
 
             self.set_state(catan.states.GameStateDuringTurnAfterRoll(self))
-        print(self.hands)
+        # print(self.hands)
 
     @undoredo.undoable
     def move_robber(self, tile):
@@ -488,6 +488,14 @@ class Game(object):
             user_materials[player]["longest_road"] = "TBC"
             user_materials[player]["knights"] = "TBC"
             user_materials[player]["victory_points"] = "TBC"
+
+
+        if "factors" not in user_materials[player]:
+            user_materials[player]["factors"] = {}
+            user_materials[player]["factors"]["sett"] = 1
+            user_materials[player]["factors"]["road"] = 1
+            user_materials[player]["factors"]["city"] = 1
+            user_materials[player]["factors"]["devc"] = 1
 
         return user_materials
 
