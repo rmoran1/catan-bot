@@ -249,10 +249,13 @@ def best_win_condition(board_frame,board):
             continue
 
         if tile_number > 7:
-            best_settlement_score += (13 - tile_number)
+            curr_settlement_score += (13 - tile_number)
 
         if tile_number < 7:
-            best_settlement_score += (tile_number - 1)
+            curr_settlement_score += (tile_number - 1)
+
+        if curr_settlement_score > best_settlement_score:
+            best_settlement_score = curr_settlement_score
 
     user_materials[player]["factors"]["city"] += 0.2 * (best_settlement_score) - 1.6 # neutral factor if you have a sett with 8 dots
 
