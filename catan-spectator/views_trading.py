@@ -247,25 +247,47 @@ class WhichResourcesInputFrame(tk.Frame):
     def set_states(self):
         getter = self.trade().getter()
         num_getting = self.trade().num_getting()
-        giving_types = [giving_type.value for _, giving_type in self.trade().giving()]
+        giving_types = []
+        getting_types = []
+        for terr in self.trade().giving():
+            for _ in range(terr[0]):
+                giving_types.append(terr[1].value)
+        for terr in self.trade().getting():
+            for _ in range(terr[0]):
+                getting_types.append(terr[1].value)
+        '''giving_types = [giving_type.value for _, giving_type in self.trade().giving()]
         getting_types = [getting_type.value for _, getting_type in self.trade().getting()]
-        '''for btn in self.get_btns:
+        for btn in self.get_btns:
             if hasattr(getter, 'type') in PortType:
                 btn.configure(state=can_do[num_getting < 1
                                            and btn['text'] != getter.type.value
                                            and btn['text'] not in giving_types])'''
-        for count, terr in enumerate([Terrain.wood, Terrain.brick, Terrain.wheat, Terrain.sheep, Terrain.ore]):
-            if self.master.master.game.hands[self.trade().giver()].count(terr) - giving_types.count(terr.value) > 0 and terr.value not in getting_types:
-                self.give_btns[count].configure(state=can_do[True])
-            else:
-                self.give_btns[count].configure(state=can_do[False])
-            try:
-                if self.master.master.game.hands[getter].count(terr) - getting_types.count(terr.value) > 0 and terr.value not in giving_types:
-                    self.get_btns[count].configure(state=can_do[True])
+        if hasattr(getter, 'type'):
+            for count, terr in enumerate([Terrain.wood, Terrain.brick, Terrain.wheat, Terrain.sheep, Terrain.ore]):
+                if getter.type == PortType.any4:
+                    minnum = 3
+                elif getter.type == PortType.any3:
+                    minnum = 2
                 else:
-                    self.get_btns[count].configure(state=can_do[False])
-            except KeyError:
-                pass
+                    minnum = 1
+                if self.master.master.game.hands[self.trade().giver()].count(terr) - giving_types.count(terr.value) > minnum and terr.value not in getting_types:
+                    self.give_btns[count].configure(state=can_do[True])
+                else:
+                    self.give_btns[count].configure(state=can_do[False])
+                self.get_btns[count].configure(state=can_do[True])
+        else:
+            for count, terr in enumerate([Terrain.wood, Terrain.brick, Terrain.wheat, Terrain.sheep, Terrain.ore]):
+                if self.master.master.game.hands[self.trade().giver()].count(terr) - giving_types.count(terr.value) > 0 and terr.value not in getting_types:
+                    self.give_btns[count].configure(state=can_do[True])
+                else:
+                    self.give_btns[count].configure(state=can_do[False])
+                try:
+                    if self.master.master.game.hands[getter].count(terr) - getting_types.count(terr.value) > 0 and terr.value not in giving_types:
+                        self.get_btns[count].configure(state=can_do[True])
+                    else:
+                        self.get_btns[count].configure(state=can_do[False])
+                except KeyError:
+                    pass
 
     def on_give(self, terrain):
         getter = self.trade().getter()
@@ -284,6 +306,7 @@ class WhichResourcesInputFrame(tk.Frame):
     def on_get(self, terrain):
         self.trade().get(terrain)
         self.master.notify()
+        self.set_states()
 
     def trade(self):
         return self.master.master.trade
