@@ -378,6 +378,17 @@ class Game(object):
         giver = trade.giver()
         giving = trade.giving()
         getting = trade.getting()
+        for terr in giving:
+            for _ in range(0, terr[0]):
+                self.hands[giver].remove(terr[1])
+                if not (hasattr(trade.getter(), 'type') and trade.getter().type in catan.board.PortType):
+                    self.hands[trade.getter()].append(terr[1])
+        for terr in getting:
+            for _ in range(0, terr[0]):
+                if not (hasattr(trade.getter(), 'type') and trade.getter().type in catan.board.PortType):
+                    self.hands[trade.getter()].remove(terr[1])
+                self.hands[giver].append(terr[1])
+            
         if hasattr(trade.getter(), 'type') and trade.getter().type in catan.board.PortType:
             getter = trade.getter()
             self.catanlog.log_trades_with_port(giver, giving, getter, getting)
@@ -386,6 +397,7 @@ class Game(object):
             getter = trade.getter()
             self.catanlog.log_trades_with_player(giver, giving, getter, getting)
             logging.debug('trading {} to player={} to get={}'.format(giving, getter, getting))
+
         self.notify_observers()
 
     @undoredo.undoable

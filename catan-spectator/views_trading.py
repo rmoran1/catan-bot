@@ -134,7 +134,8 @@ class WithWhichPlayerFrame(tk.Frame):
     def set_states(self):
         for player_btn, player in zip(self.player_btns, self.master.game.players.copy()):
             state = (self.master.game.state.can_trade()
-                     and self.master.game.get_cur_player() != player)
+                     and self.master.game.get_cur_player() != player
+                     and len(self.master.game.hands[player]) > 0)
             player_btn.configure(state=can_do[state])
 
     def can_make_trade(self):
@@ -247,11 +248,24 @@ class WhichResourcesInputFrame(tk.Frame):
         getter = self.trade().getter()
         num_getting = self.trade().num_getting()
         giving_types = [giving_type.value for _, giving_type in self.trade().giving()]
-        for btn in self.get_btns:
+        getting_types = [getting_type.value for _, getting_type in self.trade().getting()]
+        '''for btn in self.get_btns:
             if hasattr(getter, 'type') in PortType:
                 btn.configure(state=can_do[num_getting < 1
                                            and btn['text'] != getter.type.value
-                                           and btn['text'] not in giving_types])
+                                           and btn['text'] not in giving_types])'''
+        for count, terr in enumerate([Terrain.wood, Terrain.brick, Terrain.wheat, Terrain.sheep, Terrain.ore]):
+            if self.master.master.game.hands[self.trade().giver()].count(terr) - giving_types.count(terr.value) > 0 and terr.value not in getting_types:
+                self.give_btns[count].configure(state=can_do[True])
+            else:
+                self.give_btns[count].configure(state=can_do[False])
+            try:
+                if self.master.master.game.hands[getter].count(terr) - getting_types.count(terr.value) > 0 and terr.value not in giving_types:
+                    self.get_btns[count].configure(state=can_do[True])
+                else:
+                    self.get_btns[count].configure(state=can_do[False])
+            except KeyError:
+                pass
 
     def on_give(self, terrain):
         getter = self.trade().getter()
@@ -265,6 +279,7 @@ class WhichResourcesInputFrame(tk.Frame):
                 num = 2
         self.trade().give(terrain, num=num)
         self.master.notify()
+        self.set_states()
 
     def on_get(self, terrain):
         self.trade().get(terrain)
