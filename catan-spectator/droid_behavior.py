@@ -20,37 +20,32 @@ def droid_move(board_frame, board):
 
     elif board_frame.game.state.is_in_game():
 
-        next_moves = best_win_condition(board_frame)
+        next_moves = best_win_condition(board_frame,board)
 
         for approach_type in next_moves:
 
             if approach_type == "sett":
 
-                if board_frame.game.state.can_buy_settlement():
+                while board_frame.game.state.can_buy_settlement():
                     board_frame.droid_piece_click(PieceType.settlement, best_settlement_coord(board))
-                    break
 
             if approach_type == "road":
 
-                if board_frame.game.state.can_buy_road():
+                while board_frame.game.state.can_buy_road():
                     board_frame.droid_piece_click(PieceType.road, best_road_coord(board))
-                    break
 
             if approach_type == "city":
 
-                if board_frame.game.state.can_buy_city():
+                while board_frame.game.state.can_buy_city():
                     board_frame.droid_piece_click(PieceType.city, best_settlement_coord(board))
-                    break
 
             if approach_type == "devc":
 
-                if board_frame.game.state.can_buy_dev_card() and i == 3:
+                while board_frame.game.state.can_buy_dev_card():
                     board_frame.droid_piece_click(PieceType.dev_card, best_settlement_coord(board))
-                    break
 
+        user_materials[player]["turns_taken"] += 1
 
-            # examples of future states to be implemented
-            # if board_frame.game.state.can_play_knight():
 
     board_frame.redraw()
 
@@ -166,7 +161,7 @@ def get_user_pieces(board):
     return user_pieces
 
 
-def best_win_condition(board_frame):
+def best_win_condition(board_frame,board):
 
     # BASIC HIGH LEVEL STRATEGY
 
@@ -197,6 +192,27 @@ def best_win_condition(board_frame):
             user_materials[player]["resources"][
                 tile_terrain] += (tile_number - 1)
 
+    for city_coord in user_materials[player]["city"]:
+
+        tile_id = hexgrid.nearest_tile_to_node_using_tiles(
+            tile_ids, city_coord)
+
+        tile_number = board_frame._board.tiles[
+            tile_id - 1].number.value
+        tile_terrain = board_frame._board.tiles[
+            tile_id - 1].terrain.value
+
+        if tile_number is None:
+            continue
+
+        if tile_number > 7:
+            user_materials[player]["resources"][
+                tile_terrain] += 2*(13 - tile_number)
+
+        if tile_number < 7:
+            user_materials[player]["resources"][
+                tile_terrain] += 2*(tile_number - 1)
+
     sett = (user_materials[player]["resources"]['sheep'] + user_materials[player]["resources"]['wood'] +
             user_materials[player]["resources"]['brick'] + user_materials[player]["resources"]['wheat']) / 4
 
@@ -212,14 +228,46 @@ def best_win_condition(board_frame):
 
     # TODO(bouch): Update the player's factors here (they start at 1)
     # You might have to scan the hexgrid to see what exactly you want to prioritize.
-    # I guess if you see how far your settlements are from other peoples, then 
+    # I guess if you see how far your settlements are from other peoples, then
     # you might want to increase the road factor to take advantage of the space? Just an idea.
     # The numbers I put below are just to demonstrate what you should do.
 
-    user_materials[player]["factors"]["sett"] += 0.5
-    user_materials[player]["factors"]["road"] += -0.4
-    user_materials[player]["factors"]["city"] += 0.7
-    user_materials[player]["factors"]["devc"] += 0.5
+    #CITY FACTORS (looking at what settlement to upgrade)
+    best_settlement_score = 0
+    for settlement_coord in user_materials[player]["settlement"]:
+
+        curr_settlement_score = 0
+        tile_id = hexgrid.nearest_tile_to_node_using_tiles(
+            tile_ids, settlement_coord)
+
+        tile_number = board_frame._board.tiles[
+            tile_id - 1].number.value
+        tile_terrain = board_frame._board.tiles[
+            tile_id - 1].terrain.value
+
+        if tile_number is None:
+            continue
+
+        if tile_number > 7:
+            best_settlement_score += (13 - tile_number)
+
+        if tile_number < 7:
+            best_settlement_score += (tile_number - 1)
+
+    user_materials[player]["factors"]["city"] += 0.2 * (best_settlement_score) - 1.6 # neutral factor if you have a sett with 8 dots
+
+    #ROAD FACTORS
+    # Good Road factor based on longest road calculation, not yet implemented
+    # For now road factor based on number of turns into game, also useful so may keep going forward
+    user_materials[player]["factors"]["road"] += 2 - 0.25*(user_materials[player]["turns_taken"]) #earlier into the game, want to build more roads
+
+    #SETTLEMENT FACTORS
+    # Settlement factor based on best available settlement score
+    # maybe TODO: limit options to within close range of your roads?
+    user_materials[player]["factors"]["sett"] += 0.2 * (board.scores[best_settlement_coord(board)]) - 1.6
+
+    #DEV CARD FACTORS
+    user_materials[player]["factors"]["devc"] += 0 # dev cards are best to buy when nothing else is good, so no factors makes sense
 
     factored_sett = sett * user_materials[player]["factors"]["sett"]
     factored_road = road * user_materials[player]["factors"]["road"]

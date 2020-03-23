@@ -388,7 +388,7 @@ class Game(object):
                 if not (hasattr(trade.getter(), 'type') and trade.getter().type in catan.board.PortType):
                     self.hands[trade.getter()].remove(terr[1])
                 self.hands[giver].append(terr[1])
-            
+
         if hasattr(trade.getter(), 'type') and trade.getter().type in catan.board.PortType:
             getter = trade.getter()
             self.catanlog.log_trades_with_port(giver, giving, getter, getting)
@@ -476,7 +476,7 @@ class Game(object):
             user_materials[player]["dev_cards"] = "None"
             user_materials[player]["victory_points"] = 0
 
-        
+
         for (_, piece_coord), piece_obj in self.board.pieces.items():
 
             piece_owner = piece_obj.owner
@@ -508,6 +508,9 @@ class Game(object):
             user_materials[player]["factors"]["road"] = 1
             user_materials[player]["factors"]["city"] = 1
             user_materials[player]["factors"]["devc"] = 1
+
+        if "turns_taken" not in user_materials[player]:
+            user_materials[player]["turns_taken"] = 0
 
         return user_materials
 
