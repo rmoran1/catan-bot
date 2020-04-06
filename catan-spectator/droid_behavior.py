@@ -8,6 +8,7 @@ _edge_directions = ['NW', 'NE', 'E', 'SE', 'SW', 'W']
 
 def droid_move(board_frame, board):
 
+    user_materials = board_frame.get_all_user_materials()
     # BASIC CONTROL MECHANISM
     if board_frame.game.state.is_in_pregame():
 
@@ -27,11 +28,13 @@ def droid_move(board_frame, board):
             if approach_type == "sett":
 
                 while board_frame.game.state.can_buy_settlement():
+                    user_materials[player]["have_built_sett"] = 1
                     board_frame.droid_piece_click(PieceType.settlement, best_settlement_coord(board))
 
             if approach_type == "road":
 
                 while board_frame.game.state.can_buy_road():
+                    user_materials[player]["have_built_sett"] = 1
                     board_frame.droid_piece_click(PieceType.road, best_road_coord(board))
 
             if approach_type == "city":
@@ -263,11 +266,17 @@ def best_win_condition(board_frame,board):
     # Good Road factor based on longest road calculation, not yet implemented
     # For now road factor based on number of turns into game, also useful so may keep going forward
     user_materials[player]["factors"]["road"] += 2 - 0.25*(user_materials[player]["turns_taken"]) #earlier into the game, want to build more roads
+    #QUASI BUILD ORDER
+    if user_materials[player]["have_built_road"] == 0:
+        user_materials[player]["factors"]["road"] += 100
 
     #SETTLEMENT FACTORS
     # Settlement factor based on best available settlement score
     # maybe TODO: limit options to within close range of your roads?
     user_materials[player]["factors"]["sett"] += 0.2 * (board.scores[best_settlement_coord(board)]) - 1.6
+    #QUASI BUILD ORDER
+    if user_materials[player]["have_built_road"] == 1 and user_materials[player]["have_built_road"] == 0:
+        user_materials[player]["factors"]["sett"] += 100
 
     #DEV CARD FACTORS
     user_materials[player]["factors"]["devc"] += 0 # dev cards are best to buy when nothing else is good, so no factors makes sense
@@ -276,6 +285,13 @@ def best_win_condition(board_frame,board):
     factored_road = road * user_materials[player]["factors"]["road"]
     factored_city = city * user_materials[player]["factors"]["city"]
     factored_devc = devc * user_materials[player]["factors"]["devc"]
+
+    #RESET FACTORS AFTER EVERY TURN
+    user_materials[player]["factors"]["sett"] = 1
+    user_materials[player]["factors"]["road"] = 1
+    user_materials[player]["factors"]["city"] = 1
+    user_materials[player]["factors"]["devc"] = 1
+
 
     # TODO(everybody): Should we pass instead of make a move here?
     PASSING_CONDITION = False

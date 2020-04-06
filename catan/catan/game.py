@@ -512,6 +512,10 @@ class Game(object):
         if "turns_taken" not in user_materials[player]:
             user_materials[player]["turns_taken"] = 0
 
+        if "have_built_road" not in user_materials[player]:
+            user_materials[player]["have_built_road"] = 0
+            user_materials[player]["have_built_sett"] = 0
+
         return user_materials
 
 class Player(object):
