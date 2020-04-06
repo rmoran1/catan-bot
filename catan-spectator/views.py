@@ -126,6 +126,7 @@ class BoardFrame(tkinter.Frame):
                 self._coord_from_robber_tag(tag)))
 
         self.redraw()
+        self.game.notify_observers()
 
         self._cur_player = self.game.get_cur_player()
         if self._cur_player.name.startswith("droid"):
@@ -185,6 +186,7 @@ class BoardFrame(tkinter.Frame):
             #print("Clicked to move a robber")
         print(self.game.hands)
         self.redraw()
+        self.game.notify_observers()
 
         self._cur_player = self.game.get_cur_player()
         if self._cur_player.name.startswith("droid"):
