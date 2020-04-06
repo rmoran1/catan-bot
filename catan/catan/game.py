@@ -472,6 +472,48 @@ class Game(object):
     #         }
     #     }
     # }
+
+    def get_longest_road_from_coords(self, coords):
+
+        if not coords:
+            return 0
+
+        _offsets = [
+            -16,
+            -17,
+            -1,
+            +16,
+            +17,
+            +1,
+        ]
+
+        longest_road = 1
+
+        for coord in coords:
+
+            road_ended = False
+            working_longest_road = 1
+
+            working_coords = coords[:] 
+
+            while road_ended is not True:
+
+                for offset in _offsets:
+
+                    if (coord + offset) in working_coords:
+                        working_coords.remove(coord)
+                        working_longest_road += 1
+                        coord = coord + offset
+                        break
+
+                    if offset == _offsets[len(_offsets) - 1]:
+                        road_ended = True
+ 
+            if (working_longest_road > longest_road):
+                longest_road = working_longest_road
+
+        return longest_road
+
     def get_all_user_materials(self):
 
         user_materials = {}
@@ -504,9 +546,13 @@ class Game(object):
 
             user_materials[player]["resources"] = self.hands[player]
             user_materials[player]["dev_cards"] = self.dev_hands[player]
-            user_materials[player]["longest_road"] = "TBC"
             user_materials[player]["knights"] = "TBC"
             user_materials[player]["victory_points"] = "TBC"
+            user_materials[player]["longest_road"] = 0
+
+
+            if "road" in user_materials[player]:
+                user_materials[player]["longest_road"] = self.get_longest_road_from_coords(user_materials[player]["road"])
 
 
         if "factors" not in user_materials[player]:
