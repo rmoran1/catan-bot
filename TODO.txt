@@ -1,8 +1,5 @@
 MUST:
-- implement robber stealing
 - implement hand loss w/ 7 roll
-- implement development cards
-    - playing knights, monopoly, VP, year of plenty, road building
 - implement largest army & longest road
 - high level strategy for the droid
     - automatically taking actions
@@ -16,6 +13,5 @@ WOULD BE NICE:
 - only show possible road/settlement placements
 - fix undo / remove it
     - right now, undoing does not change cards in hand, so undoing placing a settlement won't give the cards back
-- fix weird placement bug (sometimes, clicking a road/settlement in initial phase throws a TypeError, but it works when clicking it again)
-
+- onlyallowstealingfromplayerswithcards
 

@@ -403,6 +403,8 @@ class Game(object):
     def play_knight(self):
         self.set_dev_card_state(catan.states.DevCardPlayedState(self))
         self.set_state(catan.states.GameStateMoveRobberUsingKnight(self))
+        self.dev_hands.remove('Knight')
+        self.knights_played[self.get_cur_player()] += 1
 
     @undoredo.undoable
     def play_monopoly(self, resource):
@@ -413,6 +415,7 @@ class Game(object):
                     self.hands[self.get_cur_player()].append(resource)
                     self.hands[player].remove(resource)
         self.set_dev_card_state(catan.states.DevCardPlayedState(self))
+        self.dev_hands.remove('Monopoly')
 
     @undoredo.undoable
     def play_year_of_plenty(self, resource1, resource2):
@@ -420,6 +423,7 @@ class Game(object):
         self.hands[self.get_cur_player()].append(resource1)
         self.hands[self.get_cur_player()].append(resource2)
         self.set_dev_card_state(catan.states.DevCardPlayedState(self))
+        self.dev_hands.remove('Year of Plenty')
 
     @undoredo.undoable
     def play_road_builder(self, edge1, edge2):
@@ -428,11 +432,13 @@ class Game(object):
                                                     hexgrid.location(hexgrid.EDGE, edge2))
         
         self.set_dev_card_state(catan.states.DevCardPlayedState(self))
+        self.dev_hands.remove('Road Builder')
 
     @undoredo.undoable
     def play_victory_point(self):
         self.catanlog.log_plays_victory_point(self.get_cur_player())
         self.set_dev_card_state(catan.states.DevCardPlayedState(self))
+        self.dev_hands.remove('Victory Point')
 
     @undoredo.undoable
     def end_turn(self):
@@ -546,7 +552,7 @@ class Game(object):
 
             user_materials[player]["resources"] = self.hands[player]
             user_materials[player]["dev_cards"] = self.dev_hands[player]
-            user_materials[player]["knights"] = "TBC"
+            user_materials[player]["knights"] = str(self.game.knights_played[player])
             user_materials[player]["victory_points"] = "TBC"
             user_materials[player]["longest_road"] = 0
 
