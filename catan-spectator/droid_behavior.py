@@ -8,7 +8,7 @@ _edge_directions = ['NW', 'NE', 'E', 'SE', 'SW', 'W']
 
 def droid_move(board_frame, board):
 
-    user_materials = board_frame.get_all_user_materials()
+    user_materials = board_frame.game.get_all_user_materials()
     # BASIC CONTROL MECHANISM
     if board_frame.game.state.is_in_pregame():
 
@@ -168,7 +168,7 @@ def best_win_condition(board_frame,board):
 
     # BASIC HIGH LEVEL STRATEGY
 
-    user_materials = board_frame.get_all_user_materials()  # Will be modified!
+    user_materials = board_frame.game.get_all_user_materials()  # Will be modified!
     player = board_frame.game.get_cur_player()
     tile_ids = [tile_id for tile_id in range(1, 20)]
 

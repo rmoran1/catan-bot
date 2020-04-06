@@ -220,7 +220,7 @@ class WhichResourcesFrame(tk.Frame):
 class WhichResourcesInputFrame(tk.Frame):
     def __init__(self, *args, **kwargs):
         super(WhichResourcesInputFrame, self).__init__(*args, **kwargs)
-
+        self.trade().set_giver(self.master.master.game.get_cur_player())
         self.give_label = tk.Label(self, text='give')
         self.get_label = tk.Label(self, text='get')
 
@@ -245,6 +245,7 @@ class WhichResourcesInputFrame(tk.Frame):
         self.set_states()
 
     def set_states(self):
+        giver = self.trade().giver()
         getter = self.trade().getter()
         num_getting = self.trade().num_getting()
         giving_types = []
@@ -255,13 +256,6 @@ class WhichResourcesInputFrame(tk.Frame):
         for terr in self.trade().getting():
             for _ in range(terr[0]):
                 getting_types.append(terr[1].value)
-        '''giving_types = [giving_type.value for _, giving_type in self.trade().giving()]
-        getting_types = [getting_type.value for _, getting_type in self.trade().getting()]
-        for btn in self.get_btns:
-            if hasattr(getter, 'type') in PortType:
-                btn.configure(state=can_do[num_getting < 1
-                                           and btn['text'] != getter.type.value
-                                           and btn['text'] not in giving_types])'''
         if hasattr(getter, 'type'):
             for count, terr in enumerate([Terrain.wood, Terrain.brick, Terrain.wheat, Terrain.sheep, Terrain.ore]):
                 if getter.type == PortType.any4:
