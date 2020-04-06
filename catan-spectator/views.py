@@ -846,8 +846,11 @@ class HandsFrame(tkinter.Frame):
                                   'Road Builder', 'Road Builder',
                                   'Monopoly', 'Monopoly',
                                   'Year of Plenty', 'Year of Plenty',
-                                  'Victory Point', 'Victory Point', 'Victory Point', 'Victory Point', 'Victory Point'
+                                  'Victory Point', 'Victory Point', 'Victory Point',
+                                  'Victory Point', 'Victory Point'
                                   ]
+            self.game.knights_played = {self.game.players[0]: 0, self.game.players[1]: 0,
+                                        self.game.players[2]: 0, self.game.players[3]: 0}
 
         self.player_resources = [tkinter.StringVar() for i in range(4)]
         self.player_victory_points = [tkinter.StringVar() for i in range(4)]
