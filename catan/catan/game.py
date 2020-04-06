@@ -514,17 +514,55 @@ class Game(object):
 
         return longest_road
 
+    def assign_victory_points(self, user_materials):
+
+        player_with_largest_army = 0
+        largest_army = 0
+
+        player_with_longest_road = 0
+        longest_road = 0
+
+        for player in self.players:
+
+            if user_materials[player]["knights"] > largest_army:
+                largest_army = user_materials[player]["knights"]
+                player_with_largest_army = player
+
+            if user_materials[player]["longest_road"] > longest_road:
+                longest_road = user_materials[player]["longest_road"]
+                player_with_longest_road = player
+
+
+        for player in self.players:
+
+            victory_points = 0
+
+            if "settlement" in user_materials[player]:
+                victory_points += len(user_materials[player]["settlement"])
+
+            if "city" in user_materials[player]:
+                victory_points += 2 * len(user_materials[player]["city"])
+
+            if player == player_with_longest_road and longest_road != 0:
+                victory_points += 2
+
+            if player == player_with_largest_army and largest_army != 0:
+                victory_points += 2 
+
+            user_materials[player]["victory_points"] = victory_points
+
     def get_all_user_materials(self):
 
         user_materials = {}
         for player in self.players:
-            user_materials[player] = {}
-            user_materials[player]["resources"] = "None"
-            user_materials[player]["longest_road"] = 0
-            user_materials[player]["knights"] = 0
-            user_materials[player]["dev_cards"] = "None"
-            user_materials[player]["victory_points"] = 0
 
+            user_materials[player] = {
+                "resources": None,
+                "longest_road": 0,
+                "knights": 0,
+                "dev_cards": None,
+                "victory_points": 0
+            }
 
         for (_, piece_coord), piece_obj in self.board.pieces.items():
 
@@ -546,10 +584,7 @@ class Game(object):
 
             user_materials[player]["resources"] = self.hands[player]
             user_materials[player]["dev_cards"] = self.dev_hands[player]
-            user_materials[player]["knights"] = "TBC"
-            user_materials[player]["victory_points"] = "TBC"
-            user_materials[player]["longest_road"] = 0
-
+            user_materials[player]["knights"] = 0
 
             if "road" in user_materials[player]:
                 user_materials[player]["longest_road"] = self.get_longest_road_from_coords(user_materials[player]["road"])
@@ -569,6 +604,7 @@ class Game(object):
             user_materials[player]["have_built_road"] = 0
             user_materials[player]["have_built_sett"] = 0
 
+        self.assign_victory_points(user_materials)
         return user_materials
 
 class Player(object):
