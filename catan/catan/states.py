@@ -56,6 +56,7 @@ GameState.__getattr__. The method call will be ignored and None will be returned
 If the method does not look like can_do_xyz(), it will be logged.
 
 """
+import random
 import logging
 import hexgrid
 import catan.pieces
@@ -638,6 +639,9 @@ class GameStateSteal(GameStateInGame):
             hexgrid.location(hexgrid.TILE, self.game.robber_tile),
             victim
         )
+        card = random.choice(self.game.hands[victim])
+        self.game.hands[victim].remove(card)
+        self.game.hands[self.game.get_cur_player()].append(card)
         self.game.set_state(GameStateDuringTurnAfterRoll(self.game))
 
     def can_roll(self):
@@ -680,6 +684,9 @@ class GameStateStealUsingKnight(GameStateSteal):
             hexgrid.location(hexgrid.TILE, self.game.robber_tile),
             victim
         )
+        card = random.choice(self.game.hands[victim])
+        self.game.hands[victim].remove(card)
+        self.game.hands[self.game.get_cur_player()].append(card)
         self.game.set_state(GameStateDuringTurnAfterRoll(self.game))
 
 

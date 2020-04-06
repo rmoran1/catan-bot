@@ -1,7 +1,8 @@
 MUST:
-- implement robber
+- implement robber stealing
 - implement hand loss w/ 7 roll
 - implement development cards
+    - playing knights, monopoly, VP, year of plenty, road building
 - implement largest army & longest road
 - high level strategy for the droid
     - automatically taking actions
@@ -9,14 +10,12 @@ MUST:
     - include ports
     - think about obtaining all resources
     - be smarter about building first road
-- implement port trading (both 3:1 and 2:1)
-- implement player trading
+- implement victory point count
 
 WOULD BE NICE:
 - only show possible road/settlement placements
-- update display of hands immediately after purchase, not only on turn change
 - fix undo / remove it
-    - right now, undoing does not change cards in hand
+    - right now, undoing does not change cards in hand, so undoing placing a settlement won't give the cards back
 - fix weird placement bug (sometimes, clicking a road/settlement in initial phase throws a TypeError, but it works when clicking it again)
 
 

@@ -287,7 +287,6 @@ class Game(object):
                         print('gave', self.board.pieces[(hexgrid.NODE, coord)].owner, 'a', tile.terrain)
 
             self.set_state(catan.states.GameStateDuringTurnAfterRoll(self))
-        # print(self.hands)
 
     @undoredo.undoable
     def move_robber(self, tile):
@@ -408,11 +407,18 @@ class Game(object):
     @undoredo.undoable
     def play_monopoly(self, resource):
         self.catanlog.log_plays_monopoly(self.get_cur_player(), resource)
+        for player in self.players:
+            if player != self.get_cur_player():
+                while resource in self.hands[player]:
+                    self.hands[self.get_cur_player()].append(resource)
+                    self.hands[player].remove(resource)
         self.set_dev_card_state(catan.states.DevCardPlayedState(self))
 
     @undoredo.undoable
     def play_year_of_plenty(self, resource1, resource2):
         self.catanlog.log_plays_year_of_plenty(self.get_cur_player(), resource1, resource2)
+        self.hands[self.get_cur_player()].append(resource1)
+        self.hands[self.get_cur_player()].append(resource2)
         self.set_dev_card_state(catan.states.DevCardPlayedState(self))
 
     @undoredo.undoable
@@ -420,6 +426,7 @@ class Game(object):
         self.catanlog.log_plays_road_builder(self.get_cur_player(),
                                                     hexgrid.location(hexgrid.EDGE, edge1),
                                                     hexgrid.location(hexgrid.EDGE, edge2))
+        
         self.set_dev_card_state(catan.states.DevCardPlayedState(self))
 
     @undoredo.undoable
