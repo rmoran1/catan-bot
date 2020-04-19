@@ -403,7 +403,7 @@ class Game(object):
     def play_knight(self):
         self.set_dev_card_state(catan.states.DevCardPlayedState(self))
         self.set_state(catan.states.GameStateMoveRobberUsingKnight(self))
-        self.dev_hands.remove('Knight')
+        self.dev_hands[self.get_cur_player()].remove('Knight')
         self.knights_played[self.get_cur_player()] += 1
 
     @undoredo.undoable
@@ -415,7 +415,7 @@ class Game(object):
                     self.hands[self.get_cur_player()].append(resource)
                     self.hands[player].remove(resource)
         self.set_dev_card_state(catan.states.DevCardPlayedState(self))
-        self.dev_hands.remove('Monopoly')
+        self.dev_hands[self.get_cur_player()].remove('Monopoly')
 
     @undoredo.undoable
     def play_year_of_plenty(self, resource1, resource2):
@@ -423,7 +423,7 @@ class Game(object):
         self.hands[self.get_cur_player()].append(resource1)
         self.hands[self.get_cur_player()].append(resource2)
         self.set_dev_card_state(catan.states.DevCardPlayedState(self))
-        self.dev_hands.remove('Year of Plenty')
+        self.dev_hands[self.get_cur_player()].remove('Year of Plenty')
 
     @undoredo.undoable
     def play_road_builder(self, edge1, edge2):
@@ -432,13 +432,13 @@ class Game(object):
                                                     hexgrid.location(hexgrid.EDGE, edge2))
         
         self.set_dev_card_state(catan.states.DevCardPlayedState(self))
-        self.dev_hands.remove('Road Builder')
+        self.dev_hands[self.get_cur_player()].remove('Road Builder')
 
     @undoredo.undoable
     def play_victory_point(self):
         self.catanlog.log_plays_victory_point(self.get_cur_player())
         self.set_dev_card_state(catan.states.DevCardPlayedState(self))
-        self.dev_hands.remove('Victory Point')
+        self.dev_hands[self.get_cur_player()].remove('Victory Point')
 
     @undoredo.undoable
     def end_turn(self):
@@ -523,10 +523,10 @@ class Game(object):
     def assign_victory_points(self, user_materials):
 
         player_with_largest_army = 0
-        largest_army = 0
+        largest_army = 2
 
         player_with_longest_road = 0
-        longest_road = 0
+        longest_road = 4
 
         for player in self.players:
 
@@ -590,7 +590,7 @@ class Game(object):
 
             user_materials[player]["resources"] = self.hands[player]
             user_materials[player]["dev_cards"] = self.dev_hands[player]
-            user_materials[player]["knights"] = str(self.game.knights_played[player])
+            user_materials[player]["knights"] = self.knights_played[player]
 
             if "road" in user_materials[player]:
                 user_materials[player]["longest_road"] = self.get_longest_road_from_coords(user_materials[player]["road"])
