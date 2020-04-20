@@ -28,13 +28,13 @@ def droid_move(board_frame, board):
             if approach_type == "sett":
 
                 while board_frame.game.state.can_buy_settlement():
-                    user_materials[player]["have_built_sett"] = 1
+                    #user_materials[player]["have_built_sett"] = 1
                     board_frame.droid_piece_click(PieceType.settlement, best_settlement_coord(board))
 
             if approach_type == "road":
 
                 while board_frame.game.state.can_buy_road():
-                    user_materials[player]["have_built_sett"] = 1
+                    #user_materials[player]["have_built_sett"] = 1
                     board_frame.droid_piece_click(PieceType.road, best_road_coord(board))
 
             if approach_type == "city":
@@ -47,7 +47,7 @@ def droid_move(board_frame, board):
                 while board_frame.game.state.can_buy_dev_card():
                     board_frame.droid_piece_click(PieceType.dev_card, best_settlement_coord(board))
 
-        user_materials[player]["turns_taken"] += 1
+        #user_materials[player]["turns_taken"] += 1
 
     board_frame.redraw()
 
@@ -279,7 +279,7 @@ def best_win_condition(board_frame,board):
     #SETTLEMENT FACTORS
     # Settlement factor based on best available settlement score
     # maybe TODO: limit options to within close range of your roads?
-    user_materials[player]["factors"]["sett"] += 0.2 * (board.scores[best_settlement_coord(board)]) - 1.6
+    user_materials[player]["factors"]["sett"] += 0.2 * (board.scores[best_settlement_coord(board)]['score']) - 1.6
     #QUASI BUILD ORDER
     if user_materials[player]["have_built_road"] == 1 and user_materials[player]["have_built_road"] == 0:
         user_materials[player]["factors"]["sett"] += 100
