@@ -9,6 +9,7 @@ _edge_directions = ['NW', 'NE', 'E', 'SE', 'SW', 'W']
 
 def droid_move(board_frame, board, game_toolbar_frame=None):
 
+    player = board_frame.game.get_cur_player()
     user_materials = board_frame.game.get_all_user_materials()
     # BASIC CONTROL MECHANISM
     if board_frame.game.state.is_in_pregame():
@@ -18,7 +19,7 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
                 PieceType.settlement, best_settlement_coord(board))
         elif board_frame.game.state.can_place_road():
             board_frame.droid_piece_click(
-                PieceType.road, best_road_coord(board))
+                PieceType.road, best_road_coord_start(board,board_frame))
 
     elif board_frame.game.state.is_in_game():
 
@@ -33,14 +34,16 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
             if approach_type == "sett":
 
                 while board_frame.game.state.can_buy_settlement():
-                    #user_materials[player]["have_built_sett"] = 1
+                    user_materials[player]["have_built_sett"] = 1
                     board_frame.droid_piece_click(PieceType.settlement, best_settlement_coord(board))
 
             if approach_type == "road":
 
                 while board_frame.game.state.can_buy_road():
-                    #user_materials[player]["have_built_sett"] = 1
-                    board_frame.droid_piece_click(PieceType.road, best_road_coord(board))
+                    print("we're here trying to buy a road~~~~~~~~~~")
+                    print(best_road_coord(board,board_frame))
+                    user_materials[player]["have_built_sett"] = 1
+                    board_frame.droid_piece_click(PieceType.road, best_road_coord(board,board_frame))
 
             # if approach_type == "city":
 
@@ -52,7 +55,7 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
             #     while board_frame.game.state.can_buy_dev_card():
             #         board_frame.droid_piece_click(PieceType.dev_card, best_settlement_coord(board))
 
-        #user_materials[player]["turns_taken"] += 1
+        user_materials[player]["turns_taken"] += 1
 
     board_frame.redraw()
 
@@ -101,8 +104,7 @@ def best_settlement_coord(board):
         return coord
 
 
-def best_road_coord(board):
-
+def best_road_coord_start(board, board_frame):
     for (typ, coord), piece in reversed(list(board.pieces.items())):
 
         if typ != hexgrid.NODE:
@@ -117,6 +119,87 @@ def best_road_coord(board):
         return coord  # basic road placement
 
 
+def best_road_coord(board, board_frame):
+
+    player = board_frame.game.get_cur_player()
+    user_materials = board_frame.game.get_all_user_materials()
+
+    road_coords = user_materials[player]["road"]
+    if not road_coords:
+        return 0
+
+    _offsets = [
+        -16,
+        -17,
+        -1,
+        +16,
+        +17,
+        +1,
+    ]
+
+    node_scores = score_nodes(board)
+
+    #if can build settlement 1 road away
+    for coord in road_coords:
+
+        for offset in _offsets:
+
+            new_coord = coord + offset
+
+            if is_road_taken(board, new_coord):
+
+                continue
+
+            for node in hexgrid.nodes_touching_edge(new_coord):
+
+                if is_settlement_taken(board, node, node_scores):
+
+                    continue
+
+                else:
+
+                    return new_coord
+
+    #if can build settlement 2 roads away
+    for coord in road_coords:
+
+        for offset in _offsets:
+
+            if is_road_taken(board, coord+offset):
+
+                continue
+
+            for offset2 in _offsets:
+
+                new_coord = coord + offset + offset2
+
+                if offset + offset2 == 0:
+
+                    continue
+
+                for node in hexgrid.nodes_touching_edge(new_coord):
+
+                    if is_settlement_taken(board, node, node_scores):
+
+                        continue
+
+                    else:
+
+                        return coord + offset
+
+    #otherwise build any road you can
+    for coord in road_coords:
+
+        for offset in _offsets:
+
+            if is_road_taken(board, coord+offset):
+
+                continue
+
+            else:
+
+                return coord+offset
+
 def is_road_taken(board, coord):
 
     if (hexgrid.EDGE, coord) in board.pieces:
@@ -126,6 +209,8 @@ def is_road_taken(board, coord):
 
 def is_settlement_taken(board, node_coord, sorted_node_scores):
     if (hexgrid.NODE, node_coord) in board.pieces:
+        return True
+    if node_coord not in sorted_node_scores:
         return True
     # need to look for surrounding settlements
     for tile_id in sorted_node_scores[node_coord]['tiles_touching']:
