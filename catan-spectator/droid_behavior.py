@@ -622,7 +622,6 @@ def best_road_coord(board_frame, board):
 
                 if new_coord // 16 and new_coord % 2: #sanity checking coordinates
 
-                    print("*!(@&!(*&@*(!&#()!*)(*)))")
 
                     continue
 
@@ -677,7 +676,6 @@ def best_road_coord(board_frame, board):
 
             if new_coord // 16 and new_coord % 2: #sanity checking coordinates
 
-                print("*!(@&!(*&@*(!&#()!*)(*)))")
 
                 continue
 

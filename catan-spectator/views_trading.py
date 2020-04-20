@@ -302,7 +302,10 @@ class WhichResourcesInputFrame(tk.Frame):
                     self.give_btns[count].configure(state=can_do[True])
                 else:
                     self.give_btns[count].configure(state=can_do[False])
-                self.get_btns[count].configure(state=can_do[True])
+                if len(self.trade().getting()) == 0:
+                    self.get_btns[count].configure(state=can_do[True])
+                else:
+                    self.get_btns[count].configure(state=can_do[False])
         else:
             for count, terr in enumerate([Terrain.wood, Terrain.brick, Terrain.wheat, Terrain.sheep, Terrain.ore]):
                 if self.master.master.game.hands[self.trade().giver()].count(terr) - giving_types.count(terr.value) > 0 and terr.value not in getting_types:
