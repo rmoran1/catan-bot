@@ -1,17 +1,14 @@
 MUST:
-- implement hand loss w/ 7 roll
-- implement largest army & longest road
 - high level strategy for the droid
     - automatically taking actions
 - make placing settlement smarter
     - include ports
     - think about obtaining all resources
     - be smarter about building first road
-- implement victory point count
 
 WOULD BE NICE:
 - only show possible road/settlement placements
 - fix undo / remove it
     - right now, undoing does not change cards in hand, so undoing placing a settlement won't give the cards back
-- onlyallowstealingfromplayerswithcards
+- only allow stealing from players with cards
 

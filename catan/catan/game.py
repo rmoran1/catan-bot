@@ -1,6 +1,7 @@
 import copy
 import logging
 import random
+import math
 
 import hexgrid
 import catanlog
@@ -208,7 +209,9 @@ class Game(object):
         self.catanlog.log_game_start(self.players, terrain, numbers, self.board.ports)
         self.notify_observers()
 
-    def end(self):
+    def end(self, player=None):
+        if not player:
+            player = self.get_cur_player()
         self.catanlog.log_player_wins(self.get_cur_player())
         self.set_state(catan.states.GameStateNotInGame(self))
 
@@ -269,8 +272,18 @@ class Game(object):
         self.last_player_to_roll = self.get_cur_player()
         print()
         print(self.get_cur_player(), 'rolled a', roll)
+        print(self.board.pieces)
         if int(roll) == 7:
             self.set_state(catan.states.GameStateMoveRobber(self))
+            for player in self.players:
+                if len(self.hands[player]) > 7:
+                    cards_to_lose = math.floor(len(self.hands[player])/2)
+                    for _ in range(cards_to_lose):
+                        chosen_card = random.choice(self.hands[player])
+                        self.hands[player].remove(chosen_card)
+                    print(player, 'discarded', cards_to_lose, 'cards')
+
+
         else:
             for tile_id in range(1, 20):
                 tile = self.board.tiles[tile_id - 1]
@@ -283,14 +296,22 @@ class Game(object):
                 for cdir in ['NW', 'N', 'NE', 'SE', 'S', 'SW']:
                     coord = hexgrid.from_location(hexgrid.NODE, tile_id, direction=cdir)
                     if (hexgrid.NODE, coord) in self.board.pieces:
-                        self.hands[self.board.pieces[(hexgrid.NODE, coord)].owner].append(tile.terrain)
-                        print('gave', self.board.pieces[(hexgrid.NODE, coord)].owner, 'a', tile.terrain)
+                        if self.board.pieces[(hexgrid.NODE, coord)].type == catan.pieces.PieceType.settlement:
+                            self.hands[self.board.pieces[(hexgrid.NODE, coord)].owner].append(tile.terrain)
+                            print('gave', self.board.pieces[(hexgrid.NODE, coord)].owner, 'a', tile.terrain)
+                        elif self.board.pieces[(hexgrid.NODE, coord)].type == catan.pieces.PieceType.city:
+                            self.hands[self.board.pieces[(hexgrid.NODE, coord)].owner].append(tile.terrain)
+                            self.hands[self.board.pieces[(hexgrid.NODE, coord)].owner].append(tile.terrain)
+                            print('gave', self.board.pieces[(hexgrid.NODE, coord)].owner, '2', tile.terrain)
+                        else:
+                            print('ERROR')
 
             self.set_state(catan.states.GameStateDuringTurnAfterRoll(self))
 
     @undoredo.undoable
     def move_robber(self, tile):
         self.state.move_robber(tile)
+        self.notify_observers()
 
     @undoredo.undoable
     def steal(self, victim):
