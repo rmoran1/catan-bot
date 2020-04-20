@@ -14,6 +14,7 @@ from catan.pieces import PieceType, Piece
 import tkinterutils
 import views_trading
 from droid_behavior import droid_move
+import time
 
 can_do = {
     True: tkinter.NORMAL,
@@ -95,7 +96,7 @@ class BoardFrame(tkinter.Frame):
                     Terrain.brick)
                 self.game.hands[self.game.get_cur_player()].remove(
                     Terrain.wood)
-            print(droid_name, 'placed road at coordinate', coordinate)
+            # print(droid_name, 'placed road at coordinate', coordinate)
         elif piece_type == PieceType.settlement:
             self.game.place_settlement(coordinate)
             if not self.game.state.is_in_pregame():
@@ -112,7 +113,7 @@ class BoardFrame(tkinter.Frame):
                     if self.game.board.tiles[tile_num-1].terrain != Terrain.desert:
                         self.game.hands[self.game._cur_player].append(
                             self.game.board.tiles[tile_num-1].terrain)
-            print(droid_name, 'placed settlement at coordinate', coordinate)
+            # print(droid_name, 'placed settlement at coordinate', coordinate)
         elif piece_type == PieceType.city:
             self.game.place_city(coordinate)
             self.game.hands[self.game.get_cur_player()].remove(Terrain.wheat)
@@ -120,7 +121,7 @@ class BoardFrame(tkinter.Frame):
             self.game.hands[self.game.get_cur_player()].remove(Terrain.ore)
             self.game.hands[self.game.get_cur_player()].remove(Terrain.ore)
             self.game.hands[self.game.get_cur_player()].remove(Terrain.ore)
-            print(droid_name, 'placed city at coordinate', coordinate)
+            # print(droid_name, 'placed city at coordinate', coordinate)
         elif piece_type == PieceType.robber:
             self.game.move_robber(coordinate)  # In this case, it is actually a tile ID, not a coord
 
