@@ -125,8 +125,8 @@ class BoardFrame(tkinter.Frame):
         elif piece_type == PieceType.robber:
             self.game.move_robber(coordinate)  # In this case, it is actually a tile ID, not a coord
 
-        # self.redraw()
-        # self.game.notify_observers()
+        self.redraw()
+        self.game.notify_observers()
 
         self._cur_player = self.game.get_cur_player()
 
@@ -255,6 +255,7 @@ class BoardFrame(tkinter.Frame):
     def redraw(self):
         self._board_canvas.delete(tkinter.ALL)
         self.draw(self._board)
+        self.master.update()
 
     def _draw_terrain(self, board):
         #logging.debug('Drawing terrain (resource tiles)')
