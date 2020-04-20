@@ -272,7 +272,6 @@ class Game(object):
         self.last_player_to_roll = self.get_cur_player()
         print()
         print(self.get_cur_player(), 'rolled a', roll)
-        # print(self.board.pieces)
         if int(roll) == 7:
             self.set_state(catan.states.GameStateMoveRobber(self))
             for player in self.players:
