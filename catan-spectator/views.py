@@ -129,11 +129,13 @@ class BoardFrame(tkinter.Frame):
         self.game.notify_observers()
 
         self._cur_player = self.game.get_cur_player()
-        if self._cur_player.name.startswith("droid"):
-            logging.debug("Awaiting move from a droid")
-            droid_move(self, self._board)
-        else:
-            logging.debug("Awaiting move from a human")
+
+        if self.game.state.is_in_pregame():
+            if self._cur_player.name.startswith("droid"):
+                logging.debug("Awaiting move from a droid")
+                droid_move(self, self._board)
+            else:
+                logging.debug("Awaiting move from a human")
 
     def piece_click(self, piece_type, event):
         tags = self._board_canvas.gettags(
@@ -189,11 +191,13 @@ class BoardFrame(tkinter.Frame):
         self.game.notify_observers()
 
         self._cur_player = self.game.get_cur_player()
-        if self._cur_player.name.startswith("droid"):
-            logging.debug("Awaiting move from a droid")
-            droid_move(self, self._board)
-        else:
-            logging.debug("Awaiting move from a human")
+        
+        if self.game.state.is_in_pregame():
+            if self._cur_player.name.startswith("droid"):
+                logging.debug("Awaiting move from a droid")
+                droid_move(self, self._board)
+            else:
+                logging.debug("Awaiting move from a human")
 
     def port_click(self, port, event):
         if not self._board.state.modifiable():
@@ -773,7 +777,7 @@ class GameToolbarFrame(tkinter.Frame):
 
         label_cur_player_name = tkinter.Label(
             self, textvariable=self._cur_player_name, anchor=tkinter.W)
-        frame_roll = RollFrame(self, self.game)
+        self.frame_roll = RollFrame(self, self.game)
         frame_undo = UndoRedoFrame(self, self.game)
         frame_robber = RobberFrame(self, self.game)
         frame_build = BuildFrame(self, self.game)
@@ -783,7 +787,7 @@ class GameToolbarFrame(tkinter.Frame):
         frame_end_game = EndGameFrame(self, self.game)
 
         label_cur_player_name.pack(fill=tkinter.X)
-        frame_roll.pack(fill=tkinter.X)
+        self.frame_roll.pack(fill=tkinter.X)
         frame_undo.pack(fill=tkinter.X)
         frame_robber.pack(fill=tkinter.X)
         frame_build.pack(fill=tkinter.X)
@@ -1265,7 +1269,7 @@ class EndTurnFrame(tkinter.Frame):
     def on_end_turn(self, event=None):
         if self.game.state.can_end_turn():
             self.game.end_turn()
-            droid_move(self.board_frame, self.game.board)
+            droid_move(self.board_frame, self.game.board, self.master)
 
 
 class EndGameFrame(tkinter.Frame):

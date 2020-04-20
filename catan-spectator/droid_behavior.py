@@ -6,7 +6,7 @@ _node_directions = ['NW', 'N', 'NE', 'SE', 'S', 'SW']
 _edge_directions = ['NW', 'NE', 'E', 'SE', 'SW', 'W']
 
 
-def droid_move(board_frame, board):
+def droid_move(board_frame, board, game_toolbar_frame=None):
 
     user_materials = board_frame.game.get_all_user_materials()
     # BASIC CONTROL MECHANISM
@@ -21,7 +21,11 @@ def droid_move(board_frame, board):
 
     elif board_frame.game.state.is_in_game():
 
+        game_toolbar_frame.frame_roll.on_dice_roll()
+
         next_moves = best_win_condition(board_frame,board)
+
+        print("Recommended moves, in order: {}".format(next_moves))
 
         for approach_type in next_moves:
 
@@ -37,15 +41,15 @@ def droid_move(board_frame, board):
                     #user_materials[player]["have_built_sett"] = 1
                     board_frame.droid_piece_click(PieceType.road, best_road_coord(board))
 
-            if approach_type == "city":
+            # if approach_type == "city":
 
-                while board_frame.game.state.can_buy_city():
-                    board_frame.droid_piece_click(PieceType.city, best_settlement_coord(board))
+            #     while board_frame.game.state.can_buy_city():
+            #         board_frame.droid_piece_click(PieceType.city, best_settlement_coord(board))
 
-            if approach_type == "devc":
+            # if approach_type == "devc":
 
-                while board_frame.game.state.can_buy_dev_card():
-                    board_frame.droid_piece_click(PieceType.dev_card, best_settlement_coord(board))
+            #     while board_frame.game.state.can_buy_dev_card():
+            #         board_frame.droid_piece_click(PieceType.dev_card, best_settlement_coord(board))
 
         #user_materials[player]["turns_taken"] += 1
 
@@ -314,6 +318,6 @@ def best_win_condition(board_frame,board):
         "devc": factored_devc
     }
 
-    ordered_next_moves = {k: v for k, v in sorted(next_moves.items(), key=lambda item: item[1])}
+    ordered_next_moves = [k for k, v in sorted(next_moves.items(), key=lambda item: item[1])]
 
-    return ordered_next_moves.keys()
+    return ordered_next_moves
