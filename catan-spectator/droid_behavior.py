@@ -155,7 +155,8 @@ def find_tradeable_resources(approach_type, hand):
 def make_trade(resource, num, player, board_frame, tradeable_resources):
     game = board_frame.game
     traded_resource = None
-    print(player, 'is looking for a', resource)
+    print("{} wants {}!".format(player.name, resource))
+
     for trade_partner in game.hands:
         if player == trade_partner:
             continue
@@ -173,20 +174,21 @@ def make_trade(resource, num, player, board_frame, tradeable_resources):
                 if need not in game.hands[trade_partner] and \
                     need in tradeable_resources and \
                     (resource not in partner_needs or \
-                    (partner_next_moves[0] is not 'city' and 
+                    (partner_next_moves[0] != 'city' and 
                     game.hands[trade_partner].count(resource) >= 2)):
                         traded_resource = need
                         break
             if traded_resource:
                 break
             else:
-                print(trade_partner, 'will not trade a', resource)
+                print("{} declined the trade for {}".format(trade_partner, resource))
 
     if traded_resource:
         trade = CatanTrade(giver=player, getter=trade_partner)
         trade.give(traded_resource)
         trade.get(resource)
         game.trade(trade)
+        print("{} traded {} for {} with {}".format(player.name, traded_resource, resource, trade_partner))
         print(player, 'traded', traded_resource, 'for', resource, 'with', trade_partner)
         return True
     return False

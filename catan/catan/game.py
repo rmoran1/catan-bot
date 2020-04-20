@@ -377,9 +377,11 @@ class Game(object):
         self.hands[self.get_cur_player()].remove(catan.board.Terrain.wheat)
         self.hands[self.get_cur_player()].remove(catan.board.Terrain.sheep)
         self.hands[self.get_cur_player()].remove(catan.board.Terrain.ore)
-        self.dev_hands[self.get_cur_player()].append(random.choice(self.dev_deck))
+
+        card_to_buy = random.choice(self.dev_deck)
+        self.dev_hands[self.get_cur_player()].append(card_to_buy)
         self.dev_deck.remove(self.dev_hands[self.get_cur_player()][-1])
-        print('Dev cards:', self.dev_hands)
+        print('{} buys the development card: {}'.format(self.get_cur_player().name, card_to_buy))
         self.notify_observers()
 
     @undoredo.undoable
