@@ -255,6 +255,7 @@ class BoardFrame(tkinter.Frame):
     def redraw(self):
         self._board_canvas.delete(tkinter.ALL)
         self.draw(self._board)
+        self.master.update()
 
     def _draw_terrain(self, board):
         #logging.debug('Drawing terrain (resource tiles)')
