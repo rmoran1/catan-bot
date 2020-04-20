@@ -90,12 +90,14 @@ class BoardFrame(tkinter.Frame):
     def droid_piece_click(self, piece_type, coordinate):
         droid_name = self.game.get_cur_player()
         if piece_type == PieceType.road:
-            self.game.place_road(coordinate)
-            if not self.game.state.is_in_pregame():
+            if coordinate > 10000:
+                coordinate -= 10000     #checking if roads are from road builder
+            elif not self.game.state.is_in_pregame():
                 self.game.hands[self.game.get_cur_player()].remove(
                         Terrain.brick)
                 self.game.hands[self.game.get_cur_player()].remove(
-                        Terrain.wood)
+                    Terrain.wood)
+            self.game.place_road(coordinate)
             # print(droid_name, 'placed road at coordinate', coordinate)
         elif piece_type == PieceType.settlement:
             self.game.place_settlement(coordinate)
