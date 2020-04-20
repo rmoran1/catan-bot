@@ -65,7 +65,6 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
 
             board_frame.droid_piece_click(
                 PieceType.robber, best_robber_coord(board_frame, board))
-            print(board_frame.game.state)
             game_toolbar_frame.frame_robber.on_steal()
 
         next_moves = best_win_condition(board_frame,board)
@@ -150,6 +149,7 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
                     print("{} places a settlement at {}...".format(player.name, coord))
                     board_frame.master.delay()
                     board_frame.game.set_state(states.GameStateDuringTurnAfterRoll(board_frame.game))
+                    missing_resources, tradeable_resources = find_tradeable_resources(approach_type, board_frame.game.hands[player])
 
 
             if approach_type == "road":
@@ -158,9 +158,9 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
                 if len(missing_resources) > 0 and 'Road Builder' in board_frame.game.dev_hands[player] and board_frame.game.dev_card_state.can_play_dev_card():
                     board_frame.game.set_state(states.GameStatePlacingRoadBuilderPieces(board_frame.game))
                     brc = best_road_coord(board_frame,board)
-                    board_frame.droid_piece_click(PieceType.road, brc)
+                    board_frame.droid_piece_click(PieceType.road, brc + 10000)
                     brc = best_road_coord(board_frame,board)
-                    board_frame.droid_piece_click(PieceType.road, brc)
+                    board_frame.droid_piece_click(PieceType.road, brc + 10000)
                     board_frame.game.set_state(states.GameStateDuringTurnAfterRoll(board_frame.game))
 
                 if not board_frame.game.state.can_buy_road():
@@ -234,6 +234,7 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
                     print("{} places a road at {}...".format(player.name, brc))
                     board_frame.master.delay()
                     board_frame.game.set_state(states.GameStateDuringTurnAfterRoll(board_frame.game))
+                    missing_resources, tradeable_resources = find_tradeable_resources(approach_type, board_frame.game.hands[player])
 
             if approach_type == "city":
                 if not board_frame.game.state.can_buy_city():
@@ -300,6 +301,7 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
                     board_frame.game.set_state(states.GameStatePlacingPiece(board_frame.game, PieceType.city))
                     board_frame.droid_piece_click(PieceType.city, best_city_coord(user_materials, player, board))
                     board_frame.game.set_state(states.GameStateDuringTurnAfterRoll(board_frame.game))
+                    missing_resources, tradeable_resources = find_tradeable_resources(approach_type, board_frame.game.hands[player])
 
             if approach_type == "devc":
                 if not board_frame.game.state.can_buy_dev_card():
@@ -364,6 +366,7 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
                         missing_resources, tradeable_resources = find_tradeable_resources(approach_type, board_frame.game.hands[player])
                 while board_frame.game.state.can_buy_dev_card():
                     board_frame.game.buy_dev_card()
+                    missing_resources, tradeable_resources = find_tradeable_resources(approach_type, board_frame.game.hands[player])
                     
 
         user_materials[player]["turns_taken"] += 1
