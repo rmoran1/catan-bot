@@ -1,6 +1,7 @@
 import logging
 import hexgrid
 from catan.pieces import PieceType
+import catan.board
 
 _node_directions = ['NW', 'N', 'NE', 'SE', 'S', 'SW']
 _edge_directions = ['NW', 'NE', 'E', 'SE', 'SW', 'W']
@@ -219,17 +220,18 @@ def best_win_condition(board_frame,board):
     #         user_materials[player]["resources"][
     #             tile_terrain] += 2*(tile_number - 1)
 
-    sett = (user_materials[player]["resources"].count('sheep') + user_materials[player]["resources"].count("wood") +
-            user_materials[player]["resources"].count("brick") + user_materials[player]["resources"].count("wheat")) / 4
+    print("Resources: {}".format(user_materials[player]["resources"]))
+    sett = (user_materials[player]["resources"].count(catan.board.Terrain.sheep) + user_materials[player]["resources"].count(catan.board.Terrain.wood) +
+            user_materials[player]["resources"].count(catan.board.Terrain.brick) + user_materials[player]["resources"].count(catan.board.Terrain.wheat)) / 4
 
-    road = (user_materials[player]["resources"].count("wood") +
-            user_materials[player]["resources"].count("brick")) / 2
+    road = (user_materials[player]["resources"].count(catan.board.Terrain.wood) +
+            user_materials[player]["resources"].count(catan.board.Terrain.brick)) / 2
 
-    city = (user_materials[player]["resources"].count("ore") * 3 +
-            user_materials[player]["resources"].count("wheat") * 2) / 5
+    city = (user_materials[player]["resources"].count(catan.board.Terrain.ore) * 3 +
+            user_materials[player]["resources"].count(catan.board.Terrain.wheat) * 2) / 5
 
-    devc = (user_materials[player]["resources"].count("ore") + user_materials[player]
-            ["resources"].count("wheat") + user_materials[player]["resources"].count("sheep")) / 3
+    devc = (user_materials[player]["resources"].count(catan.board.Terrain.ore) + user_materials[player]
+            ["resources"].count(catan.board.Terrain.wheat) + user_materials[player]["resources"].count(catan.board.Terrain.sheep)) / 3
 
 
     # TODO(bouch): Update the player's factors here (they start at 1)
