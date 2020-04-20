@@ -426,6 +426,7 @@ class Game(object):
     @undoredo.undoable
     def play_knight(self):
         self.set_dev_card_state(catan.states.DevCardPlayedState(self))
+        print(player, 'plays a Knight')
         self.set_state(catan.states.GameStateMoveRobberUsingKnight(self))
         self.dev_hands[self.get_cur_player()].remove('Knight')
         self.knights_played[self.get_cur_player()] += 1
@@ -433,6 +434,7 @@ class Game(object):
     @undoredo.undoable
     def play_monopoly(self, resource):
         self.catanlog.log_plays_monopoly(self.get_cur_player(), resource)
+        print(player, 'plays a Monopoly on', resource)
         for player in self.players:
             if player != self.get_cur_player():
                 while resource in self.hands[player]:
@@ -444,6 +446,7 @@ class Game(object):
     @undoredo.undoable
     def play_year_of_plenty(self, resource1, resource2):
         self.catanlog.log_plays_year_of_plenty(self.get_cur_player(), resource1, resource2)
+        print(player, 'plays a Year of Plenty for', resource1, 'and', resource2)
         self.hands[self.get_cur_player()].append(resource1)
         self.hands[self.get_cur_player()].append(resource2)
         self.set_dev_card_state(catan.states.DevCardPlayedState(self))
@@ -454,6 +457,7 @@ class Game(object):
         self.catanlog.log_plays_road_builder(self.get_cur_player(),
                                                     hexgrid.location(hexgrid.EDGE, edge1),
                                                     hexgrid.location(hexgrid.EDGE, edge2))
+        print(player, 'plays a Road Builder')
         
         self.set_dev_card_state(catan.states.DevCardPlayedState(self))
         self.dev_hands[self.get_cur_player()].remove('Road Builder')
