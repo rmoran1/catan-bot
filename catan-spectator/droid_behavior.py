@@ -461,10 +461,10 @@ def best_robber_coord(board_frame, board):
     if player_to_steal_from == board_frame.game.get_cur_player():
         player_to_steal_from = ranked_players[1][0]
 
+
     # Find a dwelling owned by that person, and place the robber on its tile
     print("{} wants to steal from {}".format(board_frame.game.get_cur_player().name, player_to_steal_from.name))
     for (typ, coord), piece in reversed(list(board.pieces.items())):
-
         if typ != hexgrid.NODE or piece.owner is None or player_to_steal_from.name != piece.owner.name:
             continue
 
@@ -472,10 +472,10 @@ def best_robber_coord(board_frame, board):
         self_finder = 0
         for cdir in ['NW', 'N', 'NE', 'SE', 'S', 'SW']:
             n_coord = hexgrid.from_location(hexgrid.NODE, board_frame.game.robber_tile, direction=cdir)
-            if (hexgrid.NODE, coord) in board_frame.game.board.pieces:
-                if (board_frame.game.board.pieces[(hexgrid.NODE, coord)].type == PieceType.settlement or \
-                    board_frame.game.board.pieces[(hexgrid.NODE, coord)].type == PieceType.city) and \
-                    board_frame.game.board.pieces[(hexgrid.NODE, coord)].owner == player:
+            if (hexgrid.NODE, n_coord) in board_frame.game.board.pieces:
+                if (board_frame.game.board.pieces[(hexgrid.NODE, n_coord)].type == PieceType.settlement or \
+                    board_frame.game.board.pieces[(hexgrid.NODE, n_coord)].type == PieceType.city) and \
+                    board_frame.game.board.pieces[(hexgrid.NODE, n_coord)].owner == player:
                     self_finder = 1
                     break
         if self_finder:
@@ -488,9 +488,12 @@ def best_robber_coord(board_frame, board):
             # This means the robber is already on this tile
             continue
 
-        return hexgrid.tile_id_to_coord(tile_id)
+        if hexgrid.tile_id_to_coord(tile_id) == -1:
+            continue
 
-    return 55  # If none found, choose centermost
+        return tile_id
+
+    return 10  # If none found, choose centermost
 
 def score_nodes(board):
 
