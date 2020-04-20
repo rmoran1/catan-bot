@@ -22,7 +22,13 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
 
     elif board_frame.game.state.is_in_game():
 
-        game_toolbar_frame.frame_roll.on_dice_roll()
+        roll_val = game_toolbar_frame.frame_roll.on_dice_roll()
+
+        if roll_val == 7:
+            # Droid must place the robber
+            board_frame.droid_piece_click(
+                PieceType.robber, best_robber_coord(board_frame, board))
+            game_toolbar_frame.frame_robber.on_steal()
 
         next_moves = best_win_condition(board_frame,board)
 
@@ -56,6 +62,41 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
 
     board_frame.redraw()
 
+    if game_toolbar_frame is not None:
+        game_toolbar_frame.frame_end_turn.on_end_turn()
+
+def best_robber_coord(board_frame, board):
+
+    user_materials = board_frame.game.get_all_user_materials()
+    players_and_scores = []
+    
+    for player in user_materials:
+
+        players_and_scores.append((player, user_materials[player]["victory_points"]))
+
+    ranked_players = sorted(players_and_scores, key = lambda x: x[1], reverse=True)
+
+    player_to_steal_from = ranked_players[0][0]
+
+    # If it's yourself, steal from the next best person
+    if player_to_steal_from == board_frame.game.get_cur_player():
+        player_to_steal_from = ranked_players[1][0]
+
+    # Find a dwelling owned by that person, and place the robber on its tile
+    print("Player to steal from: {}".format(player_to_steal_from.name))
+    for (typ, coord), piece in reversed(list(board.pieces.items())):
+
+        if typ != hexgrid.NODE or piece.owner is None or player_to_steal_from.name != piece.owner.name:
+            continue
+
+        tile_id = hexgrid.nearest_tile_to_node(coord)
+        tile_coord = hexgrid.tile_id_to_coord(tile_id)
+
+        print("SETTLEMENT COORD: {}".format(coord))
+        print("TILE COORD: {}".format(coord))
+        return tile_coord
+
+    return hexgrid.tile_id_to_coord(10)  # If none found, choose centermost
 
 def score_nodes(board):
 
