@@ -131,7 +131,7 @@ class BoardFrame(tkinter.Frame):
         self._cur_player = self.game.get_cur_player()
 
         if self.game.state.is_in_pregame():
-            if self._cur_player.name.startswith("droid"):
+            if "droid" in self._cur_player.name:
                 logging.debug("Awaiting move from a droid")
                 droid_move(self, self._board)
             else:
@@ -195,7 +195,7 @@ class BoardFrame(tkinter.Frame):
         self._cur_player = self.game.get_cur_player()
 
         if self.game.state.is_in_pregame():
-            if self._cur_player.name.startswith("droid"):
+            if "droid" in self._cur_player.name:
                 logging.debug("Awaiting move from a droid")
                 droid_move(self, self._board)
             else:
@@ -746,8 +746,8 @@ class StartGamePlayerOrderFrame(tkinter.Frame):
         self.master = master
         self.game = game
 
-        defaults = ('yurick green', 'droid blue',
-                    'droid2 orange', 'droid3 red')
+        defaults = ('yurick green', 'droidatron blue',
+                    'megadroid orange', 'droidstar red')
         self.player_entries_vars = [
             (tkinter.Entry(self), tkinter.StringVar()) for i in range(len(defaults))]
         for (entry, var), default in zip(self.player_entries_vars, defaults):
