@@ -49,7 +49,6 @@ def droid_move(board_frame, board):
 
         user_materials[player]["turns_taken"] += 1
 
-
     board_frame.redraw()
 
 
@@ -174,59 +173,59 @@ def best_win_condition(board_frame,board):
 
     # TODO(anyone): Implement ports
 
-    for settlement_coord in user_materials[player]["settlement"]:
+    # for settlement_coord in user_materials[player]["settlement"]:
 
-        tile_id = hexgrid.nearest_tile_to_node_using_tiles(
-            tile_ids, settlement_coord)
+    #     tile_id = hexgrid.nearest_tile_to_node_using_tiles(
+    #         tile_ids, settlement_coord)
 
-        tile_number = board_frame._board.tiles[
-            tile_id - 1].number.value
-        tile_terrain = board_frame._board.tiles[
-            tile_id - 1].terrain.value
+    #     tile_number = board_frame._board.tiles[
+    #         tile_id - 1].number.value
+    #     tile_terrain = board_frame._board.tiles[
+    #         tile_id - 1].terrain.value
 
-        if tile_number is None:
-            continue
+    #     if tile_number is None:
+    #         continue
 
-        if tile_number > 7:
-            user_materials[player]["resources"][
-                tile_terrain] += (13 - tile_number)
+    #     if tile_number > 7:
+    #         user_materials[player]["resources"][
+    #             tile_terrain] += (13 - tile_number)
 
-        if tile_number < 7:
-            user_materials[player]["resources"][
-                tile_terrain] += (tile_number - 1)
+    #     if tile_number < 7:
+    #         user_materials[player]["resources"][
+    #             tile_terrain] += (tile_number - 1)
 
-    for city_coord in user_materials[player]["city"]:
+    # for city_coord in user_materials[player]["city"]:
 
-        tile_id = hexgrid.nearest_tile_to_node_using_tiles(
-            tile_ids, city_coord)
+    #     tile_id = hexgrid.nearest_tile_to_node_using_tiles(
+    #         tile_ids, city_coord)
 
-        tile_number = board_frame._board.tiles[
-            tile_id - 1].number.value
-        tile_terrain = board_frame._board.tiles[
-            tile_id - 1].terrain.value
+    #     tile_number = board_frame._board.tiles[
+    #         tile_id - 1].number.value
+    #     tile_terrain = board_frame._board.tiles[
+    #         tile_id - 1].terrain.value
 
-        if tile_number is None:
-            continue
+    #     if tile_number is None:
+    #         continue
 
-        if tile_number > 7:
-            user_materials[player]["resources"][
-                tile_terrain] += 2*(13 - tile_number)
+    #     if tile_number > 7:
+    #         user_materials[player]["resources"][
+    #             tile_terrain] += 2*(13 - tile_number)
 
-        if tile_number < 7:
-            user_materials[player]["resources"][
-                tile_terrain] += 2*(tile_number - 1)
+    #     if tile_number < 7:
+    #         user_materials[player]["resources"][
+    #             tile_terrain] += 2*(tile_number - 1)
 
-    sett = (user_materials[player]["resources"]['sheep'] + user_materials[player]["resources"]['wood'] +
-            user_materials[player]["resources"]['brick'] + user_materials[player]["resources"]['wheat']) / 4
+    sett = (user_materials[player]["resources"].count('sheep') + user_materials[player]["resources"].count("wood") +
+            user_materials[player]["resources"].count("brick") + user_materials[player]["resources"].count("wheat")) / 4
 
-    road = (user_materials[player]["resources"]['wood'] +
-            user_materials[player]["resources"]['brick']) / 2
+    road = (user_materials[player]["resources"].count("wood") +
+            user_materials[player]["resources"].count("brick")) / 2
 
-    city = (user_materials[player]["resources"]['ore'] * 3 +
-            user_materials[player]["resources"]['wheat'] * 2) / 5
+    city = (user_materials[player]["resources"].count("ore") * 3 +
+            user_materials[player]["resources"].count("wheat") * 2) / 5
 
-    devc = (user_materials[player]["resources"]['ore'] + user_materials[player]
-            ["resources"]['wheat'] + user_materials[player]["resources"]['sheep']) / 3
+    devc = (user_materials[player]["resources"].count("ore") + user_materials[player]
+            ["resources"].count("wheat") + user_materials[player]["resources"].count("sheep")) / 3
 
 
     # TODO(bouch): Update the player's factors here (they start at 1)
@@ -259,6 +258,13 @@ def best_win_condition(board_frame,board):
 
         if curr_settlement_score > best_settlement_score:
             best_settlement_score = curr_settlement_score
+
+    if "factors" not in user_materials[player]:
+        user_materials[player]["factors"] = {}
+        user_materials[player]["factors"]["sett"] = 1
+        user_materials[player]["factors"]["road"] = 1
+        user_materials[player]["factors"]["city"] = 1
+        user_materials[player]["factors"]["devc"] = 1
 
     user_materials[player]["factors"]["city"] += 0.2 * (best_settlement_score) - 1.6 # neutral factor if you have a sett with 8 dots
 

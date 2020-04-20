@@ -49,7 +49,7 @@ class CatanSpectator(tkinter.Frame):
         elif not was_in_game and self.game.state.is_in_game():
             #logging.debug('we were not in game, NOW WE ARE')
             self._toolbar_frame.grid_forget()
-            self._toolbar_frame = views.GameToolbarFrame(self, self.game)
+            self._toolbar_frame = views.GameToolbarFrame(self, self.game, self._board_frame)
             self._toolbar_frame.grid(row=0, column=1, rowspan=2, sticky=tkinter.N)
 
             self._toolbar_players = views.PlayerToolbarFrame(self, self.game)

@@ -758,10 +758,12 @@ class StartGamePlayerOrderFrame(tkinter.Frame):
 
 class GameToolbarFrame(tkinter.Frame):
 
-    def __init__(self, master, game, *args, **kwargs):
+    def __init__(self, master, game, board_frame, *args, **kwargs):
         super(GameToolbarFrame, self).__init__()
+
         self.master = master
         self.game = game
+        self.board_frame = board_frame
 
         self.game.observers.add(self)
 
@@ -777,7 +779,7 @@ class GameToolbarFrame(tkinter.Frame):
         frame_build = BuildFrame(self, self.game)
         frame_trade = views_trading.TradeFrame(self, self.game)
         frame_play_dev = PlayDevCardFrame(self, self.game)
-        frame_end_turn = EndTurnFrame(self, self.game)
+        frame_end_turn = EndTurnFrame(self, self.game, self.board_frame)
         frame_end_game = EndGameFrame(self, self.game)
 
         label_cur_player_name.pack(fill=tkinter.X)
@@ -892,6 +894,10 @@ class HandsFrame(tkinter.Frame):
         player_info = self.game.get_all_user_materials()
 
         i = 0
+        for player, player_materials in player_info.items():
+            if player_materials["victory_points"] >= 10:
+                self.game.end(player=player)
+
         for player, player_materials in player_info.items():
 
             resources = "{}".format(player_materials["resources"])
@@ -1229,10 +1235,11 @@ class PlayDevCardFrame(tkinter.Frame):
 
 class EndTurnFrame(tkinter.Frame):
 
-    def __init__(self, master, game):
+    def __init__(self, master, game, board_frame):
         super(EndTurnFrame, self).__init__(master)
         self.master = master
         self.game = game
+        self.board_frame = board_frame
         self.game.observers.add(self)
 
         self.label = tkinter.Label(self, text='--')
@@ -1258,6 +1265,7 @@ class EndTurnFrame(tkinter.Frame):
     def on_end_turn(self, event=None):
         if self.game.state.can_end_turn():
             self.game.end_turn()
+            droid_move(self.board_frame, self.game.board)
 
 
 class EndGameFrame(tkinter.Frame):
