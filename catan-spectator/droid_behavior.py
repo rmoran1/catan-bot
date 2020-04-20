@@ -2,6 +2,7 @@ import logging
 import hexgrid
 from catan.pieces import PieceType
 import catan.board
+import time
 
 _node_directions = ['NW', 'N', 'NE', 'SE', 'S', 'SW']
 _edge_directions = ['NW', 'NE', 'E', 'SE', 'SW', 'W']
@@ -30,6 +31,7 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
             board_frame.droid_piece_click(
                 PieceType.robber, best_robber_coord(board_frame, board))
             game_toolbar_frame.frame_robber.on_steal()
+            time.sleep(2)
 
         next_moves = best_win_condition(board_frame,board)
 
@@ -93,11 +95,10 @@ def best_robber_coord(board_frame, board):
             continue
 
         tile_id = hexgrid.nearest_tile_to_node(coord)
-        tile_coord = hexgrid.tile_id_to_coord(tile_id)
 
         print("SETTLEMENT COORD: {}".format(coord))
-        print("TILE COORD: {}".format(coord))
-        return tile_coord
+        print("TILE ID: {}".format(tile_id))
+        return tile_id
 
     return hexgrid.tile_id_to_coord(10)  # If none found, choose centermost
 

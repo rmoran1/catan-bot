@@ -1,0 +1,69 @@
+catanlog v0.10.0
+timestamp: 2020-04-20 02:39:03
+players: 4
+name: yurick, color: green, seat: 1
+name: droid, color: blue, seat: 2
+name: droid2, color: orange, seat: 3
+name: droid3, color: red, seat: 4
+terrain: wheat sheep wood ore sheep brick wood ore sheep desert wheat brick wheat brick sheep wood wheat wood ore
+numbers: 5 2 6 3 8 10 9 12 11 None 4 8 10 9 4 5 6 3 11
+ports: 3:1(1 NW) wood(2 W) brick(4 W) 3:1(5 SW) 3:1(6 SE) sheep(8 SE) 3:1(9 E) ore(10 NE) wheat(12 NE)
+...CATAN!
+green buys settlement, builds at (16 N)
+green buys road, builds at (17 W)
+green ends turn after 5s
+blue buys settlement, builds at (1 SE)
+blue buys road, builds at (12 SW)
+blue ends turn after 0s
+orange buys settlement, builds at (3 SE)
+orange buys road, builds at (4 NE)
+orange ends turn after 0s
+red buys settlement, builds at (5 NE)
+red buys road, builds at (6 NW)
+red ends turn after 0s
+red buys settlement, builds at (6 NE)
+red buys road, builds at (7 NW)
+red ends turn after 0s
+orange buys settlement, builds at (11 SW)
+orange buys road, builds at (11 SW)
+orange ends turn after 0s
+blue buys settlement, builds at (13 S)
+blue buys road, builds at (13 SE)
+blue ends turn after 0s
+green buys settlement, builds at (8 NW)
+green buys road, builds at (8 NW)
+green ends turn after 3s
+green rolls 7
+green moves robber to 18, steals from orange
+green ends turn after 6s
+blue rolls 5
+blue ends turn after 0s
+orange rolls 12
+orange ends turn after 0s
+red rolls 6
+red ends turn after 0s
+green rolls 5
+green ends turn after 4s
+blue rolls 9
+blue ends turn after 0s
+orange rolls 5
+orange ends turn after 0s
+red rolls 5
+red ends turn after 0s
+green rolls 10
+green ends turn after 5s
+blue rolls 5
+blue ends turn after 0s
+orange rolls 5
+orange ends turn after 0s
+red rolls 10
+red ends turn after 0s
+green rolls 7
+green moves robber to 19, steals from blue
+green ends turn after 17s
+blue rolls 6
+blue ends turn after 0s
+orange rolls 7
+orange moves robber to 8, steals from green
+orange ends turn after 2s
+red rolls 7

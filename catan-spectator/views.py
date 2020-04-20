@@ -122,7 +122,7 @@ class BoardFrame(tkinter.Frame):
             self.game.hands[self.game.get_cur_player()].remove(Terrain.ore)
             print(droid_name, 'placed city at coordinate', coordinate)
         elif piece_type == PieceType.robber:
-            self.game.move_robber(hexgrid.tile_id_from_coord(coordinate))
+            self.game.move_robber(coordinate)  # In this case, it is actually a tile ID, not a coord
 
         self.redraw()
         self.game.notify_observers()
@@ -509,6 +509,7 @@ class BoardFrame(tkinter.Frame):
         settlements = list()
         cities = list()
         robber = None
+
         for (_, coord), piece in board.pieces.items():
             if piece.type == PieceType.road:
                 roads.append((coord, piece))
