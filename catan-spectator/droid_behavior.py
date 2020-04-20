@@ -20,6 +20,7 @@ city_needs = [catanboard.Terrain.ore,
 
 
 def droid_move(board_frame, board, game_toolbar_frame=None):
+
     player = board_frame.game.get_cur_player()
     user_materials = board_frame.game.get_all_user_materials()
 
@@ -478,6 +479,10 @@ def best_robber_coord(board_frame, board):
 
         if tile_id == -1:
             return hexgrid.tile_id_to_coord(10)
+
+        if (2, hexgrid.tile_id_to_coord(tile_id)) in board.pieces:
+            # This means the robber is already on this tile
+            continue
 
         return tile_id
 

@@ -1,0 +1,49 @@
+catanlog v0.10.0
+timestamp: 2020-04-20 04:44:24
+players: 4
+name: yurick, color: green, seat: 1
+name: droidatron, color: blue, seat: 2
+name: megadroid, color: orange, seat: 3
+name: droidstar, color: red, seat: 4
+terrain: wood sheep wheat wheat brick sheep desert ore wood sheep brick sheep wood ore wheat wheat brick ore wood
+numbers: 5 2 6 3 8 10 None 9 12 11 4 8 10 9 4 5 6 3 11
+ports: 3:1(1 NW) wood(2 W) brick(4 W) 3:1(5 SW) 3:1(6 SE) sheep(8 SE) 3:1(9 E) ore(10 NE) wheat(12 NE)
+...CATAN!
+green buys settlement, builds at (9 NW)
+green buys road, builds at (10 SW)
+green ends turn after 11s
+blue buys settlement, builds at (8 NW)
+blue buys road, builds at (8 NW)
+blue ends turn after 0s
+orange buys settlement, builds at (1 SE)
+orange buys road, builds at (12 SW)
+orange ends turn after 1s
+red buys settlement, builds at (3 SE)
+red buys road, builds at (4 NE)
+red ends turn after 1s
+red buys settlement, builds at (5 NE)
+red buys road, builds at (6 NW)
+red ends turn after 1s
+orange buys settlement, builds at (11 SW)
+orange buys road, builds at (11 SW)
+orange ends turn after 1s
+blue buys settlement, builds at (13 S)
+blue buys road, builds at (13 SE)
+blue ends turn after 1s
+green buys settlement, builds at (6 NE)
+green buys road, builds at (7 NW)
+green ends turn after 11s
+green rolls 6
+green ends turn after 25s
+blue rolls 5
+blue buys road, builds at (8 NE)
+blue trades [1 wood] to player green for [1 sheep]
+blue buys dev card
+blue ends turn after 3s
+orange rolls 9
+orange buys road, builds at (10 NW)
+orange trades [1 sheep] to player blue for [1 ore]
+orange ends turn after 3s
+red rolls 4
+red buys dev card
+red ends turn after 2s

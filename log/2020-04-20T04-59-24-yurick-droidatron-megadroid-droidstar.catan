@@ -1,0 +1,11 @@
+catanlog v0.10.0
+timestamp: 2020-04-20 04:59:24
+players: 4
+name: yurick, color: green, seat: 1
+name: droidatron, color: blue, seat: 2
+name: megadroid, color: orange, seat: 3
+name: droidstar, color: red, seat: 4
+terrain: wood sheep wheat wood wood wood wheat ore sheep sheep sheep brick brick brick desert wheat ore ore wheat
+numbers: 5 2 6 3 8 10 9 12 11 4 8 10 9 4 None 5 6 3 11
+ports: 3:1(1 NW) wood(2 W) brick(4 W) 3:1(5 SW) 3:1(6 SE) sheep(8 SE) 3:1(9 E) ore(10 NE) wheat(12 NE)
+...CATAN!

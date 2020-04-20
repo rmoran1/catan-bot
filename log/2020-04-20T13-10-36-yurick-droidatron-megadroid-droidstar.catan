@@ -1,0 +1,117 @@
+catanlog v0.10.0
+timestamp: 2020-04-20 13:10:36
+players: 4
+name: yurick, color: green, seat: 1
+name: droidatron, color: blue, seat: 2
+name: megadroid, color: orange, seat: 3
+name: droidstar, color: red, seat: 4
+terrain: ore brick brick sheep sheep wheat wheat desert wood ore brick sheep wood ore wheat wheat sheep wood wood
+numbers: 5 2 6 3 8 10 9 None 12 11 4 8 10 9 4 5 6 3 11
+ports: 3:1(1 NW) wood(2 W) brick(4 W) 3:1(5 SW) 3:1(6 SE) sheep(8 SE) 3:1(9 E) ore(10 NE) wheat(12 NE)
+...CATAN!
+green buys settlement, builds at (8 NW)
+green buys road, builds at (8 NW)
+green ends turn after 4s
+blue buys settlement, builds at (1 SE)
+blue buys road, builds at (12 SW)
+blue ends turn after 1s
+orange buys settlement, builds at (3 SE)
+orange buys road, builds at (4 NE)
+orange ends turn after 1s
+red buys settlement, builds at (5 NE)
+red buys road, builds at (6 NW)
+red ends turn after 1s
+red buys settlement, builds at (6 NE)
+red buys road, builds at (7 NW)
+red ends turn after 1s
+orange buys settlement, builds at (11 SW)
+orange buys road, builds at (11 SW)
+orange ends turn after 1s
+blue buys settlement, builds at (10 SW)
+blue buys road, builds at (10 SW)
+blue ends turn after 1s
+green buys settlement, builds at (16 N)
+green buys road, builds at (17 W)
+green ends turn after 9s
+green rolls 7
+green moves robber to 17, steals from blue
+green ends turn after 12s
+blue rolls 3
+blue trades [1 sheep] to player red for [1 wheat]
+blue ends turn after 2s
+orange rolls 10
+orange buys road, builds at (3 E)
+orange ends turn after 3s
+red rolls 3
+red trades [1 wheat] to player orange for [1 wood]
+red ends turn after 2s
+green rolls 8
+green ends turn after 11s
+blue rolls 8
+blue buys dev card
+blue ends turn after 2s
+orange rolls 5
+orange buys road, builds at (2 SW)
+orange ends turn after 3s
+red rolls 10
+red buys road, builds at (5 NE)
+red ends turn after 3s
+green rolls 7
+green moves robber to 7, steals from red
+green ends turn after 8s
+blue rolls 4
+blue trades [1 wood] to player red for [1 wheat]
+blue buys dev card
+blue ends turn after 2s
+orange rolls 8
+orange ends turn after 2s
+red rolls 10
+red buys road, builds at (6 NE)
+red ends turn after 3s
+green rolls 3
+green ends turn after 9s
+blue rolls 5
+blue trades [1 wood] to player red for [1 wheat]
+blue buys dev card
+blue ends turn after 2s
+orange rolls 11
+orange buys settlement, builds at (2 SW)
+orange trades [1 sheep] to player red for [1 wheat]
+orange ends turn after 3s
+red rolls 5
+red ends turn after 2s
+green rolls 6
+green ends turn after 3s
+blue rolls 8
+blue trades [1 wood] to player orange for [1 wheat]
+blue buys dev card
+blue ends turn after 2s
+orange rolls 10
+orange buys road, builds at (2 W)
+orange trades [1 brick] to player blue for [1 ore]
+orange ends turn after 3s
+red rolls 8
+red buys road, builds at (15 E)
+red ends turn after 3s
+green rolls 6
+green ends turn after 8s
+blue rolls 10
+blue buys road, builds at (13 E)
+blue plays year of plenty, takes brick and wheat
+blue buys settlement, builds at (13 SE)
+blue ends turn after 4s
+orange rolls 4
+orange trades [1 brick] to player red for [1 wheat]
+orange buys dev card
+orange ends turn after 2s
+red rolls 9
+red ends turn after 2s
+green rolls 7
+green moves robber to 5, steals from red
+green ends turn after 7s
+blue rolls 10
+blue trades [1 wood] to player orange for [1 brick]
+blue buys road, builds at (1 E)
+blue ends turn after 3s
+orange rolls 10
+orange buys road, builds at (None ZZ)
