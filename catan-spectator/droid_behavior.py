@@ -129,6 +129,8 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
         user_materials[player]["turns_taken"] += 1
 
     board_frame.redraw()
+    board_frame.game.notify_observers()
+
     if game_toolbar_frame is not None:
         game_toolbar_frame.frame_end_turn.on_end_turn()
 
@@ -155,7 +157,7 @@ def find_tradeable_resources(approach_type, hand):
 def make_trade(resource, num, player, board_frame, tradeable_resources):
     game = board_frame.game
     traded_resource = None
-    print("{} wants {}!".format(player.name, resource))
+    print("{} wants {}!".format(player.name, resource.name))
 
     for trade_partner in game.hands:
         if player == trade_partner:
@@ -181,15 +183,14 @@ def make_trade(resource, num, player, board_frame, tradeable_resources):
             if traded_resource:
                 break
             else:
-                print("{} declined the trade for {}".format(trade_partner, resource))
+                print("{} declined the trade for {}".format(trade_partner.name, resource.name))
 
     if traded_resource:
         trade = CatanTrade(giver=player, getter=trade_partner)
         trade.give(traded_resource)
         trade.get(resource)
         game.trade(trade)
-        print("{} traded {} for {} with {}".format(player.name, traded_resource, resource, trade_partner))
-        print(player, 'traded', traded_resource, 'for', resource, 'with', trade_partner)
+        print("{} traded {} for {} with {}".format(player.name, traded_resource.name, resource.name, trade_partner.name))
         return True
     return False
  
