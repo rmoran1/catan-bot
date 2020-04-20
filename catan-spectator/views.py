@@ -93,9 +93,9 @@ class BoardFrame(tkinter.Frame):
             self.game.place_road(coordinate)
             if not self.game.state.is_in_pregame():
                 self.game.hands[self.game.get_cur_player()].remove(
-                    Terrain.brick)
+                        Terrain.brick)
                 self.game.hands[self.game.get_cur_player()].remove(
-                    Terrain.wood)
+                        Terrain.wood)
             # print(droid_name, 'placed road at coordinate', coordinate)
         elif piece_type == PieceType.settlement:
             self.game.place_settlement(coordinate)

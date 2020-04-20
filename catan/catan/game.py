@@ -428,7 +428,8 @@ class Game(object):
         self.set_dev_card_state(catan.states.DevCardPlayedState(self))
         print(self.get_cur_player().name, 'plays a Knight')
         self.set_state(catan.states.GameStateMoveRobberUsingKnight(self))
-        self.dev_hands[self.get_cur_player()].remove('Knight')
+        if 'Knight' in self.dev_hands[self.get_cur_player()]:
+            self.dev_hands[self.get_cur_player()].remove('Knight')
         self.knights_played[self.get_cur_player()] += 1
 
     @undoredo.undoable
@@ -446,7 +447,7 @@ class Game(object):
     @undoredo.undoable
     def play_year_of_plenty(self, resource1, resource2):
         self.catanlog.log_plays_year_of_plenty(self.get_cur_player(), resource1, resource2)
-        print(player, 'plays a Year of Plenty for', resource1, 'and', resource2)
+        print(self.get_cur_player(), 'plays a Year of Plenty for', resource1, 'and', resource2)
         self.hands[self.get_cur_player()].append(resource1)
         self.hands[self.get_cur_player()].append(resource2)
         self.set_dev_card_state(catan.states.DevCardPlayedState(self))
@@ -457,8 +458,10 @@ class Game(object):
         self.catanlog.log_plays_road_builder(self.get_cur_player(),
                                                     hexgrid.location(hexgrid.EDGE, edge1),
                                                     hexgrid.location(hexgrid.EDGE, edge2))
+        if not player:
+            player = board_frame.game.get_cur_player()
         print(player, 'plays a Road Builder')
-        
+
         self.set_dev_card_state(catan.states.DevCardPlayedState(self))
         self.dev_hands[self.get_cur_player()].remove('Road Builder')
 
@@ -528,7 +531,7 @@ class Game(object):
             road_ended = False
             working_longest_road = 1
 
-            working_coords = coords[:] 
+            working_coords = coords[:]
 
             while road_ended is not True:
 
@@ -542,7 +545,7 @@ class Game(object):
 
                     if offset == _offsets[len(_offsets) - 1]:
                         road_ended = True
- 
+
             if (working_longest_road > longest_road):
                 longest_road = working_longest_road
 
@@ -581,7 +584,7 @@ class Game(object):
                 victory_points += 2
 
             if player == player_with_largest_army and largest_army != 0:
-                victory_points += 2 
+                victory_points += 2
 
             user_materials[player]["victory_points"] = victory_points
 

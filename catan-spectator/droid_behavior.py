@@ -17,7 +17,7 @@ devc_needs = [catanboard.Terrain.ore,
 city_needs = [catanboard.Terrain.ore,
               catanboard.Terrain.ore, catanboard.Terrain.ore,
               catanboard.Terrain.wheat, catanboard.Terrain.wheat]
- 
+
 
 def droid_move(board_frame, board, game_toolbar_frame=None):
     player = board_frame.game.get_cur_player()
@@ -140,11 +140,13 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
                 board_frame.master.delay()
 
                 while board_frame.game.state.can_buy_settlement():
-                    board_frame.game.set_state(states.GameStatePlacingPiece(board_frame.game, PieceType.settlement))
+
                     coord = best_settlement_coord(board_frame,board)
                     #If no valid places to play a settlement
                     if coord == -1:
                         break
+
+                    board_frame.game.set_state(states.GameStatePlacingPiece(board_frame.game, PieceType.settlement))
                     board_frame.droid_piece_click(PieceType.settlement, coord)
                     user_materials[player]["have_built_sett"] = 1
                     print("{} places a settlement at {}...".format(player.name, coord))
@@ -223,7 +225,7 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
                                         board_frame.game.hands[player].append(resource)
                                         print(player, 'used the 4:1 port to obtain a', resource, 'from 4', r_type)
                                         break
- 
+
                         missing_resources, tradeable_resources = find_tradeable_resources(approach_type, board_frame.game.hands[player])
                 while board_frame.game.state.can_buy_road():
                     board_frame.game.set_state(states.GameStatePlacingPiece(board_frame.game, PieceType.road))
@@ -294,7 +296,7 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
                                         board_frame.game.hands[player].append(resource)
                                         print(player, 'used the 4:1 port to obtain a', resource, 'from 4', r_type)
                                         break
-                            
+
                         missing_resources, tradeable_resources = find_tradeable_resources(approach_type, board_frame.game.hands[player])
                 while board_frame.game.state.can_buy_city():
                     board_frame.game.set_state(states.GameStatePlacingPiece(board_frame.game, PieceType.city))
@@ -360,11 +362,11 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
                                         board_frame.game.hands[player].append(resource)
                                         print(player, 'used the 4:1 port to obtain a', resource, 'from 4', r_type)
                                         break
- 
+
                         missing_resources, tradeable_resources = find_tradeable_resources(approach_type, board_frame.game.hands[player])
                 while board_frame.game.state.can_buy_dev_card():
                     board_frame.game.buy_dev_card()
-                    
+
 
         user_materials[player]["turns_taken"] += 1
 
@@ -418,7 +420,7 @@ def make_trade(resource, num, player, board_frame, tradeable_resources):
                 if need not in game.hands[trade_partner] and \
                     need in tradeable_resources and \
                     (resource not in partner_needs or \
-                    (partner_next_moves[0] != 'city' and 
+                    (partner_next_moves[0] != 'city' and
                     game.hands[trade_partner].count(resource) >= 2)):
                         traded_resource = need
                         break
@@ -435,7 +437,7 @@ def make_trade(resource, num, player, board_frame, tradeable_resources):
         print("{} traded {} for {} with {}".format(player.name, traded_resource.name, resource.name, trade_partner.name))
         return True
     return False
- 
+
 
 def best_robber_coord(board_frame, board):
 
@@ -473,6 +475,9 @@ def best_robber_coord(board_frame, board):
                     break
         if self_finder:
             continue
+
+        if tile_id == -1:
+            return hexgrid.tile_id_to_coord(10)
 
         return tile_id
 
@@ -607,10 +612,23 @@ def best_road_coord(board_frame, board):
 
                     continue
 
+                if new_coord // 16 and new_coord % 2: #sanity checking coordinates
+
+                    print("*!(@&!(*&@*(!&#()!*)(*)))")
+
+                    continue
+
+                if new_coord % 16 >= 13 or new_coord // 16 >= 11 or new_coord % 16 <= 1 or new_coord == 98 or new_coord == 132 or new_coord == 166: #sanity checking coordinates
+
+                    print("Hey ya")
+
+                    continue
+
                 else:
 
                     return new_coord
 
+    '''
     #if can build settlement 2 roads away
     for coord in road_coords:
 
@@ -637,13 +655,28 @@ def best_road_coord(board_frame, board):
                     else:
 
                         return coord + offset
+    '''
 
     #otherwise build any road you can
     for coord in road_coords:
 
         for offset in _offsets:
 
+            new_coord = offset + coord
+
             if is_road_taken(board, coord+offset):
+
+                continue
+
+            if new_coord // 16 and new_coord % 2: #sanity checking coordinates
+
+                print("*!(@&!(*&@*(!&#()!*)(*)))")
+
+                continue
+
+            if new_coord % 16 >= 13 or new_coord // 16 >= 11 or new_coord % 16 <= 1 or new_coord == 98 or new_coord == 132 or new_coord == 166: #sanity checking coordinates
+
+                print("Hey ya")
 
                 continue
 
