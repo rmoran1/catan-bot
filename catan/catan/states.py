@@ -60,7 +60,6 @@ import random
 import logging
 import hexgrid
 import catan.pieces
-from droid_behavior import droid_move
 
 class GameState(object):
     """

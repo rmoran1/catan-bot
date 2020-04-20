@@ -4,7 +4,7 @@ import logging
 import argparse
 import sys
 sys.path.insert(1, 'catan')
-from catan.board import Board
+import catan.board
 from catan.game import Game
 
 import views
@@ -15,7 +15,7 @@ class CatanSpectator(tkinter.Frame):
     def __init__(self, options=None, *args, **kwargs):
         super(CatanSpectator, self).__init__()
         self.options = options or dict()
-        board = Board(board=self.options.get('board'),
+        board = catan.board.Board(board=self.options.get('board'),
                       terrain=self.options.get('terrain'),
                       numbers=self.options.get('numbers'),
                       ports=self.options.get('ports'),

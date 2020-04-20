@@ -122,8 +122,7 @@ class BoardFrame(tkinter.Frame):
             self.game.hands[self.game.get_cur_player()].remove(Terrain.ore)
             print(droid_name, 'placed city at coordinate', coordinate)
         elif piece_type == PieceType.robber:
-            self.game.move_robber(hexgrid.tile_id_from_coord(
-                self._coord_from_robber_tag(tag)))
+            self.game.move_robber(hexgrid.tile_id_from_coord(coordinate))
 
         self.redraw()
         self.game.notify_observers()
@@ -136,6 +135,8 @@ class BoardFrame(tkinter.Frame):
                 droid_move(self, self._board)
             else:
                 logging.debug("Awaiting move from a human")
+        else:
+            self.game.set_state(states.GameStateDuringTurnAfterRoll(self.game))
 
     def piece_click(self, piece_type, event):
         tags = self._board_canvas.gettags(
@@ -186,12 +187,12 @@ class BoardFrame(tkinter.Frame):
             self.game.move_robber(hexgrid.tile_id_from_coord(
                 self._coord_from_robber_tag(tag)))
             #print("Clicked to move a robber")
-        print(self.game.hands)
+
         self.redraw()
         self.game.notify_observers()
 
         self._cur_player = self.game.get_cur_player()
-        
+
         if self.game.state.is_in_pregame():
             if self._cur_player.name.startswith("droid"):
                 logging.debug("Awaiting move from a droid")
@@ -779,21 +780,21 @@ class GameToolbarFrame(tkinter.Frame):
             self, textvariable=self._cur_player_name, anchor=tkinter.W)
         self.frame_roll = RollFrame(self, self.game)
         frame_undo = UndoRedoFrame(self, self.game)
-        frame_robber = RobberFrame(self, self.game)
+        self.frame_robber = RobberFrame(self, self.game)
         frame_build = BuildFrame(self, self.game)
         frame_trade = views_trading.TradeFrame(self, self.game)
         frame_play_dev = PlayDevCardFrame(self, self.game)
-        frame_end_turn = EndTurnFrame(self, self.game, self.board_frame)
+        self.frame_end_turn = EndTurnFrame(self, self.game, self.board_frame)
         frame_end_game = EndGameFrame(self, self.game)
 
         label_cur_player_name.pack(fill=tkinter.X)
         self.frame_roll.pack(fill=tkinter.X)
         frame_undo.pack(fill=tkinter.X)
-        frame_robber.pack(fill=tkinter.X)
+        self.frame_robber.pack(fill=tkinter.X)
         frame_build.pack(fill=tkinter.X)
         frame_trade.pack(fill=tkinter.X)
         frame_play_dev.pack(fill=tkinter.X)
-        frame_end_turn.pack(fill=tkinter.X)
+        self.frame_end_turn.pack(fill=tkinter.X)
         frame_end_game.pack(side=tkinter.BOTTOM, fill=tkinter.BOTH)
 
         #logging.debug('toolbar built.')
@@ -989,6 +990,7 @@ class RollFrame(tkinter.Frame):
         self.game.roll(roll_val)
         self.last_roll_text.set("Last Roll: {}".format(roll_val))
         self.set_states()
+        return roll_val
 
     def roll_event_HO(self, roll):
         def roll_event(event):
@@ -1269,7 +1271,8 @@ class EndTurnFrame(tkinter.Frame):
     def on_end_turn(self, event=None):
         if self.game.state.can_end_turn():
             self.game.end_turn()
-            droid_move(self.board_frame, self.game.board, self.master)
+            if "droid" in self.game.get_cur_player().name:
+                droid_move(self.board_frame, self.game.board, self.master)
 
 
 class EndGameFrame(tkinter.Frame):

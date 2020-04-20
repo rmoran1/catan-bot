@@ -2,7 +2,8 @@ import copy
 from enum import Enum
 import logging
 import hexgrid
-from catan import boardbuilder, states
+import catan.boardbuilder
+import catan.states
 from catan.pieces import PieceType, Piece
 
 
@@ -28,7 +29,7 @@ class Board(object):
         """
         self.tiles = list()
         self.ports = list()
-        self.state = states.BoardState(self)
+        self.state = catan.states.BoardState(self)
         self.pieces = dict()
 
         self.opts = dict()
@@ -81,14 +82,14 @@ class Board(object):
             obs.notify(self)
 
     def lock(self):
-        self.state = states.BoardStateLocked(self)
+        self.state = catan.states.BoardStateLocked(self)
         for port in self.ports.copy():
             if port.type == PortType.none:
                 self.ports.remove(port)
         self.notify_observers()
 
     def unlock(self):
-        self.state = states.BoardStateModifiable(self)
+        self.state = catan.states.BoardStateModifiable(self)
 
     def reset(self, board=None, terrain=None, numbers=None, ports=None, pieces=None, players=None):
         opts = self.opts.copy()
@@ -104,7 +105,7 @@ class Board(object):
             opts['pieces'] = pieces
         if players is not None:
             opts['players'] = players
-        boardbuilder.reset(self, opts=opts)
+        catan.boardbuilder.reset(self, opts=opts)
 
     def can_place_piece(self, piece, coord):
         if piece.type == PieceType.road:
