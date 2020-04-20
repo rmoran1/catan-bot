@@ -17,10 +17,10 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
 
         if board_frame.game.state.can_place_settlement():
             board_frame.droid_piece_click(
-                PieceType.settlement, best_settlement_coord(board))
+                PieceType.settlement, best_settlement_coord_start(board))
         elif board_frame.game.state.can_place_road():
             board_frame.droid_piece_click(
-                PieceType.road, best_road_coord_start(board,board_frame))
+                PieceType.road, best_road_coord_start(board_frame,board))
 
     elif board_frame.game.state.is_in_game():
 
@@ -43,15 +43,19 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
 
                 while board_frame.game.state.can_buy_settlement():
                     user_materials[player]["have_built_sett"] = 1
-                    board_frame.droid_piece_click(PieceType.settlement, best_settlement_coord(board))
+                    coord = best_settlement_coord(board_frame,board)
+                    #If no valid places to play a settlement
+                    if coord == -1:
+                        break
+                    board_frame.droid_piece_click(PieceType.settlement, coord)
 
             if approach_type == "road":
 
                 while board_frame.game.state.can_buy_road():
                     print("we're here trying to buy a road~~~~~~~~~~")
-                    print(best_road_coord(board,board_frame))
+                    print(best_road_coord(board_frame,board))
                     user_materials[player]["have_built_sett"] = 1
-                    board_frame.droid_piece_click(PieceType.road, best_road_coord(board,board_frame))
+                    board_frame.droid_piece_click(PieceType.road, best_road_coord(board_frame,board))
 
             # if approach_type == "city":
 
@@ -74,7 +78,7 @@ def best_robber_coord(board_frame, board):
 
     user_materials = board_frame.game.get_all_user_materials()
     players_and_scores = []
-    
+
     for player in user_materials:
 
         players_and_scores.append((player, user_materials[player]["victory_points"]))
@@ -132,7 +136,7 @@ def score_nodes(board):
     return scores
 
 
-def best_settlement_coord(board):
+def best_settlement_coord_start(board):
 
     node_scores = score_nodes(board)
     sorted_node_scores = sorted(node_scores, key=lambda x: node_scores[
@@ -145,8 +149,32 @@ def best_settlement_coord(board):
 
         return coord
 
+def best_settlement_coord(board_frame, board):
 
-def best_road_coord_start(board, board_frame):
+    player = board_frame.game.get_cur_player()
+    user_materials = board_frame.game.get_all_user_materials()
+
+    road_coords = user_materials[player]["road"]
+
+    node_scores = score_nodes(board)
+    sorted_node_scores = sorted(node_scores, key=lambda x: node_scores[
+                                x]['score'], reverse=True)
+
+    for coord in sorted_node_scores:
+
+        if is_settlement_taken(board, coord, node_scores):
+            continue
+
+        for rcoord in road_coords:
+            nodes = hexgrid.nodes_touching_edge(rcoord)
+            if coord in nodes:
+                return coord
+
+    #-1 if the player has no valid places to play a settlement
+    return -1
+
+
+def best_road_coord_start(board_frame, board):
     for (typ, coord), piece in reversed(list(board.pieces.items())):
 
         if typ != hexgrid.NODE:
@@ -161,7 +189,7 @@ def best_road_coord_start(board, board_frame):
         return coord  # basic road placement
 
 
-def best_road_coord(board, board_frame):
+def best_road_coord(board_frame, board):
 
     player = board_frame.game.get_cur_player()
     user_materials = board_frame.game.get_all_user_materials()
@@ -412,7 +440,7 @@ def best_win_condition(board_frame,board):
     #SETTLEMENT FACTORS
     # Settlement factor based on best available settlement score
     # maybe TODO: limit options to within close range of your roads?
-    user_materials[player]["factors"]["sett"] += 0.2 * (board.scores[best_settlement_coord(board)]['score']) - 1.6
+    user_materials[player]["factors"]["sett"] += 0.2 * (board.scores[best_settlement_coord_start(board)]['score']) - 1.6
     #QUASI BUILD ORDER
     if user_materials[player]["have_built_road"] == 1 and user_materials[player]["have_built_road"] == 0:
         user_materials[player]["factors"]["sett"] += 100
