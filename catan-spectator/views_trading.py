@@ -71,7 +71,7 @@ class TradeFrame(tk.Frame):
                                                        self.trade.giving(),
                                                        self.trade.getter(),
                                                        self.trade.getting()))
-        if self.try_trade():
+        if 'droid' not in self.trade.getting() or self.try_trade():
             self.game.trade(self.trade)
             print('Trade accepted!')
         else:
