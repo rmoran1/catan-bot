@@ -64,6 +64,7 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
             print("{} considering where to put robber...".format(player.name))
             board_frame.master.delay()
 
+            print("{} is the best robber coordinate.".format(best_robber_coord(board_frame, board)))
             board_frame.droid_piece_click(
                 PieceType.robber, best_robber_coord(board_frame, board))
             game_toolbar_frame.frame_robber.on_steal()
@@ -480,8 +481,8 @@ def best_robber_coord(board_frame, board):
         if self_finder:
             continue
 
-        if tile_id == -1:
-            return hexgrid.tile_id_to_coord(10)
+        if tile_id in [23,57,113,147] or tile_id % 16 >= 11 or tile_id //16 >= 11:
+            continue
 
         if (2, hexgrid.tile_id_to_coord(tile_id)) in board.pieces:
             # This means the robber is already on this tile
@@ -489,7 +490,7 @@ def best_robber_coord(board_frame, board):
 
         return tile_id
 
-    return hexgrid.tile_id_to_coord(10)  # If none found, choose centermost
+    return 55  # If none found, choose centermost
 
 def score_nodes(board):
 
@@ -624,7 +625,7 @@ def best_road_coord(board_frame, board):
 
                     continue
 
-                if new_coord % 16 >= 11 or new_coord // 16 >= 11 or new_coord % 16 <= 1 or new_coord == 96 or new_coord == 130 or new_coord == 164 or new_coord == 6 or new_coord == 40 or new_coord == 164: #sanity checking coordinates
+                if new_coord % 16 >= 11 or new_coord // 16 >= 11 or new_coord % 16 <= 1 or new_coord == 96 or new_coord == 130 or new_coord == 164 or new_coord == 6 or new_coord == 40 or new_coord == 74: #sanity checking coordinates
 
                     continue
 
@@ -677,7 +678,7 @@ def best_road_coord(board_frame, board):
                 continue
 
             #if new_coord % 16 >= 13 or new_coord // 16 >= 11 or new_coord % 16 <= 1 or new_coord == 98 or new_coord == 132 or new_coord == 166: #sanity checking coordinates
-            if new_coord % 16 >= 11 or new_coord // 16 >= 11 or new_coord % 16 <= 1 or new_coord == 96 or new_coord == 130 or new_coord == 164 or new_coord == 6 or new_coord == 40 or new_coord == 164: #sanity checking coordinates
+            if new_coord % 16 >= 11 or new_coord // 16 >= 11 or new_coord % 16 <= 1 or new_coord == 96 or new_coord == 130 or new_coord == 164 or new_coord == 6 or new_coord == 40 or new_coord == 74: #sanity checking coordinates
 
 
                 continue
