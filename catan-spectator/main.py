@@ -6,7 +6,7 @@ import sys
 sys.path.insert(1, 'catan')
 import catan.board
 from catan.game import Game
-
+import time
 import views
 
 
@@ -57,6 +57,9 @@ class CatanSpectator(tkinter.Frame):
 
     def setup_options(self):
         return self._setup_game_toolbar_frame.options.copy()
+
+    def delay(self):
+        time.sleep(0.5)
 
 
 def main():
