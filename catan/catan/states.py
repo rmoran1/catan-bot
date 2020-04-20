@@ -572,6 +572,7 @@ class GameStateMoveRobber(GameStateInGame):
         if len(robbers) != 1:
             logging.warning('{} robbers found in board.pieces'.format(len(robbers)))
         self.game.robber_tile = tile_id
+        print("New robber tile: {}".format(self.game.robber_tile))
         self.game.set_state(GameStateSteal(self.game))
 
     def can_roll(self):

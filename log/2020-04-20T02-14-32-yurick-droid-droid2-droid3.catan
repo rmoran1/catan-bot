@@ -1,0 +1,196 @@
+catanlog v0.10.0
+timestamp: 2020-04-20 02:14:32
+players: 4
+name: yurick, color: green, seat: 1
+name: droid, color: blue, seat: 2
+name: droid2, color: orange, seat: 3
+name: droid3, color: red, seat: 4
+terrain: brick wood ore desert wheat wood wood brick wheat sheep wheat sheep wood ore brick ore wheat sheep sheep
+numbers: 5 2 6 None 3 8 10 9 12 11 4 8 10 9 4 5 6 3 11
+ports: 3:1(1 NW) wood(2 W) brick(4 W) 3:1(5 SW) 3:1(6 SE) sheep(8 SE) 3:1(9 E) ore(10 NE) wheat(12 NE)
+...CATAN!
+green buys settlement, builds at (10 SW)
+green buys road, builds at (10 W)
+green ends turn after 4s
+blue buys settlement, builds at (8 NW)
+blue buys road, builds at (8 NW)
+blue ends turn after 0s
+orange buys settlement, builds at (1 SE)
+orange buys road, builds at (12 SW)
+orange ends turn after 0s
+red buys settlement, builds at (6 N)
+red buys road, builds at (6 NE)
+red ends turn after 0s
+red buys settlement, builds at (2 S)
+red buys road, builds at (2 SE)
+red ends turn after 0s
+orange buys settlement, builds at (11 SW)
+orange buys road, builds at (11 SW)
+orange ends turn after 0s
+blue buys settlement, builds at (13 S)
+blue buys road, builds at (13 SE)
+blue ends turn after 0s
+green buys settlement, builds at (9 NW)
+green buys road, builds at (9 NW)
+green ends turn after 3s
+green rolls 3
+green ends turn after 3s
+blue rolls 7
+blue ends turn after 0s
+orange rolls 6
+orange ends turn after 0s
+red rolls 9
+red ends turn after 0s
+green rolls 5
+green ends turn after 8s
+blue rolls 7
+blue ends turn after 0s
+orange rolls 5
+orange ends turn after 0s
+red rolls 10
+red ends turn after 0s
+green rolls 4
+green ends turn after 3s
+blue rolls 6
+blue ends turn after 0s
+orange rolls 7
+orange ends turn after 0s
+red rolls 10
+red ends turn after 0s
+green rolls 9
+green ends turn after 3s
+blue rolls 7
+blue ends turn after 0s
+orange rolls 4
+orange ends turn after 0s
+red rolls 8
+red ends turn after 0s
+green rolls 8
+green ends turn after 2s
+blue rolls 12
+blue ends turn after 0s
+orange rolls 5
+orange ends turn after 0s
+red rolls 6
+red ends turn after 0s
+green rolls 9
+green ends turn after 2s
+blue rolls 4
+blue ends turn after 0s
+orange rolls 10
+orange ends turn after 0s
+red rolls 11
+red ends turn after 0s
+green rolls 9
+green ends turn after 2s
+blue rolls 8
+blue ends turn after 0s
+orange rolls 8
+orange ends turn after 0s
+red rolls 5
+red ends turn after 0s
+green rolls 5
+green ends turn after 3s
+blue rolls 11
+blue ends turn after 0s
+orange rolls 8
+orange ends turn after 0s
+red rolls 8
+red ends turn after 0s
+green rolls 8
+green ends turn after 2s
+blue rolls 2 ...DEUCES!
+blue ends turn after 0s
+orange rolls 5
+orange ends turn after 0s
+red rolls 7
+red ends turn after 0s
+green rolls 4
+green ends turn after 4s
+blue rolls 10
+blue ends turn after 0s
+orange rolls 2 ...DEUCES!
+orange ends turn after 0s
+red rolls 6
+red ends turn after 0s
+green rolls 4
+green ends turn after 2s
+blue rolls 5
+blue ends turn after 0s
+orange rolls 6
+orange ends turn after 0s
+red rolls 6
+red ends turn after 0s
+green rolls 12
+green ends turn after 3s
+blue rolls 7
+blue ends turn after 0s
+orange rolls 7
+orange ends turn after 0s
+red rolls 7
+red ends turn after 0s
+green rolls 6
+green ends turn after 7s
+blue rolls 2 ...DEUCES!
+blue ends turn after 0s
+orange rolls 11
+orange ends turn after 0s
+red rolls 2 ...DEUCES!
+red ends turn after 0s
+green rolls 6
+green ends turn after 3s
+blue rolls 6
+blue ends turn after 0s
+orange rolls 7
+orange ends turn after 0s
+red rolls 10
+red ends turn after 0s
+green rolls 2 ...DEUCES!
+green ends turn after 2s
+blue rolls 10
+blue ends turn after 0s
+orange rolls 6
+orange ends turn after 0s
+red rolls 9
+red ends turn after 0s
+green rolls 9
+green ends turn after 2s
+blue rolls 4
+blue ends turn after 0s
+orange rolls 9
+orange ends turn after 0s
+red rolls 9
+red ends turn after 0s
+green rolls 8
+green ends turn after 2s
+blue rolls 10
+blue ends turn after 0s
+orange rolls 6
+orange ends turn after 0s
+red rolls 4
+red ends turn after 0s
+green rolls 8
+green ends turn after 2s
+blue rolls 6
+blue ends turn after 0s
+orange rolls 7
+orange ends turn after 0s
+red rolls 4
+red ends turn after 0s
+green rolls 5
+green ends turn after 2s
+blue rolls 9
+blue ends turn after 0s
+orange rolls 4
+orange ends turn after 0s
+red rolls 7
+red ends turn after 0s
+green rolls 9
+green ends turn after 2s
+blue rolls 8
+blue ends turn after 0s
+orange rolls 6
+orange ends turn after 0s
+red rolls 7
+red ends turn after 0s
+green rolls 7

@@ -142,8 +142,8 @@ class Board(object):
         if from_index not in self.pieces:
             logging.warning('Attempted to move piece={} which was NOT on the board'.format(from_index))
             return
-        self.place_piece(piece, to_coord)
         self.remove_piece(piece, from_coord)
+        self.place_piece(piece, to_coord)
 
     def remove_piece(self, piece, coord):
         index = (self._piece_type_to_hex_type(piece.type), coord)
