@@ -73,7 +73,7 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
 
         print("Recommended moves, in order: {}".format(next_moves))
 
-        for approach_type in next_moves:
+        for approach_type in next_moves[:-1]:
             missing_resources, tradeable_resources = find_tradeable_resources(approach_type, player_hand)
             if approach_type == "sett":
                 if not board_frame.game.state.can_buy_settlement():
@@ -487,7 +487,7 @@ def best_robber_coord(board_frame, board):
             # This means the robber is already on this tile
             continue
 
-        return tile_id
+        return hexgrid.tile_id_to_coord(tile_id)
 
     return hexgrid.tile_id_to_coord(10)  # If none found, choose centermost
 
@@ -882,8 +882,8 @@ def best_win_condition(board_frame,board,player=None):
     if PASSING_CONDITION is True:
         return None
 
-    print("~~~ Best option for {}: settlement {} road {} city {} devc {} ~~~".format(
-        player, factored_sett, factored_road, factored_city, factored_devc))
+    #print("~~~ Best option for {}: settlement {} road {} city {} devc {} ~~~".format(
+    #    player, factored_sett, factored_road, factored_city, factored_devc))
 
     next_moves = {
         "sett": factored_sett,

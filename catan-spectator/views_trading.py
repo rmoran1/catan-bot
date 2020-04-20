@@ -106,8 +106,8 @@ class TradeFrame(tk.Frame):
             print('Try asking for only one card.')
             return False
         for item in self.trade.getting():
-            if item[0] > 1 or (item[1] in partner_needs and (self.master.game.hands[self.trade.getter()].count(item[0]) < 2 or \
-                (item[0] == Terrain.ore and self.master.game.hands[self.trade.getter()].count(item[0]) < 4))):
+            if item[0] > 1 or (item[1] in partner_needs and (self.master.game.hands[self.trade.getter()].count(item[1]) < 2 or \
+                (item[1] == Terrain.ore and self.master.game.hands[self.trade.getter()].count(item[1]) < 4))):
                 harmful = True
         if harmful:
             return False
