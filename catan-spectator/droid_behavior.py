@@ -5,62 +5,151 @@ import catan.board
 
 _node_directions = ['NW', 'N', 'NE', 'SE', 'S', 'SW']
 _edge_directions = ['NW', 'NE', 'E', 'SE', 'SW', 'W']
-
+road_needs = [catan.board.Terrain.brick, catan.board.Terrain.wood]
+sett_needs = [catan.board.Terrain.brick, catan.board.Terrain.wood,
+              catan.board.Terrain.sheep, catan.board.Terrain.wheat]
+devc_needs = [catan.board.Terrain.ore,
+              catan.board.Terrain.sheep, catan.board.Terrain.wheat]
+city_needs = [catan.board.Terrain.ore,
+              catan.board.Terrain.ore, catan.board.Terrain.ore,
+              catan.board.Terrain.wheat, catan.board.Terrain.wheat]
+ 
 
 def droid_move(board_frame, board, game_toolbar_frame=None):
-
+    
+    player = board_frame.game.get_cur_player()
     user_materials = board_frame.game.get_all_user_materials()
     # BASIC CONTROL MECHANISM
     if board_frame.game.state.is_in_pregame():
 
         if board_frame.game.state.can_place_settlement():
             board_frame.droid_piece_click(
-                PieceType.settlement, best_settlement_coord(board))
+                PieceType.settlement, best_settlement_coord_pregame(board))
         elif board_frame.game.state.can_place_road():
             board_frame.droid_piece_click(
-                PieceType.road, best_road_coord(board))
+                PieceType.road, best_road_coord_pregame(board))
 
     elif board_frame.game.state.is_in_game():
-
         game_toolbar_frame.frame_roll.on_dice_roll()
-
         next_moves = best_win_condition(board_frame,board)
-
+        player_hand = board_frame.game.hands[player]
         print("Recommended moves, in order: {}".format(next_moves))
 
         for approach_type in next_moves:
-
+            missing_resources, tradeable_resources = find_tradeable_resources(approach_type, player_hand)
             if approach_type == "sett":
+                if not board_frame.game.state.can_buy_settlement():
+                    for resource in missing_resources:
+                        result = make_trade(resource, 1, player, board_frame, tradeable_resources)
+                        if not result:
+                            break
+                        missing_resources, tradeable_resources = find_tradeable_resources(approach_type, board_frame.game.hands[player])
 
                 while board_frame.game.state.can_buy_settlement():
-                    #user_materials[player]["have_built_sett"] = 1
-                    board_frame.droid_piece_click(PieceType.settlement, best_settlement_coord(board))
+                    best_coord = best_settlement_coord(user_materials, player, board)
+                    if not best_coord:
+                        break
+                    board_frame.droid_piece_click(PieceType.settlement, best_coord)
+                    user_materials[player]["have_built_sett"] = 1
 
             if approach_type == "road":
-
+                if not board_frame.game.state.can_buy_road():
+                    for resource in missing_resources:
+                        result = make_trade(resource, 1, player, board_frame, tradeable_resources)
+                        if not result:
+                            break
+                        missing_resources, tradeable_resources = find_tradeable_resources(approach_type, board_frame.game.hands[player])
                 while board_frame.game.state.can_buy_road():
-                    #user_materials[player]["have_built_sett"] = 1
+                    best_coord = best_road_coord(user_materials, player, board)
+                    if not best_coord:
+                        break
                     board_frame.droid_piece_click(PieceType.road, best_road_coord(board))
+                    user_materials[player]["have_built_road"] = 1
 
-            # if approach_type == "city":
+            if approach_type == "city":
+                if not board_frame.game.state.can_buy_city():
+                    for resource in missing_resources:
+                        result = make_trade(resource, 1, player, board_frame, tradeable_resources)
+                        if not result:
+                            break
+                        missing_resources, tradeable_resources = find_tradeable_resources(approach_type, board_frame.game.hands[player])
+                while board_frame.game.state.can_buy_city():
+                    board_frame.droid_piece_click(PieceType.city, best_city_coord(user_materials, player, board))
 
-            #     while board_frame.game.state.can_buy_city():
-            #         board_frame.droid_piece_click(PieceType.city, best_settlement_coord(board))
+            if approach_type == "devc":
+                if not board_frame.game.state.can_buy_dev_card():
+                    for resource in missing_resources:
+                        result = make_trade(resource, 1, player, board_frame, tradeable_resources)
+                        if not result:
+                            break
+                        missing_resources, tradeable_resources = find_tradeable_resources(approach_type, board_frame.game.hands[player])
+                while board_frame.game.state.can_buy_dev_card():
+                    board_frame.game.buy_dev_card()
+                    
 
-            # if approach_type == "devc":
-
-            #     while board_frame.game.state.can_buy_dev_card():
-            #         board_frame.droid_piece_click(PieceType.dev_card, best_settlement_coord(board))
-
-        #user_materials[player]["turns_taken"] += 1
+        user_materials[player]["turns_taken"] += 1
 
     board_frame.redraw()
 
+def find_tradeable_resources(approach_type, hand):
+    if approach_type == 'road':
+        missing_resources = list(road_needs)
+    elif approach_type == 'sett':
+        missing_resources = list(sett_needs)
+    elif approach_type == 'devc':
+        missing_resources = list(devc_needs)
+    elif approach_type == 'city':
+        missing_resources = list(city_needs)
+
+    for card in hand:
+        if card in missing_resources:
+            missing_resources.remove(card)
+        else:
+            tradeable_resources.append(card)
+
+   return missing_resources, tradeable_resources
+
+
+def make_trade(resource, num, player, board_frame, tradeable_resources):
+    game = board_frame.game
+    traded_resource = None
+    for trade_partner in game.hands:
+        if player == trade_partner:
+            continue
+        if game.hands[trade_partner].count(resource) >= num:
+            partner_next_moves = best_win_condition(board_frame, board, player=trade_partner)
+            if partner_next_moves[0] == 'road':
+                partner_needs = road_needs
+            elif partner_next_moves[0] == 'sett':
+                partner_needs = sett_needs
+            elif partner_next_moves[0] == 'devc':
+                partner_needs = devc_needs
+            elif partner_next_moves[0] == 'city':
+                partner_needs = city_needs
+            for need in partner_needs:
+                if need not in game.hands[trade_partner] and \
+                    need in tradeable_resources and \
+                    (resource not in partner_needs or \
+                    (partner_next_moves[0] is not 'city' and 
+                    game.hands[trade_partner].count(resource) >= 2)):
+                        traded_resource = need
+                        break
+            if traded_resource:
+                break
+
+    if traded_resource:
+        trade = CatanTrade(giver=player, getter=trade_partner)
+        trade.give(traded_resource)
+        trade.get(resource)
+        game.trade(trade)
+        print(player, 'traded', traded_resource, 'for', resource, 'with', trade_partner)
+        return True
+    return False
+ 
 
 def score_nodes(board):
 
     scores = {}
-
     # loop through tiles to get a "score" for each node based on adjacent tiles
     for tile_id in range(1, 20):  # tiles go from 1-19
 
@@ -87,7 +176,7 @@ def score_nodes(board):
     return scores
 
 
-def best_settlement_coord(board):
+def best_settlement_coord_pregame(board):
 
     node_scores = score_nodes(board)
     sorted_node_scores = sorted(node_scores, key=lambda x: node_scores[
@@ -101,7 +190,7 @@ def best_settlement_coord(board):
         return coord
 
 
-def best_road_coord(board):
+def best_road_coord_pregame(board):
 
     for (typ, coord), piece in reversed(list(board.pieces.items())):
 
@@ -115,6 +204,33 @@ def best_road_coord(board):
             continue
 
         return coord  # basic road placement
+
+def best_settlement_coord(user_materials, player, board):
+
+    node_scores = score_nodes(board)
+    sorted_node_scores = sorted(node_scores, key=lambda x: node_scores[
+                                x]['score'], reverse=True)
+    possibilities = []
+    for road_coord in user_materials[player][PieceType.road]:
+        settlement_spots = hexgrid.nodes_touching_edge(road_coord)
+        for spot_coord in settlement_spots:
+            possibilities.append(spot_coord)
+
+    for node_coord in sorted_node_scores:
+        if node_coord in possibilities and not is_settlement_taken(board, node_coord, node_scores):
+            return node_coord
+
+    return None
+
+def best_city_coord(user_materials, player, board)
+    node_scores = score_nodes(board)
+    sorted_node_scores = sorted(node_scores, key=lambda x: node_scores[
+                                x]['score'], reverse=True)
+    for node_coord in sorted_node_scores:
+        if node_coord in user_materials[player][PieceType.settlement]:
+            return node_coord
+
+    return None
 
 
 def is_road_taken(board, coord):
@@ -168,12 +284,13 @@ def get_user_pieces(board):
     return user_pieces
 
 
-def best_win_condition(board_frame,board):
+def best_win_condition(board_frame,board,player=None):
 
     # BASIC HIGH LEVEL STRATEGY
 
     user_materials = board_frame.game.get_all_user_materials()  # Will be modified!
-    player = board_frame.game.get_cur_player()
+    if not player:
+        player = board_frame.game.get_cur_player()
     tile_ids = [tile_id for tile_id in range(1, 20)]
 
     # TODO(anyone): Implement ports
@@ -285,7 +402,7 @@ def best_win_condition(board_frame,board):
     #SETTLEMENT FACTORS
     # Settlement factor based on best available settlement score
     # maybe TODO: limit options to within close range of your roads?
-    user_materials[player]["factors"]["sett"] += 0.2 * (board.scores[best_settlement_coord(board)]['score']) - 1.6
+    user_materials[player]["factors"]["sett"] += 0.2 * (board.scores[best_settlement_coord_pregame(board)]['score']) - 1.6
     #QUASI BUILD ORDER
     if user_materials[player]["have_built_road"] == 1 and user_materials[player]["have_built_road"] == 0:
         user_materials[player]["factors"]["sett"] += 100
