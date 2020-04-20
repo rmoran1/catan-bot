@@ -22,30 +22,42 @@ city_needs = [catanboard.Terrain.ore,
 def droid_move(board_frame, board, game_toolbar_frame=None):
     player = board_frame.game.get_cur_player()
     user_materials = board_frame.game.get_all_user_materials()
-    # BASIC CONTROL MECHANISM
+
     if board_frame.game.state.is_in_pregame():
 
         if board_frame.game.state.can_place_settlement():
+            bsc = best_settlement_coord_pregame(board)
             board_frame.droid_piece_click(
-                PieceType.settlement, best_settlement_coord_pregame(board))
+                PieceType.settlement, bsc)
+            print("{} places a settlement at {}...".format(player.name, bsc))
+            time.sleep(0.5)
         elif board_frame.game.state.can_place_road():
+            brc = best_road_coord_start(board, board_frame)
             board_frame.droid_piece_click(
-                PieceType.road, best_road_coord_start(board,board_frame))
+                PieceType.road, brc)
+            print("{} places a road at {}...".format(player.name, brc))
+            time.sleep(0.5)
 
     elif board_frame.game.state.is_in_game():
+
+        print("\n\n\n{} rolling the dice...".format(player.name))
+        time.sleep(0.5)
 
         roll_val = game_toolbar_frame.frame_roll.on_dice_roll()
 
         if roll_val == 7:
-            # Droid must place the robber
+            
+            print("{} considering where to put robber...".format(player.name))
+            time.sleep(0.5)
+
             board_frame.droid_piece_click(
                 PieceType.robber, best_robber_coord(board_frame, board))
             game_toolbar_frame.frame_robber.on_steal()
-            time.sleep(2)
 
         next_moves = best_win_condition(board_frame,board)
         player_hand = board_frame.game.hands[player]
-        print("Recommended moves, in order: {}".format(next_moves))
+
+        # print("Recommended moves, in order: {}".format(next_moves))
 
         for approach_type in next_moves:
             missing_resources, tradeable_resources = find_tradeable_resources(approach_type, player_hand)
@@ -57,6 +69,9 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
                             break
                         missing_resources, tradeable_resources = find_tradeable_resources(approach_type, board_frame.game.hands[player])
 
+                print("{} looks to build a settlement...".format(player.name))
+                time.sleep(0.5)
+
                 while board_frame.game.state.can_buy_settlement():
                     best_coord = best_settlement_coord(user_materials, player, board)
                     if not best_coord:
@@ -64,8 +79,13 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
                     board_frame.game.set_state(states.GameStatePlacingPiece(board_frame.game, PieceType.settlement))
                     board_frame.droid_piece_click(PieceType.settlement, best_coord)
                     user_materials[player]["have_built_sett"] = 1
+                    print("{} places a settlement at {}...".format(player.name, bsc))
+                    time.sleep(0.5)
+
 
             if approach_type == "road":
+                print("{} looks to build a road...".format(player.name))
+                time.sleep(0.5)
                 if not board_frame.game.state.can_buy_road():
                     for resource in missing_resources:
                         result = make_trade(resource, 1, player, board_frame, tradeable_resources)
@@ -74,8 +94,11 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
                         missing_resources, tradeable_resources = find_tradeable_resources(approach_type, board_frame.game.hands[player])
                 while board_frame.game.state.can_buy_road():
                     board_frame.game.set_state(states.GameStatePlacingPiece(board_frame.game, PieceType.road))
-                    board_frame.droid_piece_click(PieceType.road, best_road_coord(board,board_frame))
+                    brc = best_road_coord(board,board_frame)
+                    board_frame.droid_piece_click(PieceType.road, brc)
                     user_materials[player]["have_built_road"] = 1
+                    print("{} places a road at {}...".format(player.name, brc))
+                    time.sleep(0.5)
 
             if approach_type == "city":
                 if not board_frame.game.state.can_buy_city():
@@ -98,6 +121,7 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
                 while board_frame.game.state.can_buy_dev_card():
                     board_frame.game.buy_dev_card()
                     
+
         user_materials[player]["turns_taken"] += 1
 
     board_frame.redraw()
@@ -182,7 +206,7 @@ def best_robber_coord(board_frame, board):
         player_to_steal_from = ranked_players[1][0]
 
     # Find a dwelling owned by that person, and place the robber on its tile
-    print("Player to steal from: {}".format(player_to_steal_from.name))
+    print("{} wants to steal from {}".format(board_frame.game.get_cur_player().name, player_to_steal_from.name))
     for (typ, coord), piece in reversed(list(board.pieces.items())):
 
         if typ != hexgrid.NODE or piece.owner is None or player_to_steal_from.name != piece.owner.name:
@@ -190,8 +214,6 @@ def best_robber_coord(board_frame, board):
 
         tile_id = hexgrid.nearest_tile_to_node(coord)
 
-        print("SETTLEMENT COORD: {}".format(coord))
-        print("TILE ID: {}".format(tile_id))
         return tile_id
 
     return hexgrid.tile_id_to_coord(10)  # If none found, choose centermost
@@ -468,10 +490,9 @@ def best_win_condition(board_frame,board,player=None):
     #         user_materials[player]["resources"][
     #             tile_terrain] += 2*(tile_number - 1)
 
-    print("Resources: {}".format(user_materials[player]["resources"]))
+    #print("Resources: {}".format(user_materials[player]["resources"]))
     sett = (user_materials[player]["resources"].count(catanboard.Terrain.sheep) + user_materials[player]["resources"].count(catanboard.Terrain.wood) +
             user_materials[player]["resources"].count(catanboard.Terrain.brick) + user_materials[player]["resources"].count(catanboard.Terrain.wheat)) / 4
-
     road = (user_materials[player]["resources"].count(catanboard.Terrain.wood) +
             user_materials[player]["resources"].count(catanboard.Terrain.brick)) / 2
 
@@ -558,8 +579,8 @@ def best_win_condition(board_frame,board,player=None):
     if PASSING_CONDITION is True:
         return None
 
-    print("~~~ Best option for {}: settlement {} road {} city {} devc {} ~~~".format(
-        player, factored_sett, factored_road, factored_city, factored_devc))
+    # print("~~~ Best option for {}: settlement {} road {} city {} devc {} ~~~".format(
+    #     player, factored_sett, factored_road, factored_city, factored_devc))
 
     next_moves = {
         "sett": factored_sett,

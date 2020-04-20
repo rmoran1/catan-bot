@@ -271,7 +271,7 @@ class Game(object):
         self.last_roll = roll
         self.last_player_to_roll = self.get_cur_player()
         print()
-        print(self.get_cur_player(), 'rolled a', roll)
+        print(self.get_cur_player().name, 'rolled a', roll, '...')
         if int(roll) == 7:
             self.set_state(catan.states.GameStateMoveRobber(self))
             for player in self.players:
@@ -297,11 +297,13 @@ class Game(object):
                     if (hexgrid.NODE, coord) in self.board.pieces:
                         if self.board.pieces[(hexgrid.NODE, coord)].type == catan.pieces.PieceType.settlement:
                             self.hands[self.board.pieces[(hexgrid.NODE, coord)].owner].append(tile.terrain)
-                            print('gave', self.board.pieces[(hexgrid.NODE, coord)].owner, 'a', tile.terrain)
+                            print("{} earned a {}".format(self.board.pieces[(hexgrid.NODE, coord)].owner.name, tile.terrain.name))
+                            # print('gave', self.board.pieces[(hexgrid.NODE, coord)].owner, 'a', tile.terrain)
                         elif self.board.pieces[(hexgrid.NODE, coord)].type == catan.pieces.PieceType.city:
                             self.hands[self.board.pieces[(hexgrid.NODE, coord)].owner].append(tile.terrain)
                             self.hands[self.board.pieces[(hexgrid.NODE, coord)].owner].append(tile.terrain)
-                            print('gave', self.board.pieces[(hexgrid.NODE, coord)].owner, '2', tile.terrain)
+                            print("{} earned 2 {}".format(self.board.pieces[(hexgrid.NODE, coord)].owner.name, tile.terrain.name))
+                            # print('gave', self.board.pieces[(hexgrid.NODE, coord)].owner, '2', tile.terrain)
                         else:
                             print('ERROR')
 
