@@ -628,7 +628,6 @@ def best_road_coord(board_frame, board):
 
                 if new_coord % 16 >= 13 or new_coord // 16 >= 11 or new_coord % 16 <= 1 or new_coord == 98 or new_coord == 132 or new_coord == 166: #sanity checking coordinates
 
-                    print("Hey ya")
 
                     continue
 
@@ -683,8 +682,6 @@ def best_road_coord(board_frame, board):
                 continue
 
             if new_coord % 16 >= 13 or new_coord // 16 >= 11 or new_coord % 16 <= 1 or new_coord == 98 or new_coord == 132 or new_coord == 166: #sanity checking coordinates
-
-                print("Hey ya")
 
                 continue
 

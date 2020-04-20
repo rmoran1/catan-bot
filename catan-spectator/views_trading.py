@@ -71,7 +71,7 @@ class TradeFrame(tk.Frame):
                                                        self.trade.giving(),
                                                        self.trade.getter(),
                                                        self.trade.getting()))
-        if 'droid' not in self.trade.getting() or self.try_trade():
+        if 'droid' not in self.trade.getter().name or self.try_trade():
             self.game.trade(self.trade)
             print('Trade accepted!')
         else:
@@ -106,8 +106,8 @@ class TradeFrame(tk.Frame):
             print('Try asking for only one card.')
             return False
         for item in self.trade.getting():
-            if item[0] > 1 or (item[1] in partner_needs and (self.master.game.hands[self.trade.getter()].count(item) < 2 or \
-                (item == Terrain.ore and self.master.game.hands[self.trade.getter()].count(item) < 4))):
+            if item[0] > 1 or (item[1] in partner_needs and (self.master.game.hands[self.trade.getter()].count(item[0]) < 2 or \
+                (item[0] == Terrain.ore and self.master.game.hands[self.trade.getter()].count(item[0]) < 4))):
                 harmful = True
         if harmful:
             return False
