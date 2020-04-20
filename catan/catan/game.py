@@ -305,7 +305,7 @@ class Game(object):
                         else:
                             print('ERROR')
 
-            self.set_state(catan.states.GameStateDuringTurnAfterRoll(self))
+        self.set_state(catan.states.GameStateDuringTurnAfterRoll(self))
 
     @undoredo.undoable
     def move_robber(self, tile):

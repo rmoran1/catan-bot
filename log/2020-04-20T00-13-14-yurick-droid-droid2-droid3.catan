@@ -1,0 +1,48 @@
+catanlog v0.10.0
+timestamp: 2020-04-20 00:13:14
+players: 4
+name: yurick, color: green, seat: 1
+name: droid, color: blue, seat: 2
+name: droid2, color: orange, seat: 3
+name: droid3, color: red, seat: 4
+terrain: sheep wood wood ore desert brick wheat ore ore wheat sheep brick brick sheep wood wheat wheat sheep wood
+numbers: 5 2 6 3 None 8 10 9 12 11 4 8 10 9 4 5 6 3 11
+ports: 3:1(1 NW) wood(2 W) brick(4 W) 3:1(5 SW) 3:1(6 SE) sheep(8 SE) 3:1(9 E) ore(10 NE) wheat(12 NE)
+...CATAN!
+green buys settlement, builds at (8 NW)
+green buys road, builds at (8 NW)
+green ends turn after 3s
+blue buys settlement, builds at (1 SE)
+blue buys road, builds at (12 SW)
+blue ends turn after 0s
+orange buys settlement, builds at (6 N)
+orange buys road, builds at (6 NE)
+orange ends turn after 0s
+red buys settlement, builds at (3 SE)
+red buys road, builds at (4 NE)
+red ends turn after 0s
+red buys settlement, builds at (11 SW)
+red buys road, builds at (11 SW)
+red ends turn after 0s
+orange buys settlement, builds at (10 SW)
+orange buys road, builds at (10 SW)
+orange ends turn after 0s
+blue buys settlement, builds at (13 S)
+blue buys road, builds at (13 SE)
+blue ends turn after 0s
+green buys settlement, builds at (9 N)
+green buys road, builds at (10 E)
+green ends turn after 3s
+green rolls 5
+green ends turn after 4s
+blue rolls 6
+blue ends turn after 0s
+orange rolls 5
+orange ends turn after 0s
+red rolls 3
+red ends turn after 0s
+green rolls 3
+green ends turn after 6s
+blue rolls 12
+blue ends turn after 0s
+orange rolls 7
