@@ -68,7 +68,57 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
                     for resource in missing_resources:
                         result = make_trade(resource, 1, player, board_frame, tradeable_resources)
                         if not result:
-                            break
+                            if board_frame.game.player_has_port_type(player, catanboard.PortType.wood) and \
+                                tradeable_resources.count(catanboard.Terrain.wood) >= 2:
+                                board_frame.game.hands[player].remove(catanboard.Terrain.wood)
+                                board_frame.game.hands[player].remove(catanboard.Terrain.wood)
+                                board_frame.game.hands[player].append(resource)
+                                print(player, 'used the wood port to obtain a', resource)
+                            elif board_frame.game.player_has_port_type(player, catanboard.PortType.sheep) and \
+                                tradeable_resources.count(catanboard.Terrain.sheep) >= 2:
+                                board_frame.game.hands[player].remove(catanboard.Terrain.sheep)
+                                board_frame.game.hands[player].remove(catanboard.Terrain.sheep)
+                                board_frame.game.hands[player].append(resource)
+                                print(player, 'used the sheep port to obtain a', resource)
+                            elif board_frame.game.player_has_port_type(player, catanboard.PortType.brick) and \
+                                tradeable_resources.count(catanboard.Terrain.brick) >= 2:
+                                board_frame.game.hands[player].remove(catanboard.Terrain.brick)
+                                board_frame.game.hands[player].remove(catanboard.Terrain.brick)
+                                board_frame.game.hands[player].append(resource)
+                                print(player, 'used the brick port to obtain a', resource)
+                            elif board_frame.game.player_has_port_type(player, catanboard.PortType.wheat) and \
+                                tradeable_resources.count(catanboard.Terrain.wheat) >= 2:
+                                board_frame.game.hands[player].remove(catanboard.Terrain.wheat)
+                                board_frame.game.hands[player].remove(catanboard.Terrain.wheat)
+                                board_frame.game.hands[player].append(resource)
+                                print(player, 'used the wheat port to obtain a', resource)
+                            elif board_frame.game.player_has_port_type(player, catanboard.PortType.ore) and \
+                                tradeable_resources.count(catanboard.Terrain.ore) >= 2:
+                                board_frame.game.hands[player].remove(catanboard.Terrain.ore)
+                                board_frame.game.hands[player].remove(catanboard.Terrain.ore)
+                                board_frame.game.hands[player].append(resource)
+                                print(player, 'used the ore port to obtain a', resource)
+                            elif board_frame.game.player_has_port_type(player, catanboard.PortType.any3):
+                                for r_type in [catanboard.Terrain.wood, catanboard.Terrain.sheep,
+                                    catanboard.Terrain.brick, catanboard.Terrain.wheat, catanboard.Terrain.ore]:
+                                    if tradeable_resources.count(r_type) >= 3:
+                                        board_frame.game.hands[player].remove(r_type)
+                                        board_frame.game.hands[player].remove(r_type)
+                                        board_frame.game.hands[player].remove(r_type)
+                                        board_frame.game.hands[player].append(resource)
+                                        print(player, 'used the 3:1 port to obtain a', resource, 'from 3', r_type)
+                                        break
+                            else:
+                                for r_type in [catanboard.Terrain.wood, catanboard.Terrain.sheep,
+                                    catanboard.Terrain.brick, catanboard.Terrain.wheat, catanboard.Terrain.ore]:
+                                    if tradeable_resources.count(r_type) >= 3:
+                                        board_frame.game.hands[player].remove(r_type)
+                                        board_frame.game.hands[player].remove(r_type)
+                                        board_frame.game.hands[player].remove(r_type)
+                                        board_frame.game.hands[player].remove(r_type)
+                                        board_frame.game.hands[player].append(resource)
+                                        print(player, 'used the 4:1 port to obtain a', resource, 'from 4', r_type)
+                                        break
                         missing_resources, tradeable_resources = find_tradeable_resources(approach_type, board_frame.game.hands[player])
 
                 print("{} looks to build a settlement...".format(player.name))
@@ -93,7 +143,58 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
                     for resource in missing_resources:
                         result = make_trade(resource, 1, player, board_frame, tradeable_resources)
                         if not result:
-                            break
+                            if board_frame.game.player_has_port_type(player, catanboard.PortType.wood) and \
+                                tradeable_resources.count(catanboard.Terrain.wood) >= 2:
+                                board_frame.game.hands[player].remove(catanboard.Terrain.wood)
+                                board_frame.game.hands[player].remove(catanboard.Terrain.wood)
+                                board_frame.game.hands[player].append(resource)
+                                print(player, 'used the wood port to obtain a', resource)
+                            elif board_frame.game.player_has_port_type(player, catanboard.PortType.sheep) and \
+                                tradeable_resources.count(catanboard.Terrain.sheep) >= 2:
+                                board_frame.game.hands[player].remove(catanboard.Terrain.sheep)
+                                board_frame.game.hands[player].remove(catanboard.Terrain.sheep)
+                                board_frame.game.hands[player].append(resource)
+                                print(player, 'used the sheep port to obtain a', resource)
+                            elif board_frame.game.player_has_port_type(player, catanboard.PortType.brick) and \
+                                tradeable_resources.count(catanboard.Terrain.brick) >= 2:
+                                board_frame.game.hands[player].remove(catanboard.Terrain.brick)
+                                board_frame.game.hands[player].remove(catanboard.Terrain.brick)
+                                board_frame.game.hands[player].append(resource)
+                                print(player, 'used the brick port to obtain a', resource)
+                            elif board_frame.game.player_has_port_type(player, catanboard.PortType.wheat) and \
+                                tradeable_resources.count(catanboard.Terrain.wheat) >= 2:
+                                board_frame.game.hands[player].remove(catanboard.Terrain.wheat)
+                                board_frame.game.hands[player].remove(catanboard.Terrain.wheat)
+                                board_frame.game.hands[player].append(resource)
+                                print(player, 'used the wheat port to obtain a', resource)
+                            elif board_frame.game.player_has_port_type(player, catanboard.PortType.ore) and \
+                                tradeable_resources.count(catanboard.Terrain.ore) >= 2:
+                                board_frame.game.hands[player].remove(catanboard.Terrain.ore)
+                                board_frame.game.hands[player].remove(catanboard.Terrain.ore)
+                                board_frame.game.hands[player].append(resource)
+                                print(player, 'used the ore port to obtain a', resource)
+                            elif board_frame.game.player_has_port_type(player, catanboard.PortType.any3):
+                                for r_type in [catanboard.Terrain.wood, catanboard.Terrain.sheep,
+                                    catanboard.Terrain.brick, catanboard.Terrain.wheat, catanboard.Terrain.ore]:
+                                    if tradeable_resources.count(r_type) >= 3:
+                                        board_frame.game.hands[player].remove(r_type)
+                                        board_frame.game.hands[player].remove(r_type)
+                                        board_frame.game.hands[player].remove(r_type)
+                                        board_frame.game.hands[player].append(resource)
+                                        print(player, 'used the 3:1 port to obtain a', resource, 'from 3', r_type)
+                                        break
+                            else:
+                                for r_type in [catanboard.Terrain.wood, catanboard.Terrain.sheep,
+                                    catanboard.Terrain.brick, catanboard.Terrain.wheat, catanboard.Terrain.ore]:
+                                    if tradeable_resources.count(r_type) >= 3:
+                                        board_frame.game.hands[player].remove(r_type)
+                                        board_frame.game.hands[player].remove(r_type)
+                                        board_frame.game.hands[player].remove(r_type)
+                                        board_frame.game.hands[player].remove(r_type)
+                                        board_frame.game.hands[player].append(resource)
+                                        print(player, 'used the 4:1 port to obtain a', resource, 'from 4', r_type)
+                                        break
+ 
                         missing_resources, tradeable_resources = find_tradeable_resources(approach_type, board_frame.game.hands[player])
                 while board_frame.game.state.can_buy_road():
                     board_frame.game.set_state(states.GameStatePlacingPiece(board_frame.game, PieceType.road))
@@ -109,7 +210,58 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
                     for resource in missing_resources:
                         result = make_trade(resource, 1, player, board_frame, tradeable_resources)
                         if not result:
-                            break
+                             if board_frame.game.player_has_port_type(player, catanboard.PortType.wood) and \
+                                tradeable_resources.count(catanboard.Terrain.wood) >= 2:
+                                board_frame.game.hands[player].remove(catanboard.Terrain.wood)
+                                board_frame.game.hands[player].remove(catanboard.Terrain.wood)
+                                board_frame.game.hands[player].append(resource)
+                                print(player, 'used the wood port to obtain a', resource)
+                            elif board_frame.game.player_has_port_type(player, catanboard.PortType.sheep) and \
+                                tradeable_resources.count(catanboard.Terrain.sheep) >= 2:
+                                board_frame.game.hands[player].remove(catanboard.Terrain.sheep)
+                                board_frame.game.hands[player].remove(catanboard.Terrain.sheep)
+                                board_frame.game.hands[player].append(resource)
+                                print(player, 'used the sheep port to obtain a', resource)
+                            elif board_frame.game.player_has_port_type(player, catanboard.PortType.brick) and \
+                                tradeable_resources.count(catanboard.Terrain.brick) >= 2:
+                                board_frame.game.hands[player].remove(catanboard.Terrain.brick)
+                                board_frame.game.hands[player].remove(catanboard.Terrain.brick)
+                                board_frame.game.hands[player].append(resource)
+                                print(player, 'used the brick port to obtain a', resource)
+                            elif board_frame.game.player_has_port_type(player, catanboard.PortType.wheat) and \
+                                tradeable_resources.count(catanboard.Terrain.wheat) >= 2:
+                                board_frame.game.hands[player].remove(catanboard.Terrain.wheat)
+                                board_frame.game.hands[player].remove(catanboard.Terrain.wheat)
+                                board_frame.game.hands[player].append(resource)
+                                print(player, 'used the wheat port to obtain a', resource)
+                            elif board_frame.game.player_has_port_type(player, catanboard.PortType.ore) and \
+                                tradeable_resources.count(catanboard.Terrain.ore) >= 2:
+                                board_frame.game.hands[player].remove(catanboard.Terrain.ore)
+                                board_frame.game.hands[player].remove(catanboard.Terrain.ore)
+                                board_frame.game.hands[player].append(resource)
+                                print(player, 'used the ore port to obtain a', resource)
+                            elif board_frame.game.player_has_port_type(player, catanboard.PortType.any3):
+                                for r_type in [catanboard.Terrain.wood, catanboard.Terrain.sheep,
+                                    catanboard.Terrain.brick, catanboard.Terrain.wheat, catanboard.Terrain.ore]:
+                                    if tradeable_resources.count(r_type) >= 3:
+                                        board_frame.game.hands[player].remove(r_type)
+                                        board_frame.game.hands[player].remove(r_type)
+                                        board_frame.game.hands[player].remove(r_type)
+                                        board_frame.game.hands[player].append(resource)
+                                        print(player, 'used the 3:1 port to obtain a', resource, 'from 3', r_type)
+                                        break
+                            else:
+                                for r_type in [catanboard.Terrain.wood, catanboard.Terrain.sheep,
+                                    catanboard.Terrain.brick, catanboard.Terrain.wheat, catanboard.Terrain.ore]:
+                                    if tradeable_resources.count(r_type) >= 3:
+                                        board_frame.game.hands[player].remove(r_type)
+                                        board_frame.game.hands[player].remove(r_type)
+                                        board_frame.game.hands[player].remove(r_type)
+                                        board_frame.game.hands[player].remove(r_type)
+                                        board_frame.game.hands[player].append(resource)
+                                        print(player, 'used the 4:1 port to obtain a', resource, 'from 4', r_type)
+                                        break
+                            
                         missing_resources, tradeable_resources = find_tradeable_resources(approach_type, board_frame.game.hands[player])
                 while board_frame.game.state.can_buy_city():
                     board_frame.game.set_state(states.GameStatePlacingPiece(board_frame.game, PieceType.city))
@@ -120,7 +272,58 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
                     for resource in missing_resources:
                         result = make_trade(resource, 1, player, board_frame, tradeable_resources)
                         if not result:
-                            break
+                            if board_frame.game.player_has_port_type(player, catanboard.PortType.wood) and \
+                                tradeable_resources.count(catanboard.Terrain.wood) >= 2:
+                                board_frame.game.hands[player].remove(catanboard.Terrain.wood)
+                                board_frame.game.hands[player].remove(catanboard.Terrain.wood)
+                                board_frame.game.hands[player].append(resource)
+                                print(player, 'used the wood port to obtain a', resource)
+                            elif board_frame.game.player_has_port_type(player, catanboard.PortType.sheep) and \
+                                tradeable_resources.count(catanboard.Terrain.sheep) >= 2:
+                                board_frame.game.hands[player].remove(catanboard.Terrain.sheep)
+                                board_frame.game.hands[player].remove(catanboard.Terrain.sheep)
+                                board_frame.game.hands[player].append(resource)
+                                print(player, 'used the sheep port to obtain a', resource)
+                            elif board_frame.game.player_has_port_type(player, catanboard.PortType.brick) and \
+                                tradeable_resources.count(catanboard.Terrain.brick) >= 2:
+                                board_frame.game.hands[player].remove(catanboard.Terrain.brick)
+                                board_frame.game.hands[player].remove(catanboard.Terrain.brick)
+                                board_frame.game.hands[player].append(resource)
+                                print(player, 'used the brick port to obtain a', resource)
+                            elif board_frame.game.player_has_port_type(player, catanboard.PortType.wheat) and \
+                                tradeable_resources.count(catanboard.Terrain.wheat) >= 2:
+                                board_frame.game.hands[player].remove(catanboard.Terrain.wheat)
+                                board_frame.game.hands[player].remove(catanboard.Terrain.wheat)
+                                board_frame.game.hands[player].append(resource)
+                                print(player, 'used the wheat port to obtain a', resource)
+                            elif board_frame.game.player_has_port_type(player, catanboard.PortType.ore) and \
+                                tradeable_resources.count(catanboard.Terrain.ore) >= 2:
+                                board_frame.game.hands[player].remove(catanboard.Terrain.ore)
+                                board_frame.game.hands[player].remove(catanboard.Terrain.ore)
+                                board_frame.game.hands[player].append(resource)
+                                print(player, 'used the ore port to obtain a', resource)
+                            elif board_frame.game.player_has_port_type(player, catanboard.PortType.any3):
+                                for r_type in [catanboard.Terrain.wood, catanboard.Terrain.sheep,
+                                    catanboard.Terrain.brick, catanboard.Terrain.wheat, catanboard.Terrain.ore]:
+                                    if tradeable_resources.count(r_type) >= 3:
+                                        board_frame.game.hands[player].remove(r_type)
+                                        board_frame.game.hands[player].remove(r_type)
+                                        board_frame.game.hands[player].remove(r_type)
+                                        board_frame.game.hands[player].append(resource)
+                                        print(player, 'used the 3:1 port to obtain a', resource, 'from 3', r_type)
+                                        break
+                            else:
+                                for r_type in [catanboard.Terrain.wood, catanboard.Terrain.sheep,
+                                    catanboard.Terrain.brick, catanboard.Terrain.wheat, catanboard.Terrain.ore]:
+                                    if tradeable_resources.count(r_type) >= 3:
+                                        board_frame.game.hands[player].remove(r_type)
+                                        board_frame.game.hands[player].remove(r_type)
+                                        board_frame.game.hands[player].remove(r_type)
+                                        board_frame.game.hands[player].remove(r_type)
+                                        board_frame.game.hands[player].append(resource)
+                                        print(player, 'used the 4:1 port to obtain a', resource, 'from 4', r_type)
+                                        break
+ 
                         missing_resources, tradeable_resources = find_tradeable_resources(approach_type, board_frame.game.hands[player])
                 while board_frame.game.state.can_buy_dev_card():
                     board_frame.game.buy_dev_card()
