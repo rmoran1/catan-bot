@@ -563,11 +563,11 @@ class Game(object):
         for player in self.players:
 
             user_materials[player] = {
-                "resources": None,
+                "resources": [],
                 "longest_road": 0,
                 "knights": 0,
-                "dev_cards": None,
-                "victory_points": 0
+                "dev_cards": {},
+                "victory_points": 0,
             }
 
         for (_, piece_coord), piece_obj in self.board.pieces.items():
@@ -595,20 +595,12 @@ class Game(object):
             if "road" in user_materials[player]:
                 user_materials[player]["longest_road"] = self.get_longest_road_from_coords(user_materials[player]["road"])
 
+            if "turns_taken" not in user_materials[player]:
+                user_materials[player]["turns_taken"] = 0
 
-        if "factors" not in user_materials[player]:
-            user_materials[player]["factors"] = {}
-            user_materials[player]["factors"]["sett"] = 1
-            user_materials[player]["factors"]["road"] = 1
-            user_materials[player]["factors"]["city"] = 1
-            user_materials[player]["factors"]["devc"] = 1
-
-        if "turns_taken" not in user_materials[player]:
-            user_materials[player]["turns_taken"] = 0
-
-        if "have_built_road" not in user_materials[player]:
-            user_materials[player]["have_built_road"] = 0
-            user_materials[player]["have_built_sett"] = 0
+            if "have_built_road" not in user_materials[player]:
+                user_materials[player]["have_built_road"] = 0
+                user_materials[player]["have_built_sett"] = 0
 
         self.assign_victory_points(user_materials)
         return user_materials
