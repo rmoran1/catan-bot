@@ -370,7 +370,7 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
                 while board_frame.game.state.can_buy_dev_card():
                     board_frame.game.buy_dev_card()
                     missing_resources, tradeable_resources = find_tradeable_resources(approach_type, board_frame.game.hands[player])
-                    
+
 
         user_materials[player]["turns_taken"] += 1
 
@@ -622,11 +622,9 @@ def best_road_coord(board_frame, board):
 
                 if new_coord // 16 and new_coord % 2: #sanity checking coordinates
 
-
                     continue
 
-                if new_coord % 16 >= 13 or new_coord // 16 >= 11 or new_coord % 16 <= 1 or new_coord == 98 or new_coord == 132 or new_coord == 166: #sanity checking coordinates
-
+                if new_coord % 16 >= 11 or new_coord // 16 >= 11 or new_coord % 16 <= 1 or new_coord == 96 or new_coord == 130 or new_coord == 164 or new_coord == 6 or new_coord == 40 or new_coord == 164: #sanity checking coordinates
 
                     continue
 
@@ -676,10 +674,11 @@ def best_road_coord(board_frame, board):
 
             if new_coord // 16 and new_coord % 2: #sanity checking coordinates
 
-
                 continue
 
-            if new_coord % 16 >= 13 or new_coord // 16 >= 11 or new_coord % 16 <= 1 or new_coord == 98 or new_coord == 132 or new_coord == 166: #sanity checking coordinates
+            #if new_coord % 16 >= 13 or new_coord // 16 >= 11 or new_coord % 16 <= 1 or new_coord == 98 or new_coord == 132 or new_coord == 166: #sanity checking coordinates
+            if new_coord % 16 >= 11 or new_coord // 16 >= 11 or new_coord % 16 <= 1 or new_coord == 96 or new_coord == 130 or new_coord == 164 or new_coord == 6 or new_coord == 40 or new_coord == 164: #sanity checking coordinates
+
 
                 continue
 
