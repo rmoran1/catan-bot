@@ -3,6 +3,7 @@ import logging
 import tkinter as tk
 from catan.board import PortType, Terrain, Port
 from catan.trading import CatanTrade
+import droid_behavior
 
 can_do = {
     True: tk.NORMAL,
@@ -70,7 +71,11 @@ class TradeFrame(tk.Frame):
                                                        self.trade.giving(),
                                                        self.trade.getter(),
                                                        self.trade.getting()))
-        self.game.trade(self.trade)
+        if self.try_trade():
+            self.game.trade(self.trade)
+            print('Trade accepted!')
+        else:
+            print('Trade declined.')
 
         self.on_cancel()
         self.game.notify(None)
@@ -78,6 +83,35 @@ class TradeFrame(tk.Frame):
     def on_cancel(self):
         self.trade = CatanTrade(giver=self.game.get_cur_player())
         self.set_frame(WithWhoFrame(self))
+
+    def try_trade(self):
+        partner_next_moves = droid_behavior.best_win_condition(self.master.board_frame, self.master.game.board, player=self.trade.getter())
+        if partner_next_moves[0] == 'road':
+            partner_needs = droid_behavior.road_needs
+        elif partner_next_moves[0] == 'sett':
+            partner_needs = droid_behavior.sett_needs
+        elif partner_next_moves[0] == 'devc':
+            partner_needs = droid_behavior.devc_needs
+        elif partner_next_moves[0] == 'city':
+            partner_needs = droid_behavior.city_needs
+        helpful = False
+        print(partner_needs)
+        for item in self.trade.giving():
+            if item[1] in partner_needs:
+                helpful = True
+        if not helpful:
+            return False
+        harmful = False
+        if len(self.trade.getting()) > 1:
+            print('Try asking for only one card.')
+            return False
+        for item in self.trade.getting():
+            if item[0] > 1 or (item[1] in partner_needs and (self.master.game.hands[self.trade.getter()].count(item) < 2 or \
+                (item == Terrain.ore and self.master.game.hands[self.trade.getter()].count(item) < 4))):
+                harmful = True
+        if harmful:
+            return False
+        return True
 
 
 class WithWhoFrame(tk.Frame):

@@ -94,7 +94,7 @@ class BoardFrame(tkinter.Frame):
                 coordinate -= 10000     #checking if roads are from road builder
             elif not self.game.state.is_in_pregame():
                 self.game.hands[self.game.get_cur_player()].remove(
-                    Terrain.brick)
+                        Terrain.brick)
                 self.game.hands[self.game.get_cur_player()].remove(
                     Terrain.wood)
             self.game.place_road(coordinate)
