@@ -639,9 +639,12 @@ class GameStateSteal(GameStateInGame):
             hexgrid.location(hexgrid.TILE, self.game.robber_tile),
             victim
         )
-        card = random.choice(self.game.hands[victim])
-        self.game.hands[victim].remove(card)
-        self.game.hands[self.game.get_cur_player()].append(card)
+        try:
+            card = random.choice(self.game.hands[victim])
+            self.game.hands[victim].remove(card)
+            self.game.hands[self.game.get_cur_player()].append(card)
+        except IndexError:
+            pass
         self.game.set_state(GameStateDuringTurnAfterRoll(self.game))
 
     def can_roll(self):

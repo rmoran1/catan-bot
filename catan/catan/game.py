@@ -426,7 +426,7 @@ class Game(object):
     @undoredo.undoable
     def play_knight(self):
         self.set_dev_card_state(catan.states.DevCardPlayedState(self))
-        print(player, 'plays a Knight')
+        print(self.get_cur_player().name, 'plays a Knight')
         self.set_state(catan.states.GameStateMoveRobberUsingKnight(self))
         self.dev_hands[self.get_cur_player()].remove('Knight')
         self.knights_played[self.get_cur_player()] += 1

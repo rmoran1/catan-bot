@@ -43,10 +43,10 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
     elif board_frame.game.state.is_in_game():
         if 'Knight' in board_frame.game.dev_hands[player]:
             for cdir in ['NW', 'N', 'NE', 'SE', 'S', 'SW']:
-                coord = hexgrid.from_location(hexgrid.NODE, self.board_frame.game.robber_tile, direction=cdir)
-                if (hexgrid.NODE, coord) in self.board.pieces:
+                coord = hexgrid.from_location(hexgrid.NODE, board_frame.game.robber_tile, direction=cdir)
+                if (hexgrid.NODE, coord) in board_frame.game.board.pieces:
                     if (board_frame.game.board.pieces[(hexgrid.NODE, coord)].type == PieceType.settlement or \
-                        board_frame.game.board.pieces[(hexgrid.NODE, coord)].type == PieceType.city) and 
+                        board_frame.game.board.pieces[(hexgrid.NODE, coord)].type == PieceType.city) and \
                         board_frame.game.board.pieces[(hexgrid.NODE, coord)].owner == player:
                         board_frame.game.play_knight()
                         board_frame.droid_piece_click(
@@ -65,19 +65,20 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
 
             board_frame.droid_piece_click(
                 PieceType.robber, best_robber_coord(board_frame, board))
+            print(board_frame.game.state)
             game_toolbar_frame.frame_robber.on_steal()
 
         next_moves = best_win_condition(board_frame,board)
         player_hand = board_frame.game.hands[player]
 
-        # print("Recommended moves, in order: {}".format(next_moves))
+        print("Recommended moves, in order: {}".format(next_moves))
 
         for approach_type in next_moves:
             missing_resources, tradeable_resources = find_tradeable_resources(approach_type, player_hand)
             if approach_type == "sett":
                 if not board_frame.game.state.can_buy_settlement():
-                    if len(missing_resources) == 2 and 'Year of Plenty' in dev_hands[player] and board_frame.game.dev_card_state.can_play_dev_card():
-                        self.game.play_year_of_plenty(missing_resources[0], missing_resources[1])
+                    if len(missing_resources) == 2 and 'Year of Plenty' in board_frame.game.dev_hands[player] and board_frame.game.dev_card_state.can_play_dev_card():
+                        board_frame.game.play_year_of_plenty(missing_resources[0], missing_resources[1])
                         missing_resources, tradeable_resources = find_tradeable_resources(approach_type, player_hand)
                     for resource in missing_resources:
                         result = make_trade(resource, 1, player, board_frame, tradeable_resources)
@@ -146,25 +147,27 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
                         break
                     board_frame.droid_piece_click(PieceType.settlement, coord)
                     user_materials[player]["have_built_sett"] = 1
-                    print("{} places a settlement at {}...".format(player.name, bsc))
+                    print("{} places a settlement at {}...".format(player.name, coord))
                     board_frame.master.delay()
+                    board_frame.game.set_state(states.GameStateDuringTurnAfterRoll(board_frame.game))
 
 
             if approach_type == "road":
                 print("{} looks to build a road...".format(player.name))
                 board_frame.master.delay()
-                if len(missing_resources) > 0 and 'Road Builder' in dev_hands[player] and board_frame.game.dev_card_state.can_play_dev_card():
-                    self.game.set_state(states.GameStatePlacingRoadBuilderPieces(self.game))
+                if len(missing_resources) > 0 and 'Road Builder' in board_frame.game.dev_hands[player] and board_frame.game.dev_card_state.can_play_dev_card():
+                    board_frame.game.set_state(states.GameStatePlacingRoadBuilderPieces(board_frame.game))
                     brc = best_road_coord(board_frame,board)
                     board_frame.droid_piece_click(PieceType.road, brc)
                     brc = best_road_coord(board_frame,board)
                     board_frame.droid_piece_click(PieceType.road, brc)
+                    board_frame.game.set_state(states.GameStateDuringTurnAfterRoll(board_frame.game))
 
                 if not board_frame.game.state.can_buy_road():
 
 
-                    if len(missing_resources) == 2 and 'Year of Plenty' in dev_hands[player] and board_frame.game.dev_card_state.can_play_dev_card():
-                        self.game.play_year_of_plenty(missing_resources[0], missing_resources[1])
+                    if len(missing_resources) == 2 and 'Year of Plenty' in board_frame.game.dev_hands[player] and board_frame.game.dev_card_state.can_play_dev_card():
+                        board_frame.game.play_year_of_plenty(missing_resources[0], missing_resources[1])
                         missing_resources, tradeable_resources = find_tradeable_resources(approach_type, player_hand)
                     for resource in missing_resources:
                         result = make_trade(resource, 1, player, board_frame, tradeable_resources)
@@ -230,11 +233,12 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
                     user_materials[player]["have_built_road"] = 1
                     print("{} places a road at {}...".format(player.name, brc))
                     board_frame.master.delay()
+                    board_frame.game.set_state(states.GameStateDuringTurnAfterRoll(board_frame.game))
 
             if approach_type == "city":
                 if not board_frame.game.state.can_buy_city():
-                    if len(missing_resources) == 2 and 'Year of Plenty' in dev_hands[player] and board_frame.game.dev_card_state.can_play_dev_card():
-                        self.game.play_year_of_plenty(missing_resources[0], missing_resources[1])
+                    if len(missing_resources) == 2 and 'Year of Plenty' in board_frame.game.dev_hands[player] and board_frame.game.dev_card_state.can_play_dev_card():
+                        board_frame.game.play_year_of_plenty(missing_resources[0], missing_resources[1])
                         missing_resources, tradeable_resources = find_tradeable_resources(approach_type, player_hand)
                     for resource in missing_resources:
                         result = make_trade(resource, 1, player, board_frame, tradeable_resources)
@@ -295,11 +299,12 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
                 while board_frame.game.state.can_buy_city():
                     board_frame.game.set_state(states.GameStatePlacingPiece(board_frame.game, PieceType.city))
                     board_frame.droid_piece_click(PieceType.city, best_city_coord(user_materials, player, board))
+                    board_frame.game.set_state(states.GameStateDuringTurnAfterRoll(board_frame.game))
 
             if approach_type == "devc":
                 if not board_frame.game.state.can_buy_dev_card():
-                    if len(missing_resources) == 2 and 'Year of Plenty' in dev_hands[player] and board_frame.game.dev_card_state.can_play_dev_card():
-                        self.game.play_year_of_plenty(missing_resources[0], missing_resources[1])
+                    if len(missing_resources) == 2 and 'Year of Plenty' in board_frame.game.dev_hands[player] and board_frame.game.dev_card_state.can_play_dev_card():
+                        board_frame.game.play_year_of_plenty(missing_resources[0], missing_resources[1])
                         missing_resources, tradeable_resources = find_tradeable_resources(approach_type, player_hand)
                     for resource in missing_resources:
                         result = make_trade(resource, 1, player, board_frame, tradeable_resources)
@@ -397,6 +402,8 @@ def make_trade(resource, num, player, board_frame, tradeable_resources):
     for trade_partner in game.hands:
         if player == trade_partner:
             continue
+        if 'droid' not in trade_partner.name:
+            continue
         if game.hands[trade_partner].count(resource) >= num:
             partner_next_moves = best_win_condition(board_frame, game.board, player=trade_partner)
             if partner_next_moves[0] == 'road':
@@ -455,6 +462,17 @@ def best_robber_coord(board_frame, board):
             continue
 
         tile_id = hexgrid.nearest_tile_to_node(coord)
+        self_finder = 0
+        for cdir in ['NW', 'N', 'NE', 'SE', 'S', 'SW']:
+            n_coord = hexgrid.from_location(hexgrid.NODE, board_frame.game.robber_tile, direction=cdir)
+            if (hexgrid.NODE, coord) in board_frame.game.board.pieces:
+                if (board_frame.game.board.pieces[(hexgrid.NODE, coord)].type == PieceType.settlement or \
+                    board_frame.game.board.pieces[(hexgrid.NODE, coord)].type == PieceType.city) and \
+                    board_frame.game.board.pieces[(hexgrid.NODE, coord)].owner == player:
+                    self_finder = 1
+                    break
+        if self_finder:
+            continue
 
         return tile_id
 
@@ -546,7 +564,7 @@ def best_city_coord(user_materials, player, board):
     sorted_node_scores = sorted(node_scores, key=lambda x: node_scores[
                                 x]['score'], reverse=True)
     for node_coord in sorted_node_scores:
-        if node_coord in user_materials[player][PieceType.settlement]:
+        if node_coord in user_materials[player]['settlement']:
             return node_coord
 
     return None
@@ -797,7 +815,7 @@ def best_win_condition(board_frame,board,player=None):
     # For now road factor based on number of turns into game, also useful so may keep going forward
     user_materials[player]["factors"]["road"] += 2 - 0.25*(user_materials[player]["turns_taken"]) #earlier into the game, want to build more roads
     #QUASI BUILD ORDER
-    if user_materials[player]["have_built_road"] == 0:
+    if len(user_materials[player]["road"]) < 3:
         user_materials[player]["factors"]["road"] += 100
 
     #SETTLEMENT FACTORS
@@ -805,7 +823,7 @@ def best_win_condition(board_frame,board,player=None):
     # maybe TODO: limit options to within close range of your roads?
     user_materials[player]["factors"]["sett"] += 0.2 * (board.scores[best_settlement_coord_start(board)]['score']) - 1.6
     #QUASI BUILD ORDER
-    if user_materials[player]["have_built_road"] == 1 and user_materials[player]["have_built_road"] == 0:
+    if len(user_materials[player]["road"]) > 2 and len(user_materials[player]["settlement"]) < 3:
         user_materials[player]["factors"]["sett"] += 100
 
     #DEV CARD FACTORS
@@ -828,8 +846,8 @@ def best_win_condition(board_frame,board,player=None):
     if PASSING_CONDITION is True:
         return None
 
-    # print("~~~ Best option for {}: settlement {} road {} city {} devc {} ~~~".format(
-    #     player, factored_sett, factored_road, factored_city, factored_devc))
+    print("~~~ Best option for {}: settlement {} road {} city {} devc {} ~~~".format(
+        player, factored_sett, factored_road, factored_city, factored_devc))
 
     next_moves = {
         "sett": factored_sett,

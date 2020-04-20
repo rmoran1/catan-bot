@@ -136,8 +136,6 @@ class BoardFrame(tkinter.Frame):
                 droid_move(self, self._board)
             else:
                 logging.debug("Awaiting move from a human")
-        else:
-            self.game.set_state(states.GameStateDuringTurnAfterRoll(self.game))
 
     def piece_click(self, piece_type, event):
         tags = self._board_canvas.gettags(
