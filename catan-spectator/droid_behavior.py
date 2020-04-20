@@ -628,7 +628,8 @@ def best_road_coord(board_frame, board):
 
                     continue
 
-                if new_coord % 16 >= 11 or new_coord // 16 >= 11 or new_coord % 16 <= 1 or new_coord == 96 or new_coord == 130 or new_coord == 164 or new_coord == 6 or new_coord == 40 or new_coord == 74: #sanity checking coordinates
+                #if new_coord % 16 >= 11 or new_coord // 16 >= 11 or new_coord % 16 <= 1 or new_coord == 96 or new_coord == 130 or new_coord == 164 or new_coord == 6 or new_coord == 40 or new_coord == 74: #sanity checking coordinates
+                if new_coord // 16 <= 1 or new_coord // 16 >= 13 or new_coord % 16 <= 1 or new_coord % 16 >= 13 or new_coord in [40,74,108,130,164,198]:
 
                     continue
 
@@ -636,34 +637,6 @@ def best_road_coord(board_frame, board):
 
                     return new_coord
 
-    '''
-    #if can build settlement 2 roads away
-    for coord in road_coords:
-
-        for offset in _offsets:
-
-            if is_road_taken(board, coord+offset):
-
-                continue
-
-            for offset2 in _offsets:
-
-                new_coord = coord + offset + offset2
-
-                if offset + offset2 == 0:
-
-                    continue
-
-                for node in hexgrid.nodes_touching_edge(new_coord):
-
-                    if is_settlement_taken(board, node, node_scores):
-
-                        continue
-
-                    else:
-
-                        return coord + offset
-    '''
 
     #otherwise build any road you can
     for coord in road_coords:
@@ -681,8 +654,8 @@ def best_road_coord(board_frame, board):
                 continue
 
             #if new_coord % 16 >= 13 or new_coord // 16 >= 11 or new_coord % 16 <= 1 or new_coord == 98 or new_coord == 132 or new_coord == 166: #sanity checking coordinates
-            if new_coord % 16 >= 11 or new_coord // 16 >= 11 or new_coord % 16 <= 1 or new_coord == 96 or new_coord == 130 or new_coord == 164 or new_coord == 6 or new_coord == 40 or new_coord == 74: #sanity checking coordinates
-
+            #if new_coord % 16 >= 11 or new_coord // 16 >= 11 or new_coord % 16 <= 1 or new_coord == 96 or new_coord == 130 or new_coord == 164 or new_coord == 6 or new_coord == 40 or new_coord == 74: #sanity checking coordinates
+            if new_coord // 16 <= 1 or new_coord // 16 >= 13 or new_coord % 16 <= 1 or new_coord % 16 >= 13 or new_coord in [40,74,108,130,164,198]:
 
                 continue
 
