@@ -31,14 +31,14 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
                 PieceType.settlement, bsc)
             print("{} places a settlement at {}...".format(player.name, bsc))
             board_frame.game.notify_observers()
-            time.sleep(0.5)
+            board_frame.master.delay()
         elif board_frame.game.state.can_place_road():
             brc = best_road_coord_start(board_frame, board)
             board_frame.droid_piece_click(
                 PieceType.road, brc)
             print("{} places a road at {}...".format(player.name, brc))
             board_frame.game.notify_observers()
-            time.sleep(0.5)
+            board_frame.master.delay()
 
     elif board_frame.game.state.is_in_game():
         if 'Knight' in board_frame.game.dev_hands[player]:
@@ -54,14 +54,14 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
                         game_toolbar_frame.frame_robber.on_steal()
 
         print("\n\n\n{} rolling the dice...".format(player.name))
-        time.sleep(0.5)
+        board_frame.master.delay()
 
         roll_val = game_toolbar_frame.frame_roll.on_dice_roll()
 
         if roll_val == 7:
 
             print("{} considering where to put robber...".format(player.name))
-            time.sleep(0.5)
+            board_frame.master.delay()
 
             board_frame.droid_piece_click(
                 PieceType.robber, best_robber_coord(board_frame, board))
@@ -136,7 +136,7 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
                         missing_resources, tradeable_resources = find_tradeable_resources(approach_type, board_frame.game.hands[player])
 
                 print("{} looks to build a settlement...".format(player.name))
-                time.sleep(0.5)
+                board_frame.master.delay()
 
                 while board_frame.game.state.can_buy_settlement():
                     board_frame.game.set_state(states.GameStatePlacingPiece(board_frame.game, PieceType.settlement))
@@ -147,12 +147,12 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
                     board_frame.droid_piece_click(PieceType.settlement, coord)
                     user_materials[player]["have_built_sett"] = 1
                     print("{} places a settlement at {}...".format(player.name, bsc))
-                    time.sleep(0.5)
+                    board_frame.master.delay()
 
 
             if approach_type == "road":
                 print("{} looks to build a road...".format(player.name))
-                time.sleep(0.5)
+                board_frame.master.delay()
                 if len(missing_resources) > 0 and 'Road Builder' in dev_hands[player] and board_frame.game.dev_card_state.can_play_dev_card():
                     self.game.set_state(states.GameStatePlacingRoadBuilderPieces(self.game))
                     brc = best_road_coord(board_frame,board)
@@ -229,7 +229,7 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
                     board_frame.droid_piece_click(PieceType.road, brc)
                     user_materials[player]["have_built_road"] = 1
                     print("{} places a road at {}...".format(player.name, brc))
-                    time.sleep(0.5)
+                    board_frame.master.delay()
 
             if approach_type == "city":
                 if not board_frame.game.state.can_buy_city():
