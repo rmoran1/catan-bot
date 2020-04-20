@@ -624,7 +624,7 @@ def best_road_coord(board_frame, board):
 
                     continue
 
-                if new_coord % 16 >= 13 or new_coord // 16 >= 11 or new_coord % 16 <= 1 or new_coord == 98 or new_coord == 132 or new_coord == 166: #sanity checking coordinates
+                if new_coord % 16 >= 11 or new_coord // 16 >= 11 or new_coord % 16 <= 1 or new_coord == 96 or new_coord == 130 or new_coord == 164 or new_coord == 6 or new_coord == 40 or new_coord == 164: #sanity checking coordinates
 
                     continue
 
@@ -676,7 +676,9 @@ def best_road_coord(board_frame, board):
 
                 continue
 
-            if new_coord % 16 >= 13 or new_coord // 16 >= 11 or new_coord % 16 <= 1 or new_coord == 98 or new_coord == 132 or new_coord == 166: #sanity checking coordinates
+            #if new_coord % 16 >= 13 or new_coord // 16 >= 11 or new_coord % 16 <= 1 or new_coord == 98 or new_coord == 132 or new_coord == 166: #sanity checking coordinates
+            if new_coord % 16 >= 11 or new_coord // 16 >= 11 or new_coord % 16 <= 1 or new_coord == 96 or new_coord == 130 or new_coord == 164 or new_coord == 6 or new_coord == 40 or new_coord == 164: #sanity checking coordinates
+
 
                 continue
 
