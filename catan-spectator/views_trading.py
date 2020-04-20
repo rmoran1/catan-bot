@@ -71,7 +71,7 @@ class TradeFrame(tk.Frame):
                                                        self.trade.giving(),
                                                        self.trade.getter(),
                                                        self.trade.getting()))
-        if 'droid' not in self.trade.getter().name or self.try_trade():
+        if type(self.trade.getter()) == Port or self.try_trade():
             self.game.trade(self.trade)
             print('Trade accepted!')
         else:
