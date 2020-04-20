@@ -903,7 +903,7 @@ class HandsFrame(tkinter.Frame):
 
         i = 0
         for player, player_materials in player_info.items():
-            if player_materials["victory_points"] >= 10:
+            if player_materials["victory_points"] >= 5:
                 self.game.end(player=player)
 
         for player, player_materials in player_info.items():

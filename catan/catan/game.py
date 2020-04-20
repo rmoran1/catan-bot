@@ -213,7 +213,10 @@ class Game(object):
         if not player:
             player = self.get_cur_player()
         self.catanlog.log_player_wins(self.get_cur_player())
-        self.set_state(catan.states.GameStateNotInGame(self))
+        print(player.name, 'wins!!')
+        print(player.name, 'is Lord of Catan!')
+        if self.state.is_in_game():
+            self.set_state(catan.states.GameStateNotInGame(self))
 
     def reset(self):
         self.players = list()
@@ -583,6 +586,8 @@ class Game(object):
 
             if player == player_with_largest_army and largest_army != 0:
                 victory_points += 2
+
+            victory_points += self.dev_hands[player].count('Victory Point')
 
             user_materials[player]["victory_points"] = victory_points
 
