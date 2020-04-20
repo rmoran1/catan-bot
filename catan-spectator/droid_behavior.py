@@ -321,5 +321,5 @@ def best_win_condition(board_frame,board):
     }
 
     ordered_next_moves = [k for k, v in sorted(next_moves.items(), key=lambda item: item[1])]
-
-    return ordered_next_moves.reverse()
+    ordered_next_moves.reverse()
+    return ordered_next_moves
