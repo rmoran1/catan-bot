@@ -59,7 +59,7 @@ class CatanSpectator(tkinter.Frame):
         return self._setup_game_toolbar_frame.options.copy()
 
     def delay(self):
-        time.sleep(0.5)
+        time.sleep(1)
 
 
 def main():
