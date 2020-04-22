@@ -5,6 +5,7 @@ import catan.board as catanboard
 from catan.trading import CatanTrade
 from catan import states
 import time
+import random
 
 _node_directions = ['NW', 'N', 'NE', 'SE', 'S', 'SW']
 _edge_directions = ['NW', 'NE', 'E', 'SE', 'SW', 'W']
@@ -563,7 +564,84 @@ def best_settlement_coord(board_frame, board):
 
 
 def best_road_coord_start(board_frame, board):
-    for (typ, coord), piece in reversed(list(board.pieces.items())):
+    player = board_frame.game.get_cur_player()
+    user_materials = board_frame.game.get_all_user_materials()
+
+    
+    sett_coords = user_materials[player]["settlement"]
+
+    if len(sett_coords) == 1:
+        road_coords = [sett_coords[0], sett_coords[0] - 16, sett_coords[0] - 17, sett_coords[0] - 1]
+    else:
+        roads_placed = user_materials[player]["road"]
+        if roads_placed[0] in sett_coords or roads_placed[0] + 16 in sett_coords or \
+            roads_placed[0] + 17 in sett_coords or roads_placed[0] + 1 in sett_coords:
+            road_coords = [sett_coords[1], sett_coords[1] - 16, sett_coords[1] - 17, sett_coords[1] - 1]
+        else:
+            road_coords = [sett_coords[0], sett_coords[0] - 16, sett_coords[0] - 17, sett_coords[0] - 1]
+            
+    for item in road_coords:
+        if item not in hexgrid.legal_edge_coords():
+            road_coords.remove(item)
+            break
+
+    print(road_coords)
+    random.shuffle(road_coords)
+
+    if not road_coords:
+        return 0
+
+    node_scores = score_nodes(board)
+
+    #if can build settlement 1 road away
+    for coord in road_coords:
+        if is_road_taken(board, coord):
+            continue
+
+        for node in hexgrid.nodes_touching_edge(coord):
+            if is_settlement_taken(board, node, node_scores):
+                continue
+
+            if coord // 16 and coord % 2: #sanity checking coordinates
+                continue
+
+                #if new_coord % 16 >= 11 or new_coord // 16 >= 11 or new_coord % 16 <= 1 or new_coord == 96 or new_coord == 130 or new_coord == 164 or new_coord == 6 or new_coord == 40 or new_coord == 74: #sanity checking coordinates
+            if coord // 16 <= 1 or coord // 16 >= 13 or coord % 16 <= 1 or coord % 16 >= 13 or coord in [40,74,108,130,164,198]:
+
+                continue
+
+            else:
+
+                return coord
+
+
+    #otherwise build any road you can
+    for coord in road_coords:
+
+        if is_road_taken(board, coord):
+            continue
+
+        if coord // 16 and coord % 2: #sanity checking coordinates
+            continue
+
+            #if new_coord % 16 >= 13 or new_coord // 16 >= 11 or new_coord % 16 <= 1 or new_coord == 98 or new_coord == 132 or new_coord == 166: #sanity checking coordinates
+            #if new_coord % 16 >= 11 or new_coord // 16 >= 11 or new_coord % 16 <= 1 or new_coord == 96 or new_coord == 130 or new_coord == 164 or new_coord == 6 or new_coord == 40 or new_coord == 74: #sanity checking coordinates
+        if coord // 16 <= 1 or coord // 16 >= 13 or coord % 16 <= 1 or coord % 16 >= 13 or coord in [40,74,108,130,164,198]:
+            continue
+
+        else:
+
+            return coord
+
+def is_road_taken(board, coord):
+
+    if (hexgrid.EDGE, coord) in board.pieces:
+        return True
+    return False
+
+
+
+    '''for (typ, coord), piece in reversed(list(board.pieces.items())):
 
         if typ != hexgrid.NODE:
             continue
@@ -574,7 +652,7 @@ def best_road_coord_start(board_frame, board):
         if "droid" not in piece.owner.name:
             continue
 
-        return coord  # basic road placement
+        return coord  # basic road placement'''
 
 def best_city_coord(user_materials, player, board):
     node_scores = score_nodes(board)
