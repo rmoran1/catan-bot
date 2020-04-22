@@ -821,20 +821,30 @@ def best_win_condition(board_frame,board,player=None):
     user_materials[player]["factors"]["city"] += 0.2 * (best_settlement_score) - 1.6 # neutral factor if you have a sett with 8 dots
 
     #ROAD FACTORS
-    # Good Road factor based on longest road calculation, not yet implemented
+    longest_road = 4
+    for p in board_frame.game.players:
+        road_length = user_materials[p]["longest_road"]
+        if road_length > longest_road:
+            longest_road = road_length
+
+    difference = abs(longest_road - user_materials[player]["longest_road"])
+
+    #If you have a small lead or are close behind on longest road, more incentivized to build roads
+    #If that difference is large then you are less incentivized
+    if user_materials[player]["longest_road"] > 3:
+        user_materials[player]["factors"]["road"] += 3 - difference
     # For now road factor based on number of turns into game, also useful so may keep going forward
     user_materials[player]["factors"]["road"] += 2 - 0.25*(user_materials[player]["turns_taken"]) #earlier into the game, want to build more roads
     #QUASI BUILD ORDER
     if len(user_materials[player]["road"]) < 3:
-        user_materials[player]["factors"]["road"] += 100
+        user_materials[player]["factors"]["road"] += 10
 
     #SETTLEMENT FACTORS
     # Settlement factor based on best available settlement score
-    # maybe TODO: limit options to within close range of your roads?
     user_materials[player]["factors"]["sett"] += 0.2 * (board.scores[best_settlement_coord_start(board)]['score']) - 1.6
     #QUASI BUILD ORDER
     if len(user_materials[player]["road"]) > 2 and len(user_materials[player]["settlement"]) < 3:
-        user_materials[player]["factors"]["sett"] += 100
+        user_materials[player]["factors"]["sett"] += 10
 
     #DEV CARD FACTORS
     user_materials[player]["factors"]["devc"] += 0 # dev cards are best to buy when nothing else is good, so no factors makes sense
