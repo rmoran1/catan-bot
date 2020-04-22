@@ -32,14 +32,12 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
                 PieceType.settlement, bsc)
             print("{} places a settlement at {}...".format(player.name, bsc))
             board_frame.game.notify_observers()
-            board_frame.master.delay()
         elif board_frame.game.state.can_place_road():
             brc = best_road_coord_start(board_frame, board)
             board_frame.droid_piece_click(
                 PieceType.road, brc)
             print("{} places a road at {}...".format(player.name, brc))
             board_frame.game.notify_observers()
-            board_frame.master.delay()
 
     elif board_frame.game.state.is_in_game():
         if 'Knight' in board_frame.game.dev_hands[player]:
