@@ -75,12 +75,14 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
                 PieceType.robber, best_robber_coord(board_frame, board))
             game_toolbar_frame.frame_robber.on_steal()
 
-        next_moves = best_win_condition(board_frame,board)
+        move_ind = 0
         player_hand = board_frame.game.hands[player]
 
-        print("Recommended moves, in order: {}".format(next_moves))
 
-        for approach_type in next_moves[:-1]:
+        while move_ind < 3:
+            next_moves = best_win_condition(board_frame,board)
+            print("Recommended moves, in order: {}".format(next_moves))
+            approach_type = next_moves[move_ind]
             missing_resources, tradeable_resources = find_tradeable_resources(approach_type, player_hand)
             if approach_type == "sett":
                 if not board_frame.game.state.can_buy_settlement():
@@ -154,7 +156,7 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
                 #print("{} looks to build a settlement...".format(player.name))
                 board_frame.master.delay()
 
-                while board_frame.game.state.can_buy_settlement():
+                if board_frame.game.state.can_buy_settlement():
 
                     coord = best_settlement_coord(board_frame,board)
                     #If no valid places to play a settlement
@@ -167,8 +169,8 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
                     print("{} places a settlement at {}...".format(player.name, coord))
                     board_frame.master.delay()
                     board_frame.game.set_state(states.GameStateDuringTurnAfterRoll(board_frame.game))
-                    missing_resources, tradeable_resources = find_tradeable_resources(approach_type, board_frame.game.hands[player])
-
+                    move_ind = 0
+                    continue
 
             if approach_type == "road":
                 #print("{} looks to build a road...".format(player.name))
@@ -251,7 +253,7 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
                                         break
 
                         missing_resources, tradeable_resources = find_tradeable_resources(approach_type, board_frame.game.hands[player])
-                while board_frame.game.state.can_buy_road():
+                if board_frame.game.state.can_buy_road():
                     board_frame.game.set_state(states.GameStatePlacingPiece(board_frame.game, PieceType.road))
 
                     brc = best_road_coord(board_frame,board)
@@ -262,7 +264,8 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
                     print("{} places a road at {}...".format(player.name, brc))
                     board_frame.master.delay()
                     board_frame.game.set_state(states.GameStateDuringTurnAfterRoll(board_frame.game))
-                    missing_resources, tradeable_resources = find_tradeable_resources(approach_type, board_frame.game.hands[player])
+                    move_ind = 0
+                    continue
 
             if approach_type == "city":
                 if not board_frame.game.state.can_buy_city():
@@ -333,11 +336,12 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
                                         break
 
                         missing_resources, tradeable_resources = find_tradeable_resources(approach_type, board_frame.game.hands[player])
-                while board_frame.game.state.can_buy_city():
+                if board_frame.game.state.can_buy_city():
                     board_frame.game.set_state(states.GameStatePlacingPiece(board_frame.game, PieceType.city))
                     board_frame.droid_piece_click(PieceType.city, best_city_coord(user_materials, player, board))
                     board_frame.game.set_state(states.GameStateDuringTurnAfterRoll(board_frame.game))
-                    missing_resources, tradeable_resources = find_tradeable_resources(approach_type, board_frame.game.hands[player])
+                    move_ind = 0
+                    continue
 
             if approach_type == "devc":
                 if not board_frame.game.state.can_buy_dev_card():
@@ -408,9 +412,12 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
                                         break
 
                         missing_resources, tradeable_resources = find_tradeable_resources(approach_type, board_frame.game.hands[player])
-                while board_frame.game.state.can_buy_dev_card():
+                if board_frame.game.state.can_buy_dev_card():
                     board_frame.game.buy_dev_card()
-                    missing_resources, tradeable_resources = find_tradeable_resources(approach_type, board_frame.game.hands[player])
+                    move_ind = 0
+                    continue
+
+            move_ind += 1
 
 
         user_materials[player]["turns_taken"] += 1
@@ -517,48 +524,40 @@ def best_robber_coord(board_frame, board):
         if player_to_steal_from == board_frame.game.get_cur_player():
             player_to_steal_from = ranked_players[1][0]
 
-
+    dots = {2: 1, 3: 2, 4: 3, 5: 4, 6: 5, 8: 5, 9: 4, 10: 3, 11: 2, 12: 1}
     # Find a dwelling owned by that person, and place the robber on its tile
+
+    steal_scores = dict()
     print("{} wants to steal from {}".format(board_frame.game.get_cur_player().name, player_to_steal_from.name))
-    for (typ, coord), piece in reversed(list(board.pieces.items())):
-        if typ != hexgrid.NODE or piece.owner is None or player_to_steal_from.name != piece.owner.name:
-            continue
-
-        tile_id = hexgrid.nearest_tile_to_node(coord)
-
-        self_finder = 0
-        for cdir in ['NW', 'N', 'NE', 'SE', 'S', 'SW']:
-            n_coord = hexgrid.from_location(hexgrid.NODE, board_frame.game.robber_tile, direction=cdir)
+    for tile_id in range(1, 20):
+        steal_scores[tile_id] = 0
+        for ndir in ['N', 'NE', 'NW', 'SE', 'SW', 'S']:
+            n_coord = hexgrid.from_location(hexgrid.NODE, tile_id, direction=ndir)
             if (hexgrid.NODE, n_coord) in board_frame.game.board.pieces:
-                if (board_frame.game.board.pieces[(hexgrid.NODE, n_coord)].type == PieceType.settlement or \
-                    board_frame.game.board.pieces[(hexgrid.NODE, n_coord)].type == PieceType.city) and \
-                    board_frame.game.board.pieces[(hexgrid.NODE, n_coord)].owner == board_frame.game.get_cur_player():
-                    self_finder = 1
-                    break
-        if self_finder:
-            continue
+                if board_frame.game.board.pieces[(hexgrid.NODE, n_coord)].owner == board_frame.game.get_cur_player():
+                    steal_scores[tile_id] -= 100
+                else:
+                    piece_type = board_frame.game.board.pieces[(hexgrid.NODE, n_coord)].type
+                    if piece_type == PieceType.settlement:
+                        steal_scores[tile_id] += 1
+                    elif piece_type == PieceType.city:
+                        steal_scores[tile_id] += 2
+                    if board_frame.game.board.pieces[(hexgrid.NODE, n_coord)].owner == player_to_steal_from:
+                        steal_scores[tile_id] += 2
+        
 
-        if tile_id < 1 or tile_id > 19:
-            print('weird tile id!', tile_id)
-            raise Exception
-            continue
+        try:
+            steal_scores[tile_id] *= dots[board_frame.game.board.tiles[tile_id - 1].number.value]
+        except KeyError:    #robber tile
+            steal_scores[tile_id] -= 100
 
-        #if tile_id in [23,57,113,147] or tile_id % 16 >= 11 or tile_id //16 >= 11:
-            #continue
-
-        if (2, hexgrid.tile_id_to_coord(tile_id)) in board.pieces:
+    sorted_steal_scores = sorted(steal_scores, key=lambda x: steal_scores[
+                                x], reverse=True)
+    if (2, hexgrid.tile_id_to_coord(sorted_steal_scores[0])) in board.pieces:
             # This means the robber is already on this tile
-            continue
-
-        if hexgrid.tile_id_to_coord(tile_id) == -1:
-            continue
-
-        return tile_id
-
-    if board_frame.game.robber_tile != 19:
-        return 19  # If none found, choose centermost
+        return sorted_steal_scores[1]
     else:
-        return 18
+        return sorted_steal_scores[0]
 
 def score_nodes(board):
 
@@ -653,8 +652,10 @@ def best_road_coord_start(board_frame, board):
 
     if not road_coords:
         return 0
-
-    node_scores = score_nodes(board)
+    try:
+        node_scores = board.scores
+    except AttributeError:
+        node_scores = score_nodes(board)
 
     #if can build settlement 1 road away
     for coord in road_coords:
@@ -807,23 +808,77 @@ def is_settlement_taken(board, node_coord, sorted_node_scores):
     if node_coord not in sorted_node_scores:
         return True
     # need to look for surrounding settlements
-    for tile_id in sorted_node_scores[node_coord]['tiles_touching']:
-        cdir = sorted_node_scores[node_coord]['tiles_touching'][tile_id]
-        if cdir == 'SE':
-            ndir = 'NE'
-        elif cdir == 'N':
-            ndir = 'NW'
-        elif cdir == 'SW':
-            ndir = 'S'
-        elif cdir == 'S':
-            ndir = 'SW'
-        elif cdir == 'NE':
-            ndir = 'SE'
-        elif cdir == 'NW':
-            ndir = 'N'
-        coord = hexgrid.from_location(hexgrid.NODE, tile_id, direction=ndir)
-        if (hexgrid.NODE, coord) in board.pieces:
-            return True
+    if len(sorted_node_scores[node_coord]['tiles_touching']) == 3:
+        for tile_id in sorted_node_scores[node_coord]['tiles_touching']:
+            cdir = sorted_node_scores[node_coord]['tiles_touching'][tile_id]
+            if cdir == 'SE':
+                ndir = 'NE'
+            elif cdir == 'N':
+                ndir = 'NW'
+            elif cdir == 'SW':
+                ndir = 'S'
+            elif cdir == 'S':
+                ndir = 'SW'
+            elif cdir == 'NE':
+                ndir = 'SE'
+            elif cdir == 'NW':
+                ndir = 'N'
+            coord = hexgrid.from_location(hexgrid.NODE, tile_id, direction=ndir)
+            if (hexgrid.NODE, coord) in board.pieces:
+                return True
+    elif len(sorted_node_scores[node_coord]['tiles_touching']) == 2:
+        tile_ids = []
+        dirs = []
+        for tile_id in sorted_node_scores[node_coord]['tiles_touching']:
+            dirs.append(sorted_node_scores[node_coord]['tiles_touching'][tile_id])
+            tile_ids.append(tile_id)
+        if 'SW' in dirs and 'N' in dirs:
+            to_check = {tile_ids[dirs.index('SW')]: ['NW', 'S'],
+                        tile_ids[dirs.index('N')]: ['NW']}
+        elif 'S' in dirs and 'NW' in dirs:
+            to_check = {tile_ids[dirs.index('S')]: ['SW', 'SE'],
+                        tile_ids[dirs.index('NW')]: ['SW']}
+        elif 'SE' in dirs and 'SW' in dirs:
+            to_check = {tile_ids[dirs.index('SE')]: ['S', 'NE'],
+                        tile_ids[dirs.index('SW')]: ['S']}
+        elif 'NE' in dirs and 'S' in dirs:
+            to_check = {tile_ids[dirs.index('NE')]: ['N', 'SE'],
+                        tile_ids[dirs.index('S')]: ['SE']}
+        elif 'N' in dirs and 'SE' in dirs:
+            to_check = {tile_ids[dirs.index('N')]: ['NE', 'NW'],
+                        tile_ids[dirs.index('SE')]: ['NE']}
+        elif 'NW' in dirs and 'NE' in dirs:
+            to_check = {tile_ids[dirs.index('NW')]: ['N', 'SW'],
+                        tile_ids[dirs.index('NE')]: ['N']}
+
+        for tile_id in to_check:
+            for ndir in to_check[tile_id]:
+                coord = hexgrid.from_location(hexgrid.NODE, tile_id, direction=ndir)
+                if (hexgrid.NODE, coord) in board.pieces:
+                    return True
+    else:
+        for tile_id in sorted_node_scores[node_coord]['tiles_touching']:
+            t = tile_id
+            d = sorted_node_scores[node_coord]['tiles_touching'][tile_id]
+        if d == 'N':
+            to_check = {t: ['NW', 'NE']}
+        elif d == 'NE':
+            to_check = {t: ['N', 'SE']}
+        elif d == 'SE':
+            to_check = {t: ['NE', 'S']}
+        elif d == 'S':
+            to_check = {t: ['SE', 'SW']}
+        elif d == 'SW':
+            to_check = {t: ['S', 'NW']}
+        elif d == 'NW':
+            to_check = {t: ['SW', 'N']}
+        for ndir in to_check[t]:
+            coord = hexgrid.from_location(hexgrid.NODE, t, direction=ndir)
+            if (hexgrid.NODE, coord) in board.pieces:
+                return True
+
+
+
 
     return False
 

@@ -217,6 +217,7 @@ class Game(object):
         print(player.name, 'is Lord of Catan!')
         if self.state.is_in_game():
             self.set_state(catan.states.GameStateNotInGame(self))
+        x = input()
 
     def reset(self):
         self.players = list()
