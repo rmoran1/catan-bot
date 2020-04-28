@@ -318,6 +318,8 @@ class GameStateInGame(GameState):
         """
         if not self.has_rolled():
             return False
+        if not len(self.game.dev_deck):
+            return False
         hand = self.game.hands[self.game.get_cur_player()]
         if (catan.board.Terrain.wheat in hand and
             catan.board.Terrain.ore in hand and
@@ -643,8 +645,11 @@ class GameStateSteal(GameStateInGame):
             card = random.choice(self.game.hands[victim])
             self.game.hands[victim].remove(card)
             self.game.hands[self.game.get_cur_player()].append(card)
+            print(self.game.get_cur_player().name, 'steals a', card, 'from', victim.name)
         except IndexError:
-            pass
+            print('no cards to steal from', victim.name)
+        except KeyError:
+            print('no victim')
         self.game.set_state(GameStateDuringTurnAfterRoll(self.game))
 
     def can_roll(self):
@@ -691,8 +696,11 @@ class GameStateStealUsingKnight(GameStateSteal):
             card = random.choice(self.game.hands[victim])
             self.game.hands[victim].remove(card)
             self.game.hands[self.game.get_cur_player()].append(card)
-        except:
-            pass
+            print(self.game.get_cur_player().name, 'steals a', card, 'from', victim.name)
+        except IndexError:
+            print('no cards to steal from', victim.name)
+        except KeyError:
+            print('no victim')
         self.game.set_state(GameStateDuringTurnAfterRoll(self.game))
 
 

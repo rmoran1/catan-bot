@@ -52,6 +52,13 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
                         board_frame.droid_piece_click(
                         PieceType.robber, best_robber_coord(board_frame, board))
                         game_toolbar_frame.frame_robber.on_steal()
+                        break
+                    elif user_materials[player]["knights"] == 2:
+                        board_frame.game.play_knight()
+                        board_frame.droid_piece_click(
+                        PieceType.robber, best_robber_coord(board_frame, board))
+                        game_toolbar_frame.frame_robber.on_steal()
+                        break
 
         print("\n\n\n{} rolling the dice...".format(player.name))
         board_frame.master.delay()
@@ -80,8 +87,16 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
                     if len(missing_resources) == 2 and 'Year of Plenty' in board_frame.game.dev_hands[player] and board_frame.game.dev_card_state.can_play_dev_card():
                         board_frame.game.play_year_of_plenty(missing_resources[0], missing_resources[1])
                         missing_resources, tradeable_resources = find_tradeable_resources(approach_type, player_hand)
+                    elif len(missing_resources) == 1 and 'Monopoly' in board_frame.game.dev_hands[player] and board_frame.game.dev_card_state.can_play_dev_card():
+                        num_you_need = 0
+                        for p in board_frame.game.hands:
+                            if missing_resources[0] in board_frame.game.hands[p] and player != p:
+                                num_you_need = 1
+                        if num_you_need:
+                            board_frame.game.play_monopoly(missing_resources[0])
+                        missing_resources, tradeable_resources = find_tradeable_resources(approach_type, player_hand)
                     for resource in missing_resources:
-                        result = make_trade(resource, 1, player, board_frame, tradeable_resources)
+                        result = make_trade(user_materials, resource, 1, player, board_frame, tradeable_resources)
                         if not result:
                             if board_frame.game.player_has_port_type(player, catanboard.PortType.wood) and \
                                 tradeable_resources.count(catanboard.Terrain.wood) >= 2:
@@ -136,7 +151,7 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
                                         break
                         missing_resources, tradeable_resources = find_tradeable_resources(approach_type, board_frame.game.hands[player])
 
-                print("{} looks to build a settlement...".format(player.name))
+                #print("{} looks to build a settlement...".format(player.name))
                 board_frame.master.delay()
 
                 while board_frame.game.state.can_buy_settlement():
@@ -156,7 +171,7 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
 
 
             if approach_type == "road":
-                print("{} looks to build a road...".format(player.name))
+                #print("{} looks to build a road...".format(player.name))
                 board_frame.master.delay()
                 if len(missing_resources) > 0 and 'Road Builder' in board_frame.game.dev_hands[player] and board_frame.game.dev_card_state.can_play_dev_card():
                     board_frame.game.set_state(states.GameStatePlacingRoadBuilderPieces(board_frame.game))
@@ -172,8 +187,16 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
                     if len(missing_resources) == 2 and 'Year of Plenty' in board_frame.game.dev_hands[player] and board_frame.game.dev_card_state.can_play_dev_card():
                         board_frame.game.play_year_of_plenty(missing_resources[0], missing_resources[1])
                         missing_resources, tradeable_resources = find_tradeable_resources(approach_type, player_hand)
+                    elif len(missing_resources) == 1 and 'Monopoly' in board_frame.game.dev_hands[player] and board_frame.game.dev_card_state.can_play_dev_card():
+                        num_you_need = 0
+                        for p in board_frame.game.hands:
+                            if missing_resources[0] in board_frame.game.hands[p] and player != p:
+                                num_you_need = 1
+                        if num_you_need:
+                            board_frame.game.play_monopoly(missing_resources[0])
+                        missing_resources, tradeable_resources = find_tradeable_resources(approach_type, player_hand)
                     for resource in missing_resources:
-                        result = make_trade(resource, 1, player, board_frame, tradeable_resources)
+                        result = make_trade(user_materials, resource, 1, player, board_frame, tradeable_resources)
                         if not result:
                             if board_frame.game.player_has_port_type(player, catanboard.PortType.wood) and \
                                 tradeable_resources.count(catanboard.Terrain.wood) >= 2:
@@ -232,6 +255,8 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
                     board_frame.game.set_state(states.GameStatePlacingPiece(board_frame.game, PieceType.road))
 
                     brc = best_road_coord(board_frame,board)
+                    if not brc:
+                        break
                     board_frame.droid_piece_click(PieceType.road, brc)
                     user_materials[player]["have_built_road"] = 1
                     print("{} places a road at {}...".format(player.name, brc))
@@ -244,8 +269,16 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
                     if len(missing_resources) == 2 and 'Year of Plenty' in board_frame.game.dev_hands[player] and board_frame.game.dev_card_state.can_play_dev_card():
                         board_frame.game.play_year_of_plenty(missing_resources[0], missing_resources[1])
                         missing_resources, tradeable_resources = find_tradeable_resources(approach_type, player_hand)
+                    elif len(set(missing_resources)) == 1 and 'Monopoly' in board_frame.game.dev_hands[player] and board_frame.game.dev_card_state.can_play_dev_card():
+                        num_you_need = 0
+                        for p in board_frame.game.hands:
+                            if missing_resources[0] in board_frame.game.hands[p] and player != p:
+                                num_you_need += 1
+                        if num_you_need >= len(missing_resources):
+                            board_frame.game.play_monopoly(missing_resources[0])
+                        missing_resources, tradeable_resources = find_tradeable_resources(approach_type, player_hand)
                     for resource in missing_resources:
-                        result = make_trade(resource, 1, player, board_frame, tradeable_resources)
+                        result = make_trade(user_materials, resource, 1, player, board_frame, tradeable_resources)
                         if not result:
                             if board_frame.game.player_has_port_type(player, catanboard.PortType.wood) and \
                                 tradeable_resources.count(catanboard.Terrain.wood) >= 2:
@@ -311,8 +344,16 @@ def droid_move(board_frame, board, game_toolbar_frame=None):
                     if len(missing_resources) == 2 and 'Year of Plenty' in board_frame.game.dev_hands[player] and board_frame.game.dev_card_state.can_play_dev_card():
                         board_frame.game.play_year_of_plenty(missing_resources[0], missing_resources[1])
                         missing_resources, tradeable_resources = find_tradeable_resources(approach_type, player_hand)
+                    elif len(missing_resources) == 1 and 'Monopoly' in board_frame.game.dev_hands[player] and board_frame.game.dev_card_state.can_play_dev_card():
+                        num_you_need = 0
+                        for p in board_frame.game.hands:
+                            if missing_resources[0] in board_frame.game.hands[p] and player != p:
+                                num_you_need = 1
+                        if num_you_need:
+                            board_frame.game.play_monopoly(missing_resources[0])
+                        missing_resources, tradeable_resources = find_tradeable_resources(approach_type, player_hand)
                     for resource in missing_resources:
-                        result = make_trade(resource, 1, player, board_frame, tradeable_resources)
+                        result = make_trade(user_materials, resource, 1, player, board_frame, tradeable_resources)
                         if not result:
                             if board_frame.game.player_has_port_type(player, catanboard.PortType.wood) and \
                                 tradeable_resources.count(catanboard.Terrain.wood) >= 2:
@@ -400,7 +441,7 @@ def find_tradeable_resources(approach_type, hand):
     return missing_resources, tradeable_resources
 
 
-def make_trade(resource, num, player, board_frame, tradeable_resources):
+def make_trade(user_materials, resource, num, player, board_frame, tradeable_resources):
     game = board_frame.game
     traded_resource = None
     print("{} wants {}!".format(player.name, resource.name))
@@ -409,6 +450,8 @@ def make_trade(resource, num, player, board_frame, tradeable_resources):
         if player == trade_partner:
             continue
         if 'droid' not in trade_partner.name:
+            continue
+        if user_materials[trade_partner]['victory_points'] > 7:
             continue
         if game.hands[trade_partner].count(resource) >= num:
             partner_next_moves = best_win_condition(board_frame, game.board, player=trade_partner)
@@ -421,6 +464,8 @@ def make_trade(resource, num, player, board_frame, tradeable_resources):
             elif partner_next_moves[0] == 'city':
                 partner_needs = city_needs
             for need in partner_needs:
+                if user_materials[player]['victory_points'] > 7:
+                    break
                 if need not in game.hands[trade_partner] and \
                     need in tradeable_resources and \
                     (resource not in partner_needs or \
@@ -455,10 +500,22 @@ def best_robber_coord(board_frame, board):
     ranked_players = sorted(players_and_scores, key = lambda x: x[1], reverse=True)
 
     player_to_steal_from = ranked_players[0][0]
-
-    # If it's yourself, steal from the next best person
+    i = 1
     if player_to_steal_from == board_frame.game.get_cur_player():
         player_to_steal_from = ranked_players[1][0]
+        i = 2
+    try:
+        while len(board_frame.game.hands[player_to_steal_from]) < 1:
+            player_to_steal_from = ranked_players[i][0]
+            i = i + 1
+            # If it's yourself, steal from the next best person
+            if player_to_steal_from == board_frame.game.get_cur_player():
+                player_to_steal_from = ranked_players[i][0]
+                i = i + 1
+    except KeyError:
+        player_to_steal_from = ranked_players[0][0]
+        if player_to_steal_from == board_frame.game.get_cur_player():
+            player_to_steal_from = ranked_players[1][0]
 
 
     # Find a dwelling owned by that person, and place the robber on its tile
@@ -468,20 +525,26 @@ def best_robber_coord(board_frame, board):
             continue
 
         tile_id = hexgrid.nearest_tile_to_node(coord)
+
         self_finder = 0
         for cdir in ['NW', 'N', 'NE', 'SE', 'S', 'SW']:
             n_coord = hexgrid.from_location(hexgrid.NODE, board_frame.game.robber_tile, direction=cdir)
             if (hexgrid.NODE, n_coord) in board_frame.game.board.pieces:
                 if (board_frame.game.board.pieces[(hexgrid.NODE, n_coord)].type == PieceType.settlement or \
                     board_frame.game.board.pieces[(hexgrid.NODE, n_coord)].type == PieceType.city) and \
-                    board_frame.game.board.pieces[(hexgrid.NODE, n_coord)].owner == player:
+                    board_frame.game.board.pieces[(hexgrid.NODE, n_coord)].owner == board_frame.game.get_cur_player():
                     self_finder = 1
                     break
         if self_finder:
             continue
 
-        if tile_id in [23,57,113,147] or tile_id % 16 >= 11 or tile_id //16 >= 11:
+        if tile_id < 1 or tile_id > 19:
+            print('weird tile id!', tile_id)
+            raise Exception
             continue
+
+        #if tile_id in [23,57,113,147] or tile_id % 16 >= 11 or tile_id //16 >= 11:
+            #continue
 
         if (2, hexgrid.tile_id_to_coord(tile_id)) in board.pieces:
             # This means the robber is already on this tile
@@ -492,7 +555,10 @@ def best_robber_coord(board_frame, board):
 
         return tile_id
 
-    return 10  # If none found, choose centermost
+    if board_frame.game.robber_tile != 19:
+        return 19  # If none found, choose centermost
+    else:
+        return 18
 
 def score_nodes(board):
 
@@ -583,7 +649,6 @@ def best_road_coord_start(board_frame, board):
             road_coords.remove(item)
             break
 
-    print(road_coords)
     random.shuffle(road_coords)
 
     if not road_coords:
@@ -665,6 +730,12 @@ def best_city_coord(user_materials, player, board):
 
 def best_road_coord(board_frame, board):
 
+    legal_roads = [34, 35, 36, 37, 38, 39, 50, 52, 54, 56, 66, 67, 68, 69, 70, 71, 
+            72, 73, 82, 84, 86, 88, 90, 98, 99, 100, 101, 102, 103, 104, 105,
+            106, 107, 114, 116, 118, 120, 122, 124, 131, 132, 133, 134, 135,
+            136, 137, 138, 139, 140, 148, 150, 152, 154, 156, 165, 166, 167,
+            168, 169, 170, 171, 172, 182, 184, 186, 188, 199, 200, 201, 202,
+            203, 204]
     player = board_frame.game.get_cur_player()
     user_materials = board_frame.game.get_all_user_materials()
 
@@ -685,34 +756,25 @@ def best_road_coord(board_frame, board):
 
     #if can build settlement 1 road away
     for coord in road_coords:
-
         for offset in _offsets:
 
             new_coord = coord + offset
+            if new_coord not in legal_roads:
+                continue
 
             if is_road_taken(board, new_coord):
-
                 continue
 
             for node in hexgrid.nodes_touching_edge(new_coord):
 
                 if is_settlement_taken(board, node, node_scores):
-
                     continue
 
-                if new_coord // 16 and new_coord % 2: #sanity checking coordinates
-
-                    continue
-
-                #if new_coord % 16 >= 11 or new_coord // 16 >= 11 or new_coord % 16 <= 1 or new_coord == 96 or new_coord == 130 or new_coord == 164 or new_coord == 6 or new_coord == 40 or new_coord == 74: #sanity checking coordinates
-                if new_coord // 16 <= 1 or new_coord // 16 >= 13 or new_coord % 16 <= 1 or new_coord % 16 >= 13 or new_coord in [40,74,108,130,164,198]:
-
-                    continue
+                
 
                 else:
 
                     return new_coord
-
 
     #otherwise build any road you can
     for coord in road_coords:
@@ -721,17 +783,10 @@ def best_road_coord(board_frame, board):
 
             new_coord = offset + coord
 
+            if new_coord not in legal_roads:
+                continue
+
             if is_road_taken(board, coord+offset):
-
-                continue
-
-            if new_coord // 16 and new_coord % 2: #sanity checking coordinates
-
-                continue
-
-            #if new_coord % 16 >= 13 or new_coord // 16 >= 11 or new_coord % 16 <= 1 or new_coord == 98 or new_coord == 132 or new_coord == 166: #sanity checking coordinates
-            #if new_coord % 16 >= 11 or new_coord // 16 >= 11 or new_coord % 16 <= 1 or new_coord == 96 or new_coord == 130 or new_coord == 164 or new_coord == 6 or new_coord == 40 or new_coord == 74: #sanity checking coordinates
-            if new_coord // 16 <= 1 or new_coord // 16 >= 13 or new_coord % 16 <= 1 or new_coord % 16 >= 13 or new_coord in [40,74,108,130,164,198]:
 
                 continue
 
@@ -913,6 +968,9 @@ def best_win_condition(board_frame,board,player=None):
         user_materials[player]["factors"]["road"] += 3 - difference
     # For now road factor based on number of turns into game, also useful so may keep going forward
     user_materials[player]["factors"]["road"] += 2 - 0.25*(user_materials[player]["turns_taken"]) #earlier into the game, want to build more roads
+    if len(user_materials[player]['road']) > 10:
+        user_materials[player]['factors']['road'] /= ((len(user_materials[player]['road']) - 9)**2)
+
     #QUASI BUILD ORDER
     if len(user_materials[player]["road"]) < 3:
         user_materials[player]["factors"]["road"] += 10
@@ -923,6 +981,9 @@ def best_win_condition(board_frame,board,player=None):
     #QUASI BUILD ORDER
     if len(user_materials[player]["road"]) > 2 and len(user_materials[player]["settlement"]) < 3:
         user_materials[player]["factors"]["sett"] += 10
+
+    if len(user_materials[player]['settlement']) > 4:
+        user_materials[player]['factors']['city'] += 10
 
     #DEV CARD FACTORS
     user_materials[player]["factors"]["devc"] += 0 # dev cards are best to buy when nothing else is good, so no factors makes sense
@@ -953,7 +1014,6 @@ def best_win_condition(board_frame,board,player=None):
         "city": factored_city,
         "devc": factored_devc
     }
-
     ordered_next_moves = [k for k, v in sorted(next_moves.items(), key=lambda item: item[1])]
     ordered_next_moves.reverse()
     return ordered_next_moves
